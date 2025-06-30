@@ -1,15 +1,12 @@
-import { useAuth } from '@/providers/auth';
-import { Redirect, Slot, useRouter, useSegments } from 'expo-router';
-import { useNavigationState } from '@react-navigation/native';
+import { Redirect, Slot, useSegments } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Layout() {
   const { isAuthenticated } = useAuth();
   const segments = useSegments();
-  const router = useRouter();
-  const navReady = useNavigationState((state) => !!state?.key);
   const inAuthGroup = segments[0] === '(auths)';
 
-  if (!isAuthenticated && !inAuthGroup && navReady) {
+  if (!isAuthenticated && !inAuthGroup) {
     return <Redirect href="/(auths)/login" />;
   }
 

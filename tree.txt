@@ -1,0 +1,98 @@
+.
+├── app
+│   ├── _layout.tsx
+│   ├── (app)
+│   │   ├── _layout.tsx
+│   │   ├── (admin)
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
+│   │   ├── (agent)
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
+│   │   ├── (client)
+│   │   │   ├── _layout.tsx
+│   │   │   ├── index.tsx
+│   │   │   └── two.tsx
+│   │   └── index.tsx
+│   ├── (auths)
+│   │   ├── _layout.tsx
+│   │   ├── login.tsx
+│   │   ├── register.tsx
+│   │   └── verify.tsx
+│   ├── +html.tsx
+│   ├── +not-found.tsx
+│   ├── modal.tsx
+│   └── storybook.tsx
+├── app.json
+├── assets
+│   ├── fonts
+│   │   └── SpaceMono-Regular.ttf
+│   └── images
+│       ├── adaptive-icon.png
+│       ├── favicon.png
+│       ├── icon.png
+│       ├── login_mobile.png
+│       ├── login_web.png
+│       ├── logo1.png
+│       └── splash-icon.png
+├── babel.config.js
+├── checklist.md
+├── components
+│   ├── __tests__
+│   │   └── StyledText-test.js
+│   ├── button
+│   │   ├── Button.stories.tsx
+│   │   ├── Button.tsx
+│   │   └── index.tsx
+│   ├── EditScreenInfo.tsx
+│   ├── ExternalLink.tsx
+│   ├── input
+│   │   ├── checkbox.tsx
+│   │   └── index.tsx
+│   ├── StyledText.tsx
+│   ├── Themed.tsx
+│   ├── useClientOnlyValue.ts
+│   ├── useClientOnlyValue.web.ts
+│   ├── useColorScheme.ts
+│   └── useColorScheme.web.ts
+├── constants
+│   ├── Border.ts
+│   ├── Colors.ts
+│   └── Fonts.ts
+├── contexts
+│   └── AuthContext.tsx
+├── eslint.config.js
+├── expo-env.d.ts
+├── global.css
+├── hooks
+│   └── useResponsive.ts
+├── libs
+│   ├── api.ts
+│   ├── secureStorage.ts
+│   └── secureStorage.web.ts
+├── metro.config.js
+├── nativewind-env.d.ts
+├── package.json
+├── providers
+│   └── AuthProvider.tsx
+├── services
+│   ├── auth.ts
+│   ├── document.ts
+│   ├── project.ts
+│   └── unit.ts
+├── store
+│   ├── auth
+│   │   ├── index.ts
+│   │   └── mutations.ts
+│   └── query.ts
+├── styleguide
+│   └── breakpoints.ts
+├── tailwind.config.js
+├── tree.txt
+├── tsconfig.json
+├── types
+│   ├── index.ts
+│   └── models.ts
+└── yarn.lock
+
+24 directories, 72 files

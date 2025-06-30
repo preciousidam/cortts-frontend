@@ -1,0 +1,66 @@
+const tintColorLight = '#2f95dc';
+const tintColorDark = '#fff';
+import Color from 'color';
+
+export default {
+  light: {
+    text: '#000',
+    background: '#fff',
+    tint: tintColorLight,
+    tabIconDefault: '#ccc',
+    tabIconSelected: tintColorLight
+  },
+  dark: {
+    text: '#fff',
+    background: '#000',
+    tint: tintColorDark,
+    tabIconDefault: '#ccc',
+    tabIconSelected: tintColorDark
+  }
+};
+
+
+export const generateColorScale = (hex: string) => {
+  const base = Color(hex).hsl();
+
+  return {
+    light: base.saturate(-0.3).lighten(0.54).hex(),         // ~94% lightness
+    lightHover: base.saturate(-0.3).lighten(0.49).hex(),     // ~91%
+    lightActive: base.saturate(-0.2).lighten(0.41).hex(),    // ~81%
+    normalBase: base.hex(),
+    normalHover: base.darken(0.1).hex(),
+    normalActive: base.darken(0.2).hex(),
+    dark: base.darken(0.3).hex(),
+    darkHover: base.darken(0.45).hex(),
+    darkActive: base.darken(0.6).hex(),
+    darker: base.darken(0.75).hex(),
+  };
+};
+
+
+export const corttsLightColors = {
+  primary: '#007ACC',         // links, active icons
+  background: '#FAFAFA',      // screen background
+  card: '#F5F5F5',            // header, drawer, bottom tabs
+  text: '#1A1A1A',            // body text
+  border: '#E5E5E5',          // card/drawer/tab borders
+  notification: '#DF0000',  // red for error messages
+  neutral: '#ABABAB',      // neutral text color
+  textWeaker: '#B8B8B8',   // weaker text color
+  textWeakest: '#E8E8E8', // weakest text color
+  textWeak: '#4D4D4D', // weak text color
+};
+
+export const corttsDarkColors = {
+  primary: '#00C1A2',         // teal for CTA & active highlights
+  background: '#1A1A1A',      // full screen dark background
+  card: '#2A2A2A',            // headers, drawers, modals
+  text: '#FFFFFF',            // main text color
+  border: '#4F4F4F',          // divider lines, input borders
+  notification: '#DF0000',  // red for error messages
+  neutral: '#ABABAB',      // neutral text color
+  textWeaker: '#B8B8B8',   // weaker text color
+  textWeakest: '#E8E8E8', // weakest text color
+  textWeak: '#4D4D4D', // weak text color
+};
+

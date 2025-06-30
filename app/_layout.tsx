@@ -14,10 +14,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { AuthProvider } from '@/providers/auth';
-import { corttsDarkColors, corttsLightColors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { corttsDarkColors, corttsLightColors } from '@/styleguide/theme/Colors';
+import { Fonts } from '@/styleguide/theme/Fonts';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AppThemeProvider } from '@/styleguide/theme';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -61,19 +63,28 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const queryClient = new QueryClient();
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  console.log(colorScheme);
+  
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? {...DarkTheme,  colors: {
-    ...DefaultTheme.colors, ...corttsDarkColors}, fonts: Fonts} : {...DefaultTheme,  colors: {
-    ...DefaultTheme.colors, ...corttsLightColors}, fonts: Fonts}}>
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen name="(app)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auths)" options={{ headerShown: false }} />
-        </Stack>
-      </AuthProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppThemeProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? {...DarkTheme,  colors: {
+          ...DefaultTheme.colors, ...corttsDarkColors}, fonts: Fonts} : {...DefaultTheme,  colors: {
+          ...DefaultTheme.colors, ...corttsLightColors}, fonts: Fonts}}>
+          <AuthProvider>
+            <Stack>
+              <Stack.Screen name="(app)" options={{ headerShown: false }} />
+              <Stack.Screen name="(auths)" options={{ headerShown: false }} />
+            </Stack>
+          </AuthProvider>
+          {/* {Platform.OS == 'web' && <ReactQueryDevtools initialIsOpen={false} />} */}
+        </ThemeProvider>
+      </AppThemeProvider>
+    </QueryClientProvider>
   );
 }
