@@ -43,7 +43,7 @@ export const corttsLightColors = {
   primary: '#007ACC',         // links, active icons
   background: '#FAFAFA',      // screen background
   card: '#FFFFFF',            // header, drawer, bottom tabs
-  text: '#1A1A1A',            // body text
+  text: '#292929',            // body text
   border: '#E5E5E5',          // card/drawer/tab borders
   notification: '#DF0000',  // red for error messages
   neutral: '#ABABAB',      // neutral text color

@@ -1,5 +1,5 @@
 
-import { getBreakpoint, isGte } from '@/styleguide/breakpoints';
+import { getBreakpoint, isGte, isLt } from '@/styleguide/breakpoints';
 import { PixelRatio, ScaledSize, useWindowDimensions } from 'react-native';
 
 export enum BASE {
@@ -17,12 +17,17 @@ export enum baseScreenTab {
   HEIGHT = 1024,
 }
 
+/**
+ * @returns Responsive utilities for handling different screen sizes and breakpoints.
+ * Includes methods for calculating pixel values based on the current screen size.
+ */
 
 export const useResponsive = () => {
   const { width, height }: ScaledSize = useWindowDimensions();
   const breakpoint = getBreakpoint(width);
   const isPortrait = height >= width;
   const isLandscape = width > height;
+  const isMobile = isLt(breakpoint, 'md');
 
   // Base scales
   const widthBaseScale = width / baseScreen.WIDTH;
@@ -73,5 +78,6 @@ export const useResponsive = () => {
     lineHeight,
     scale: widthPixel,
     verticalScale: heightPixel,
+    isMobile
   };
 };

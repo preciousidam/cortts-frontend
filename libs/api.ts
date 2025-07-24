@@ -2,13 +2,13 @@ import axios from 'axios';
 import { useAuthStore } from '../store/auth';
 
 const api = axios.create({
-  baseURL: 'http://192.168.1.228:8000/api/v1', // 🔁 replace with your API base URL
+  baseURL: process.env.EXPO_PUBLIC_API_URL, // Ensure this is set in your environment variables
 });
 
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
   console.log(token);
-  
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

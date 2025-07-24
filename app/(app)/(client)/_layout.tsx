@@ -1,12 +1,18 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Platform } from 'react-native';
 
-import Colors from '@/styleguide/theme/Colors';
+import Colors, { generateColorScale } from '@/styleguide/theme/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { useClientOnlyValue } from '@/hooks/useClientOnlyValue';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { CustomDrawer } from '@/components/navigation/drawer';
 import Drawer from 'expo-router/drawer';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useResponsive } from '@/hooks/useResponsive';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
+import { CustomHeader } from '@/components/navigation/header';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
@@ -15,18 +21,53 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['nam
 
 const TabLayout: React.FC = () => {
   const colorScheme = useColorScheme();
+  const {colors} = useTheme();
+  const {fontPixel, heightPixel, widthPixel} = useResponsive();
 
   if (Platform.OS === 'web') {
     // On web, we use a client-only value to prevent hydration errors with the header.
     return (
-      <Drawer
-        screenOptions={{
-          drawerActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          // Disable the static render of the header on web
-          // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true)
-        }}
-      />
+      <GestureHandlerRootView>
+        <Drawer
+          screenOptions={({ route }) => ({
+            drawerActiveTintColor: generateColorScale(colors.primary).normalBase,
+            drawerInactiveTintColor: Colors[colorScheme ?? 'light'].text,
+            // Disable the static render of the header on web
+            // to prevent a hydration error in React Navigation v6.
+            headerShown: useClientOnlyValue(false, true),
+            drawerItemStyle: {
+              borderRadius: widthPixel(8),
+            },
+            drawerType: 'permanent',
+            drawerIcon: (props) => {
+              if (route.name === 'index') {
+                return <Ionicons name='grid-outline' {...props} />;
+              } else if (route.name === 'Projects') {
+                return <MaterialCommunityIcons name="home-city-outline" {...props} />;
+              } else if (route.name === 'Units') {
+                return <AntDesign name='home' {...props} />;
+              }
+              return <TabBarIcon name="bars" {...props} />;
+            },
+            drawerLabelStyle: {
+              fontSize: fontPixel(14),
+            },
+            drawerStyle: {
+              paddingVertical: heightPixel(24),
+              width: widthPixel(272),
+            },
+            header: props => <CustomHeader {...props} />
+          })}
+          drawerContent={props => <CustomDrawer {...props} />}
+        >
+          <Drawer.Screen
+            name="index"
+            options={{
+              title: 'Overview',
+            }}
+          />
+        </Drawer>
+      </GestureHandlerRootView>
     )
   }
 
@@ -44,20 +85,6 @@ const TabLayout: React.FC = () => {
         options={{
           title: 'Tab One',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          )
         }}
       />
       <Tabs.Screen
@@ -70,3 +97,5 @@ const TabLayout: React.FC = () => {
     </Tabs>
   );
 }
+
+export default TabLayout;

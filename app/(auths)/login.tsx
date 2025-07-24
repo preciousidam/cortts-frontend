@@ -64,7 +64,7 @@ const Login: React.FC = () => {
         <Typography size='body'>Please enter your login details to access your account</Typography>
       </View>
       <View style={styles.inputArea}>
-        <FormTextInput name='username' control={control} label='Email' inputProps={{ keyboardType: 'email-address' }} rules={{ required: "Email is required" }} />
+        <FormTextInput name='username' control={control} label='Email' inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none' }} rules={{ required: "Email is required" }} />
         <PasswordFormInput name='password' control={control} label='Password' rules={{ required: "Password is required" }} />
         <LinkText href='./forgot-password' size='body' variant='bold' style={{ alignSelf: 'flex-end' }}>Forgot Password?</LinkText>
       </View>

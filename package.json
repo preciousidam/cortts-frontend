@@ -11,7 +11,8 @@
     "test": "jest --watchAll",
     "storybook-generate": "sb-rn-get-stories",
     "upgrade-expo": "expo install expo@latest && npx expo install --fix",
-    "tree": "tree -L 10 -I 'node_modules|.expo|.expo-shared|.git|.husky|.vscode|.DS_Store' -a > tree.txt"
+    "tree": "tree -L 10 -I 'node_modules|.expo|.expo-shared|.git|.husky|.vscode|.DS_Store' -a > tree.txt",
+    "deploy": "expo export --platform web && eas deploy"
   },
   "jest": {
     "preset": "jest-expo"
@@ -21,6 +22,7 @@
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-navigation/drawer": "^7.3.9",
+    "@react-navigation/elements": "^2.5.2",
     "@react-navigation/native": "^7.1.6",
     "@storybook/react-native": "^9.0.9",
     "@tanstack/eslint-plugin-query": "^5.78.0",

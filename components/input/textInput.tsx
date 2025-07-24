@@ -21,6 +21,7 @@ type BaseTextInputProps = {
   labelStyle?: TextStyle;
   leftIcon?: string | 'NGN' | React.ReactNode;
   rightIcon?: string | 'NGN' | React.ReactNode;
+  iconColor?: string;
   required?: string | boolean | ValidationRule<boolean>;
 };
 
@@ -36,6 +37,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
   labelStyle = {},
   leftIcon,
   rightIcon,
+  iconColor,
   required,
 }) => {
   const { fontPixel, scale, verticalScale } = useResponsive();
@@ -62,7 +64,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     if (!IconComponent) {
       throw new Error(`Icon with name "${name}" not found`);
     }
-    return <IconComponent name={name} size={fontPixel(24)} color={corttsLightColors.text} />;
+    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ??corttsLightColors.text} />;
   }
 
   const renderRightIcon = () => {
@@ -88,7 +90,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     if (!IconComponent) {
       throw new Error(`Icon with name "${name}" not found`);
     }
-    return <IconComponent name={name} size={fontPixel(24)} color={corttsLightColors.text} />;
+    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ?? corttsLightColors.text} />;
   }
 
 
@@ -132,7 +134,7 @@ export const PasswordBaseInput: React.FC<BaseTextInputProps> = (props) => {
   return (
     <BaseTextInput
       {...props}
-      inputProps={{ ...props.inputProps, textContentType: 'password', secureTextEntry: secure }}
+      inputProps={{ ...props.inputProps, textContentType: 'password', secureTextEntry: secure, autoCapitalize: 'none' }}
       rightIcon={
         <Pressable onPress={onPress}>
           <Icon.Ionicons

@@ -135,7 +135,7 @@ export const Button: React.FC<IButtonProp> = forwardRef<
       if (!IconComponent) {
         throw new Error(`Icon with name "${name}" not found`);
       }
-      return <IconComponent name={name} size={fontPixel(24)} color={textStyle.color} />;
+      return <IconComponent name={name} size={fontPixel(24)} color={rest.color ?? textStyle.color} />;
     }
 
     const renderRightIcon = () => {
@@ -155,7 +155,7 @@ export const Button: React.FC<IButtonProp> = forwardRef<
       if (!IconComponent) {
         throw new Error(`Icon with name "${name}" not found`);
       }
-      return <IconComponent name={name} size={fontPixel(24)} color={textStyle.color} />;
+      return <IconComponent name={name} size={fontPixel(24)} color={rest.color ?? textStyle.color} />;
     }
 
     const renderChildren = () => {
