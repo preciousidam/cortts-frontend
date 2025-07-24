@@ -1,4 +1,12 @@
 .
+├── .gitignore
+├── .nvmrc
+├── .prettierrc
+├── .rnstorybook
+│   ├── index.ts
+│   ├── main.ts
+│   ├── preview.tsx
+│   └── storybook.requires.ts
 ├── app
 │   ├── _layout.tsx
 │   ├── (app)
@@ -16,6 +24,7 @@
 │   │   └── index.tsx
 │   ├── (auths)
 │   │   ├── _layout.tsx
+│   │   ├── forgot-password.tsx
 │   │   ├── login.tsx
 │   │   ├── register.tsx
 │   │   └── verify.tsx
@@ -29,6 +38,7 @@
 │   │   └── SpaceMono-Regular.ttf
 │   └── images
 │       ├── adaptive-icon.png
+│       ├── auth_image.png
 │       ├── favicon.png
 │       ├── icon.png
 │       ├── login_mobile.png
@@ -47,24 +57,33 @@
 │   ├── EditScreenInfo.tsx
 │   ├── ExternalLink.tsx
 │   ├── input
+│   │   ├── checkbox.stories.tsx
 │   │   ├── checkbox.tsx
-│   │   └── index.tsx
+│   │   ├── dropdown.stories.tsx
+│   │   ├── dropdown.tsx
+│   │   ├── index.tsx
+│   │   ├── otpInput.tsx
+│   │   ├── textInput.stories.tsx
+│   │   └── textInput.tsx
+│   ├── picker
+│   │   ├── FloatingPicker.stories.tsx
+│   │   └── FloatingPicker.tsx
 │   ├── StyledText.tsx
 │   ├── Themed.tsx
+│   ├── typography
+│   │   ├── index.stories.tsx
+│   │   └── index.tsx
 │   ├── useClientOnlyValue.ts
-│   ├── useClientOnlyValue.web.ts
-│   ├── useColorScheme.ts
-│   └── useColorScheme.web.ts
+│   └── useClientOnlyValue.web.ts
 ├── constants
-│   ├── Border.ts
-│   ├── Colors.ts
-│   └── Fonts.ts
 ├── contexts
 │   └── AuthContext.tsx
 ├── eslint.config.js
 ├── expo-env.d.ts
 ├── global.css
 ├── hooks
+│   ├── useColorScheme.ts
+│   ├── useColorScheme.web.ts
 │   └── useResponsive.ts
 ├── libs
 │   ├── api.ts
@@ -86,7 +105,13 @@
 │   │   └── mutations.ts
 │   └── query.ts
 ├── styleguide
-│   └── breakpoints.ts
+│   ├── breakpoints.ts
+│   └── theme
+│       ├── Border.ts
+│       ├── Colors.ts
+│       ├── Fonts.ts
+│       ├── index.tsx
+│       └── ThemeContext.ts
 ├── tailwind.config.js
 ├── tree.txt
 ├── tsconfig.json
@@ -95,4 +120,4 @@
 │   └── models.ts
 └── yarn.lock
 
-24 directories, 72 files
+28 directories, 93 files

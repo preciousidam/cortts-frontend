@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+
 import { useRoundness } from '@/styleguide/theme/Border';
 import { Fonts } from '@/styleguide/theme/Fonts';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -36,7 +36,7 @@ const useVariantStyle = (variant: Variant) => {
         backgroundColor: 'transparent',
         borderColor: colors.primary
       } as ViewStyle;
-    
+
       // return {
       //   backgroundColor: colors.card,
       //   borderColor: colors.card
@@ -74,7 +74,6 @@ const useStyleText = (variant: Variant, disabled?: boolean) => {
     case 'outlined':
     case 'secondary':
       return { color: disabled ? '#B2B7C2' : colors.primary };
-    
       // return { color: disabled ? '#B2B7C2' : colors.text };
     case 'tertiary':
       return { color: disabled ? '#B2B7C2' : colors.text };
@@ -150,9 +149,9 @@ export const Button: React.FC<IButtonProp> = forwardRef<
       const iconType = rightIcon.split('.')[0];
       const name = rightIcon.split('.')[1];
 
-      
+
       const IconComponent = Icon[iconType as keyof typeof Icon] as React.ComponentType<any>;
-      
+
       if (!IconComponent) {
         throw new Error(`Icon with name "${name}" not found`);
       }
@@ -320,7 +319,7 @@ export const ButtonVariantsShowcase = () => {
       </Button>
       <Button
         variant="primary"
-        icon={<Ionicons name="camera-outline" size={20} color="#fff" />}
+        icon={<Icon.Ionicons name="camera-outline" size={20} color="#fff" />}
         iconOnly
       />
     </View>

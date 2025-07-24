@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { BaseTextInput, PasswordBaseInput } from './textInput';
+import { BaseTextInput, PasswordBaseInput, PhoneBaseInput } from './textInput';
 import { View } from 'react-native';
 import { AppThemeProvider } from '@/styleguide/theme';
+import { OTPBaseInput } from './otpInput';
 
 export default {
   title: 'Core/BaseTextInput',
@@ -121,3 +122,28 @@ export const NGNCurrencyInput: Story = {
     style: { width: '100%' },
   },
 };
+
+export const PhoneInput: Story = {
+  args: {
+    label: 'Phone Number Input',
+    inputProps: {
+      placeholder: 'Enter phone number',
+      keyboardType: 'phone-pad',
+      style: { width: '100%' },
+      placeholderTextColor: '#888',
+    },
+    leftIcon: "NG",
+    style: { width: '100%' },
+  },
+  render: (args) => {
+    return <PhoneBaseInput {...args} />;
+  },
+};
+
+export const OtpInput: Story = {
+  render: () => <View style={{width: "40%"}}><OTPBaseInput numberOfDigits={6} /></View>,
+}
+
+export const OtpInputWithError: Story = {
+  render: () => <View style={{width: "40%"}}><OTPBaseInput numberOfDigits={6} error={true} /></View>,
+}

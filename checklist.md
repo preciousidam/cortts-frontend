@@ -1,5 +1,3 @@
-
-
 # 🧩 Cortts Frontend UI Checklist
 
 ## ✅ Global Components
@@ -16,24 +14,24 @@
   - [ ] File Upload Input (for document signing)
   - [ ] Date Picker
 
-- [ ] Text Variants
-  - [ ] Headings (h1, h2, h3)
-  - [ ] Paragraph
-  - [ ] Caption
+- [x] Text Variants
+  - [x] Headings (h1, h2, h3)
+  - [x] Paragraph
+  - [x] Caption
   - [ ] Emphasis / muted
   - [ ] Links
 
-- [ ] Form Input Variants
-  - [ ] Text input (default)
-  - [ ] Password input (toggle visibility)
+- [x] Form Input Variants
+  - [x] Text input (default)
+  - [x] Password input (toggle visibility)
   - [ ] Number input
-  - [ ] Select dropdown
+  - [x] Select dropdown (single & multi-select)
   - [x] Checkbox
   - [ ] Radio button
   - [ ] Toggle switch
-  - [ ] Error & validation states
-  - [ ] Disabled state
-  - [ ] Currency
+  - [x] Error & validation states
+  - [x] Disabled state
+  - [x] Currency
   - [ ] URL
 
 - [ ] Toast Notifications
@@ -79,8 +77,8 @@
 - [x] Theme tokens for spacing, color, typography
 - [x] Responsive font sizing
 - [ ] Custom Theme Toggle Component
-- [ ] Custom `useTheme` hook integration for styled components
-- [ ] Context-aware color usage in reusable components (e.g., buttons, cards)
+- [x] Custom `useTheme` hook integration for styled components
+- [x] Context-aware color usage in reusable components (e.g., buttons, cards)
 - [ ] Color palette documentation or Storybook showcase
 
 ## 🧪 Testing
@@ -90,9 +88,22 @@
 
 ## ⚙️ Utilities
 - [x] `useClientOnlyValue` hook finalized
-- [ ] Auth context and guard wrappers
-- [ ] Query loading & error UI components
-- [ ] Responsive `useResponsive` hook
-- [ ] Secure Storage (hybrid with SecureStore and AsyncStorage)
-- [ ] Global `axiosInstance` and interceptors
-- [ ] React Query `queryFn` and `mutationFn` helpers
+- [x] Auth context and guard wrappers
+- [x] Query loading & error UI components
+- [x] Responsive `useResponsive` hook
+- [x] Secure Storage (hybrid with SecureStore and AsyncStorage)
+- [x] Global `axiosInstance` and interceptors
+- [x] React Query `queryFn` and `mutationFn` helpers
+
+## 📦 Zustand Store
+- [x] Auth token state
+- [x] Selectors & actions
+- [x] Hydration on app reload
+
+## 📖 Storybook
+- [x] Setup complete
+- [x] Button stories
+- [x] TextInput stories
+- [x] Checkbox stories
+- [x] Dropdown stories
+- [x] Typography stories

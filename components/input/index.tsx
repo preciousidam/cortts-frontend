@@ -1,2 +1,3 @@
-export { FormTextInput } from './textInput';
-export { FormCheckbox } from './checkbox';
+export * from './textInput';
+export * from './checkbox';
+export * from './otpInput';

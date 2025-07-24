@@ -45,7 +45,7 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
 
 type FormCheckboxProps = {
   name: string;
-  control: Control<any>;
+  control?: Control<any>;
   label?: string;
   disabled?: boolean;
   labelStyle?: TextStyle;

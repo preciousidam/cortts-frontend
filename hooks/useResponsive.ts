@@ -32,11 +32,11 @@ export const useResponsive = () => {
 
   // Optional: increase scale slightly on md+ screens
   const scaleUpFactor = isGte(breakpoint, 'xl')
-    ? 1.25
+    ? 1
     : isGte(breakpoint, 'lg')
-    ? 1.2
+    ? 1
     : isGte(breakpoint, 'md')
-    ? 1.1
+    ? 1
     : 1;
 
   const calcDevicePx = (px: number, base: BASE = BASE.WIDTH): number => {

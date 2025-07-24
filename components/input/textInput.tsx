@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Text, TextInput, View, TextInputProps, StyleSheet, ViewStyle, TextStyle, Pressable } from 'react-native';
-import { Controller, Control } from 'react-hook-form';
+import { Controller, Control, RegisterOptions, ValidationRule } from 'react-hook-form';
 import { Fonts } from '@/styleguide/theme/Fonts';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { corttsLightColors, generateColorScale } from '@/styleguide/theme/Colors';
 import * as Icon from '@expo/vector-icons';
+import CountryFlag from "react-native-country-flag";
 
 type BaseTextInputProps = {
   value?: string;
@@ -20,6 +21,7 @@ type BaseTextInputProps = {
   labelStyle?: TextStyle;
   leftIcon?: string | 'NGN' | React.ReactNode;
   rightIcon?: string | 'NGN' | React.ReactNode;
+  required?: string | boolean | ValidationRule<boolean>;
 };
 
 export const BaseTextInput: React.FC<BaseTextInputProps> = ({
@@ -34,6 +36,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
   labelStyle = {},
   leftIcon,
   rightIcon,
+  required,
 }) => {
   const { fontPixel, scale, verticalScale } = useResponsive();
   const { colors } = useTheme();
@@ -61,7 +64,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     }
     return <IconComponent name={name} size={fontPixel(24)} color={corttsLightColors.text} />;
   }
-  
+
   const renderRightIcon = () => {
     if (!rightIcon) {
       return null;
@@ -79,63 +82,98 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     const iconType = rightIcon.split('.')[0];
     const name = rightIcon.split('.')[1];
 
-    
+
     const IconComponent = Icon[iconType as keyof typeof Icon] as React.ComponentType<any>;
-    
+
     if (!IconComponent) {
       throw new Error(`Icon with name "${name}" not found`);
     }
     return <IconComponent name={name} size={fontPixel(24)} color={corttsLightColors.text} />;
   }
 
+
   return (
-    <View style={[style]}>
-      <View style={[styles.container, { rowGap: verticalScale(8) }]}>
-        {label && <Text style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Text>}
-        <View style={[styles.inputWrapper, ROUNDNESS.m, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).light }]}>
-          {leftIcon && <View style={styles.leftIconView}>{renderLeftIcon()}</View>}
-          <TextInput
-            onChangeText={onChangeText}
-            onBlur={onBlur}
-            value={value}
-            {...inputProps}
-            style={[styles.input, {
-              paddingHorizontal: scale(16),
-              minHeight: verticalScale(44),
-              fontSize: fontPixel(14),
-                color: colors.text,
-                flex: 1,
-              },
-              inputProps.style,
-            ]}
-            placeholderTextColor={colors.textWeaker}
-          />
-          {rightIcon && <View style={styles.rightIconView}>{renderRightIcon()}</View>}
-        </View>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        {info && <Text style={styles.infoText}>{info}</Text>}
+    <View style={[styles.container, { rowGap: verticalScale(8) }, style]}>
+      {label && <View style={styles.sb}>
+          {Boolean(required) && <Text style={styles.required}>*</Text>}
+          <Text style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Text>
+        </View>}
+      <View style={[styles.inputWrapper, ROUNDNESS.m, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]}>
+        {leftIcon && <View style={styles.leftIconView}>{renderLeftIcon()}</View>}
+        <TextInput
+          onChangeText={onChangeText}
+          onBlur={onBlur}
+          value={value}
+          {...inputProps}
+          style={[styles.input, {
+            paddingHorizontal: scale(16),
+            minHeight: verticalScale(44),
+            fontSize: fontPixel(14),
+              color: colors.text,
+              flex: 1,
+            },
+            inputProps.style,
+          ]}
+          placeholderTextColor={colors.textWeaker}
+        />
+        {rightIcon && <View style={styles.rightIconView}>{renderRightIcon()}</View>}
       </View>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      {info && <Text style={styles.infoText}>{info}</Text>}
     </View>
   );
 };
 
 export const PasswordBaseInput: React.FC<BaseTextInputProps> = (props) => {
-  const [secure, setSecure] = useState(true);
+  const [secure, setSecure] = useState(props.inputProps?.secureTextEntry ?? true);
   const onPress = () => {
     setSecure(!secure);
   }
   return (
-    <BaseTextInput 
-      {...props} 
-      inputProps={{ ...props.inputProps, secureTextEntry: secure }} 
+    <BaseTextInput
+      {...props}
+      inputProps={{ ...props.inputProps, textContentType: 'password', secureTextEntry: secure }}
       rightIcon={
         <Pressable onPress={onPress}>
-          <Icon.Ionicons 
-            name={secure ? 'eye-off' : 'eye'} 
-            size={24} 
-            color={corttsLightColors.text} 
-            onPress={() => setSecure(!secure)} 
+          <Icon.Ionicons
+            name={secure ? 'eye-off' : 'eye'}
+            size={24}
+            color={corttsLightColors.text}
+            onPress={() => setSecure(!secure)}
           />
+        </Pressable>
+      }
+    />
+  );
+};
+
+export const PhoneBaseInput: React.FC<BaseTextInputProps> = (props) => {
+  // Simple country list. Extend as needed or import from country-data
+  const countryList = {
+    NG: { code: 'NG', dialCode: '+234' },
+    US: { code: 'US', dialCode: '+1' },
+    GB: { code: 'GB', dialCode: '+44' },
+    // add more as needed
+  };
+  const [country, setCountry] = useState(countryList.NG);
+  const { fontPixel, scale } = useResponsive();
+
+  const changeCountry = (code: keyof typeof countryList) => {
+    setCountry(countryList[code]);
+  };
+
+  return (
+    <BaseTextInput
+      {...props}
+      inputProps={{ ...props.inputProps, textContentType: 'telephoneNumber' }}
+      leftIcon={
+        <Pressable onPress={() => changeCountry('US')}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: scale(4) }}>
+            <CountryFlag isoCode={country.code} size={fontPixel(20)} />
+            <Text style={{ fontSize: fontPixel(14), color: corttsLightColors.text }}>
+              {country.dialCode}
+            </Text>
+          </View>
         </Pressable>
       }
     />
@@ -146,7 +184,7 @@ type FormTextInputProps = {
   name: string;
   control?: Control<any, any, any>;
   label?: string;
-  rules?: object;
+  rules?: Omit<RegisterOptions<any, string>, "disabled" | "valueAsNumber" | "valueAsDate" | "setValueAs"> | undefined;
   inputProps?: TextInputProps;
   style?: ViewStyle;
   labelStyle?: TextStyle;
@@ -157,7 +195,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
   name,
   control,
   label,
-  rules = {},
+  rules = {  },
   inputProps,
   style,
   labelStyle,
@@ -179,6 +217,7 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
           inputProps={inputProps}
           style={style}
           labelStyle={labelStyle}
+          required={rules.required}
         />
       )}
     />
@@ -198,6 +237,27 @@ export const PasswordFormInput: React.FC<FormTextInputProps> = (props) => {
           onChangeText={onChange}
           onBlur={onBlur}
           error={error?.message}
+          required={props.rules?.required}
+        />
+      )}
+    />
+  );
+}
+
+export const PhoneFormInput: React.FC<FormTextInputProps> = (props) => {
+  return (
+    <Controller
+      control={props.control}
+      name={props.name}
+      rules={props.rules}
+      render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+        <PhoneBaseInput
+          {...props}
+          value={value}
+          onChangeText={onChange}
+          onBlur={onBlur}
+          error={error?.message}
+          required={props.rules?.required}
         />
       )}
     />
@@ -207,6 +267,7 @@ export const PasswordFormInput: React.FC<FormTextInputProps> = (props) => {
 const useStyle = () => {
   const { heightPixel, fontPixel, scale, verticalScale } = useResponsive();
   const { colors } = useTheme();
+  const ROUNDNESS = useRoundness();
   return StyleSheet.create({
     container: {
       rowGap: heightPixel(8),
@@ -229,6 +290,8 @@ const useStyle = () => {
       paddingHorizontal: scale(12),
       height: heightPixel(44),
       ...Fonts.regular,
+      fontSize: fontPixel(14),
+      ...ROUNDNESS.m,
     },
     errorText: {
       color: colors.notification,
@@ -244,10 +307,10 @@ const useStyle = () => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: generateColorScale(colors.neutral).lightActive,
-      borderTopLeftRadius: verticalScale(6),
-      borderBottomLeftRadius: verticalScale(6),
-      borderColor: generateColorScale(colors.neutral).light,
-      borderWidth: 1,
+      borderTopLeftRadius: verticalScale(8),
+      borderBottomLeftRadius: verticalScale(8),
+      borderRightColor: generateColorScale(colors.neutral).normalBase,
+      borderRightWidth: scale(.7),
       height: heightPixel(44),
     },
     rightIconView: {
@@ -255,16 +318,24 @@ const useStyle = () => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: generateColorScale(colors.neutral).lightActive,
-      borderTopRightRadius: verticalScale(6),
-      borderBottomRightRadius: verticalScale(6),
-      borderColor: generateColorScale(colors.neutral).light,
-      borderWidth: 1,
-      height: heightPixel(44),
+      borderTopRightRadius: verticalScale(8),
+      borderBottomRightRadius: verticalScale(8),
+      borderLeftColor: generateColorScale(colors.neutral).normalBase,
+      borderLeftWidth: scale(.7),
+      height: heightPixel(43.9),
     },
     iconText: {
       fontSize: fontPixel(14),
       fontFamily: Fonts.semiBold.fontFamily,
       color: corttsLightColors.text,
     },
+    sb: {
+      columnGap: scale(4),
+      flexDirection: 'row',
+    },
+    required: {
+      color: colors.notification,
+      fontSize: fontPixel(12),
+    }
   });
 };

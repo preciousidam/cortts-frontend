@@ -8,21 +8,24 @@ import * as SecureStore from 'expo-secure-store';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth';
 import { useRouter } from 'expo-router';
-import { LoginRes } from '@/types';
-import { useLoginMutation, useRegisterMutation } from '@/store/auth/mutations';
+import { ForgotPasswordReq, LoginRes, RegisterReq, ResetPasswordReq, VerifyReq } from '@/types';
+import { useForgotPasswordMutation, useLoginMutation, useRegisterMutation, useResetPasswordMutation, useVerifyMutation } from '@/store/auth/mutations';
 import api from '@/libs/api';
 import { AuthContext } from '@/contexts/AuthContext';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import { Button } from '@/components/button';
+import { AxiosError } from 'axios';
+import Toast from 'react-native-toast-message';
 
 
 // AuthProvider wraps the app and provides context
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isFetching, setIsFetching] = useState(true);
-  const {replace, push} = useRouter();
+  const {replace, push, setParams} = useRouter();
   const queryClient = useQueryClient();
   const { setToken, token } = useAuthStore();
   const interceptorRef = useRef<number | null>(null);
+  const [form, setForm] = useState<FormData>();
 
   const { mutateLogin, isError, isPending, isSuccess, error } = useLoginMutation<FormData, LoginRes>({
     onSuccess(data, variables, context) {
@@ -36,12 +39,90 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         replace('/(app)/(client)');
       }
     },
+    onError(error, variables, context) {
+      console.log(error, 'error');
+      // alert("Login failed. Please check your credentials and try again.");
+      Toast.show({text1: "Error", text2: "Login failed. Please check your credentials and try again.", type: 'error' });
+      if (error instanceof AxiosError && error?.status === 403) {
+        push({pathname: '/(auths)/verify', params: { email: variables.get('username') as string }});
+        return;
+      }
+    }
   });
 
-  const { mutateRegister, isError: isRegError, isPending: isRegPending } = useRegisterMutation<FormData, LoginRes>({
+  const { mutateRegister, isError: isRegError, isPending: isRegPending } = useRegisterMutation<RegisterReq, LoginRes>({
     onSuccess(data, variables, context) {
-      
+      push({pathname: '/(auths)/verify', params: { email: variables?.email }});
     },
+    onError(error, variables, context) {
+      const err = error as AxiosError;
+      console.log(err?.status, 'error');
+      if (err?.status === 409) {
+        // alert("User already exists. Please login.");
+        Toast.show({text1: "User already exists", text2: "Please login to continue.", type: 'error' });
+        replace({ pathname: '/(auths)/login', params: { email: variables?.email } });
+        return;
+      } else {
+        // alert("Registration failed. Please try again.");
+        Toast.show({text1: "Error", text2: "Registration failed. Please try again.", type: 'error' });
+      }
+    }
+  });
+
+  const { mutateVerify, isError: isVerError, isPending: isVerPending } = useVerifyMutation<VerifyReq, LoginRes>({
+    onSuccess(data, variables, context) {
+      setToken(data);
+      secureStorage.setItem("auth_token", JSON.stringify(data));
+      if (data.role == 'admin') {
+        replace('/(app)/(admin)');
+      } else if (data.role == 'agent') {
+        replace('/(app)/(agent)');
+      } else {
+        replace('/(app)/(client)');
+      }
+    },
+    onError(error, variables, context) {
+      const err = error as AxiosError;
+      console.log(err?.status, 'error');
+      Toast.show({text1: "Error", text2: "Registration failed. Please try again.", type: 'error' });
+      if (err?.status === 403) {
+        // alert("Verification failed. Please check your email and try again.");
+        replace({pathname: '/(auths)/verify', params: { email: variables?.email }});
+        return;
+      }
+    }
+  });
+
+  const { mutateForgotPassword, data, variables } = useForgotPasswordMutation<ForgotPasswordReq, void>({
+    onSuccess(data, variables, context) {
+      Toast.show({text1: "Success", text2: "Password reset link sent to your email.", type: 'success' });
+      replace({pathname: '/(auths)/forgot-password', params: { step: 'verification', email: variables?.email }});
+    },
+    onError(error, variables, context) {
+      const err = error as AxiosError;
+      console.log(err?.status, 'error');
+      if (err?.status === 404) {
+        // alert("Email not found. Please register.");
+        Toast.show({text1: "Email not found", text2: "Please register to continue.", type: 'error' });
+        replace({ pathname: '/(auths)/register', params: { email: variables?.email } });
+        return;
+      } else {
+        Toast.show({text1: "Error", text2: "Failed to send password reset link. Please try again.", type: 'error' });
+      }
+    }
+  });
+
+  const { mutateResetPassword } = useResetPasswordMutation<ResetPasswordReq, void>({
+    onSuccess(data, variables, context) {
+      // alert("Password reset successful. You can now login.");
+      Toast.show({text1: "Success", text2: "Password reset successful. You can now login.", type: 'success' });
+      setParams({ step: 'done' });
+    },
+    onError(error, variables, context) {
+      const err = error as AxiosError;
+      console.log(err?.status, 'error');
+      alert("Failed to reset password. Please try again.");
+    }
   });
 
   useEffect(() => {
@@ -127,7 +208,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutateLogin(data);
   };
 
-  const register = (data: FormData) => {
+  const register = (data: RegisterReq) => {
     mutateRegister(data);
   };
 
@@ -137,16 +218,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     replace('/(auths)/login')
   };
 
+  const verify = (data: VerifyReq) => {
+    mutateVerify(data);
+  };
+
+  const forgotPassword = (data: ForgotPasswordReq) => {
+    mutateForgotPassword(data);
+  };
+
+  const resetPassword = (data: ResetPasswordReq) => {
+    mutateResetPassword(data);
+  };
+
+
   return (
-    <AuthContext.Provider 
-      value={{ 
-        login, 
-        logout,  
+    <AuthContext.Provider
+      value={{
+        login,
+        logout,
+        verify,
+        forgotPassword,
+        resetPassword,
         role: token?.role,
         isAuthenticated: !!token?.access_token,
-        isError: isError || isRegError,
-        isLoading: isPending || isFetching || isRegPending,
-        isPending: isPending || isRegPending,
+        isError: isError || isRegError || isVerError,
+        isLoading: isPending || isFetching || isRegPending || isVerPending,
+        isPending: isPending || isRegPending || isVerPending,
         register
       }}
     >

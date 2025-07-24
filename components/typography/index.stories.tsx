@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Typography } from './';
+import { LinkText, Typography } from './';
 import { ScrollView, View } from 'react-native';
 import { AppThemeProvider } from '@/styleguide/theme';
 
@@ -36,6 +36,7 @@ export const AllTypographyVariants: Story = {
             </Typography>
           )),
         )}
+        <LinkText href="/">Link Text</LinkText>
       </View>
     </ScrollView>
   ),

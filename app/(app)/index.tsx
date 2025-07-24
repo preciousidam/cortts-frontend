@@ -1,10 +1,22 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { useAuthStore } from '@/store/auth';
+import { Redirect } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
-const HomeScreen = () => (
-  <View style={styles.container}>
-    <Text style={styles.text}>Welcome to the Home Screen!</Text>
-  </View>
-);
+const HomeScreen = () => {
+  const { token } = useAuthStore();
+
+  if (!token) {
+    return (
+      <Redirect href="/(auths)/login" />
+    );
+  } else if (token.role === 'admin') {
+    return <Redirect href="/(app)/(admin)" />;
+  } else if (token.role === 'agent') {
+    return <Redirect href="/(app)/(agent)" />;
+  } else {
+    return <Redirect href="/(app)/(client)" />;
+  }
+};
 
 const styles = StyleSheet.create({
   container: {

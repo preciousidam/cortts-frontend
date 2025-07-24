@@ -13,6 +13,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider } from '@/providers/AuthProvider';
@@ -20,6 +21,7 @@ import { corttsDarkColors, corttsLightColors } from '@/styleguide/theme/Colors';
 import { Fonts } from '@/styleguide/theme/Fonts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppThemeProvider } from '@/styleguide/theme';
+import { toastConfig } from '@/components/toast';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,7 +70,7 @@ const queryClient = new QueryClient();
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   console.log(colorScheme);
-  
+
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -77,12 +79,19 @@ function RootLayoutNav() {
           ...DefaultTheme.colors, ...corttsDarkColors}, fonts: Fonts} : {...DefaultTheme,  colors: {
           ...DefaultTheme.colors, ...corttsLightColors}, fonts: Fonts}}>
           <AuthProvider>
-            <Stack>
+            <Stack initialRouteName='(app)'>
               <Stack.Screen name="(app)" options={{ headerShown: false }} />
               <Stack.Screen name="(auths)" options={{ headerShown: false }} />
             </Stack>
           </AuthProvider>
-          {/* {Platform.OS == 'web' && <ReactQueryDevtools initialIsOpen={false} />} */}
+          <Toast
+            position='top'
+            bottomOffset={20}
+            visibilityTime={3000}
+            swipeable={true}
+            config={toastConfig()}
+            autoHide
+          />
         </ThemeProvider>
       </AppThemeProvider>
     </QueryClientProvider>

@@ -5,15 +5,16 @@ import { Text, TextProps, TextStyle, StyleSheet } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Fonts } from '@/styleguide/theme/Fonts';
 import { useResponsive } from '@/hooks/useResponsive';
+import { Link, LinkProps } from 'expo-router';
 
 type Variant = 'regular' | 'medium' | 'semiBold' | 'bold';
-type Size = 'h1' | 'h2' | 'body' | 'caption';
+type Size = 'h1' | 'h2' | 'body' | 'caption' | 'subtitle';
 
 interface AppTextProps extends TextProps {
   variant?: Variant;
   size?: Size;
   style?: TextStyle | TextStyle[];
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const Typography: React.FC<AppTextProps> = ({
@@ -24,8 +25,7 @@ export const Typography: React.FC<AppTextProps> = ({
   ...props
 }) => {
   const { colors } = useTheme();
-  const { fontPixel } = useResponsive();
-  const styles = useStyles(fontPixel);
+  const styles = useStyles();
 
   return (
     <Text
@@ -43,10 +43,25 @@ export const Typography: React.FC<AppTextProps> = ({
   );
 };
 
-const useStyles = (fontPixel: (val: number) => number) =>
-  StyleSheet.create({
+export const LinkText: React.FC<AppTextProps & LinkProps> = (Props) => {
+  const styles = useStyles();
+  const s: TextStyle[] = [styles.link,{ textDecorationLine: 'none' }];
+  if (Array.isArray(Props.style)) {
+    s.push(...(Props.style as TextStyle[]));
+  } else if (Props.style) {
+    s.push(Props.style);
+  }
+
+  return <Link {...Props}><Typography {...Props} style={s} /></Link>;
+};
+
+const useStyles = () => {
+  const { fontPixel } = useResponsive();
+  const { colors } = useTheme();
+  return StyleSheet.create({
     base: {
       includeFontPadding: false,
+      color: colors.text,
     },
     regular: {
       ...Fonts.regular,
@@ -61,15 +76,22 @@ const useStyles = (fontPixel: (val: number) => number) =>
       ...Fonts.bold,
     },
     h1: {
-      fontSize: fontPixel(32),
+      fontSize: fontPixel(48),
     },
     h2: {
-      fontSize: fontPixel(24),
+      fontSize: fontPixel(44),
     },
     body: {
-      fontSize: fontPixel(16),
+      fontSize: fontPixel(14),
     },
     caption: {
-      fontSize: fontPixel(12),
+      fontSize: fontPixel(10),
     },
+    subtitle: {
+      fontSize: fontPixel(32),
+    },
+    link: {
+      color: colors.primary,
+    }
   });
+}

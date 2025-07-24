@@ -1,6 +1,7 @@
+import Color from 'color';
+
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
-import Color from 'color';
 
 export default {
   light: {
@@ -41,7 +42,7 @@ export const generateColorScale = (hex: string) => {
 export const corttsLightColors = {
   primary: '#007ACC',         // links, active icons
   background: '#FAFAFA',      // screen background
-  card: '#F5F5F5',            // header, drawer, bottom tabs
+  card: '#FFFFFF',            // header, drawer, bottom tabs
   text: '#1A1A1A',            // body text
   border: '#E5E5E5',          // card/drawer/tab borders
   notification: '#DF0000',  // red for error messages
@@ -49,6 +50,8 @@ export const corttsLightColors = {
   textWeaker: '#B8B8B8',   // weaker text color
   textWeakest: '#E8E8E8', // weakest text color
   textWeak: '#4D4D4D', // weak text color
+  success: '#22C55E', // green for success messages
+  warning:  '#FFC115' // yellow for warning messages
 };
 
 export const corttsDarkColors = {
@@ -62,5 +65,7 @@ export const corttsDarkColors = {
   textWeaker: '#B8B8B8',   // weaker text color
   textWeakest: '#E8E8E8', // weakest text color
   textWeak: '#4D4D4D', // weak text color
+  success: '#22C55E',  // green for success messages
+  warning:  '#FFC115'  // yellow for warning messages
 };
 
