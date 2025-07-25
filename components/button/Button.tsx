@@ -31,16 +31,15 @@ const useVariantStyle = (variant: Variant) => {
         borderColor: colors.primary
       } as ViewStyle;
     case 'outlined':
-    case 'secondary':
       return {
         backgroundColor: 'transparent',
         borderColor: colors.primary
       } as ViewStyle;
-
-      // return {
-      //   backgroundColor: colors.card,
-      //   borderColor: colors.card
-      // } as ViewStyle;
+    case 'secondary':
+      return {
+        backgroundColor: colors.card,
+        borderColor: generateColorScale(colors.neutral).lightActive
+      } as ViewStyle;
     case 'tertiary':
       return {
         backgroundColor: 'transparent',
@@ -57,6 +56,7 @@ const useVariantHoverStyle = (variant: Variant) => {
     case 'primary':
       return { backgroundColor: generateColorScale(colors.primary).normalHover };
     case 'outlined':
+      return { backgroundColor: '#f4f6f8' };
     case 'secondary':
       return { backgroundColor: '#f4f6f8' };
     case 'tertiary':
@@ -72,9 +72,9 @@ const useStyleText = (variant: Variant, disabled?: boolean) => {
     case 'primary':
       return { color: disabled ? '#B2B7C2' : '#fff' };
     case 'outlined':
+      return { color: disabled  ? "#B2B7C2" : colors.primary };
     case 'secondary':
-      return { color: disabled ? '#B2B7C2' : colors.primary };
-      // return { color: disabled ? '#B2B7C2' : colors.text };
+      return { color: disabled ? '#B2B7C2' : colors.textWeak };
     case 'tertiary':
       return { color: disabled ? '#B2B7C2' : colors.text };
     default:
