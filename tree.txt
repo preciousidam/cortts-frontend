@@ -1,4 +1,5 @@
 .
+├── .env.local
 ├── .gitignore
 ├── .nvmrc
 ├── .prettierrc
@@ -20,8 +21,18 @@
 │   │   ├── (client)
 │   │   │   ├── _layout.tsx
 │   │   │   ├── index.tsx
-│   │   │   └── two.tsx
-│   │   └── index.tsx
+│   │   │   ├── Projects
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── [project_id]
+│   │   │   │   │   └── index.tsx
+│   │   │   │   └── index.tsx
+│   │   │   └── Units
+│   │   │       ├── _layout.tsx
+│   │   │       └── index.tsx
+│   │   ├── index.tsx
+│   │   └── Settings
+│   │       ├── _layout.tsx
+│   │       └── index.tsx
 │   ├── (auths)
 │   │   ├── _layout.tsx
 │   │   ├── forgot-password.tsx
@@ -30,7 +41,6 @@
 │   │   └── verify.tsx
 │   ├── +html.tsx
 │   ├── +not-found.tsx
-│   ├── modal.tsx
 │   └── storybook.tsx
 ├── app.json
 ├── assets
@@ -44,6 +54,8 @@
 │       ├── login_mobile.png
 │       ├── login_web.png
 │       ├── logo1.png
+│       ├── nav
+│       │   └── projects.s
 │       └── splash-icon.png
 ├── babel.config.js
 ├── checklist.md
@@ -54,8 +66,6 @@
 │   │   ├── Button.stories.tsx
 │   │   ├── Button.tsx
 │   │   └── index.tsx
-│   ├── EditScreenInfo.tsx
-│   ├── ExternalLink.tsx
 │   ├── input
 │   │   ├── checkbox.stories.tsx
 │   │   ├── checkbox.tsx
@@ -65,23 +75,48 @@
 │   │   ├── otpInput.tsx
 │   │   ├── textInput.stories.tsx
 │   │   └── textInput.tsx
+│   ├── navigation
+│   │   ├── drawer.tsx
+│   │   └── header.tsx
 │   ├── picker
 │   │   ├── FloatingPicker.stories.tsx
 │   │   └── FloatingPicker.tsx
-│   ├── StyledText.tsx
-│   ├── Themed.tsx
-│   ├── typography
-│   │   ├── index.stories.tsx
-│   │   └── index.tsx
-│   ├── useClientOnlyValue.ts
-│   └── useClientOnlyValue.web.ts
+│   ├── toast
+│   │   ├── index.tsx
+│   │   └── toast.stories.tsx
+│   └── typography
+│       ├── index.stories.tsx
+│       └── index.tsx
 ├── constants
 ├── contexts
 │   └── AuthContext.tsx
+├── dist
+│   ├── _expo
+│   │   └── static
+│   │       ├── css
+│   │       │   └── web-6efd9ea466431316e356f92c93256d8c.css
+│   │       └── js
+│   │           └── web
+│   │               └── entry-af13aec38b60afba4fc3ffc641050d2c.js
+│   ├── assets
+│   │   └── assets
+│   │       ├── fonts
+│   │       │   └── SpaceMono-Regular.49a79d66bdea2debf1832bf4d7aca127.ttf
+│   │       └── images
+│   │           ├── auth_image.b2f7b23ee1aa47860d3b866e46ba3cd0.png
+│   │           ├── login_mobile.03322d16ba8e28c93077b62f4d59a2a2.png
+│   │           ├── login_web.ca80768f4ad7164ca178ef24713872e1.png
+│   │           └── logo1.e84adcdd366f45642321ba6d574e9fde.png
+│   ├── favicon.ico
+│   ├── index.html
+│   └── metadata.json
+├── eas.json
 ├── eslint.config.js
 ├── expo-env.d.ts
 ├── global.css
 ├── hooks
+│   ├── useClientOnlyValue.ts
+│   ├── useClientOnlyValue.web.ts
 │   ├── useColorScheme.ts
 │   ├── useColorScheme.web.ts
 │   └── useResponsive.ts
@@ -98,12 +133,15 @@
 │   ├── auth.ts
 │   ├── document.ts
 │   ├── project.ts
-│   └── unit.ts
+│   ├── unit.ts
+│   └── user.ts
 ├── store
 │   ├── auth
 │   │   ├── index.ts
 │   │   └── mutations.ts
-│   └── query.ts
+│   ├── query.ts
+│   └── users
+│       └── queries.ts
 ├── styleguide
 │   ├── breakpoints.ts
 │   └── theme
@@ -118,6 +156,8 @@
 ├── types
 │   ├── index.ts
 │   └── models.ts
+├── utilities
+│   └── generateAvatarImage.ts
 └── yarn.lock
 
-28 directories, 93 files
+47 directories, 114 files
