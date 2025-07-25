@@ -45,7 +45,6 @@ const Login: React.FC = () => {
   const isMobile = isLt(breakpoint, 'md');
 
   const onSubmit = (data: IForm) => {
-    console.log(data, data);
     const formdata = new FormData();
     formdata.append('username', data.username);
     formdata.append('password', data.password);

@@ -41,7 +41,6 @@ const Verify: React.FC = () => {
   const isMobile = isLt(breakpoint, 'md');
 
   const onSubmit = (data: VerifyReq) => {
-    console.log(data, data);
     verify(data);
   };
 

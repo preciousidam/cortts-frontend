@@ -11,13 +11,14 @@ import { Typography } from "../typography";
 import { Button } from "../button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useProfileQueries } from "@/store/users/queries";
 
 export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const styles = useStyles();
   const { push } = useRouter();
   const { colors } = useTheme();
   const { logout } = useAuth();
-  const username = "User Name"; // Replace with actual user name logic
+  const { fullname, email } = useProfileQueries();
   return (
     <View style={styles.container}>
       <Image source={require('../../assets/images/logo1.png')} style={styles.logo} contentFit="contain" />
@@ -27,10 +28,10 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
       <View style={styles.bottom}>
         <DrawerItem {...props} labelStyle={styles.label} label="Settings" onPress={() => push("/Settings")} icon={props => <Ionicons name="settings-outline" {...props} color={colors.text} />} />
         <View style={styles.sbs}>
-          <Image source={{ uri: generateAvatarImage({ name: "User Name", color: '101928' }) }} style={styles.image} />
+          <Image source={{ uri: generateAvatarImage({ name: fullname ?? '', color: '101928' }) }} style={styles.image} />
           <View style={[{ flex: 1 }, styles.vertSpace]}>
-            <Typography variant="semiBold" size="body" style={styles.name}>{username}</Typography>
-            <Typography variant="regular" size="body" style={styles.email} numberOfLines={1}>something@example.com</Typography>
+            <Typography variant="semiBold" size="body" style={styles.name}>{fullname}</Typography>
+            <Typography variant="regular" size="body" style={styles.email} numberOfLines={1}>{email}</Typography>
           </View>
           <Button iconOnly variant="tertiary" size="small" onPress={logout} icon="MaterialIcons.login" color={'#676767'} />
         </View>

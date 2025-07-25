@@ -11,22 +11,24 @@ import generateAvatarImage from "@/utilities/generateAvatarImage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HeaderButton } from "@react-navigation/elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useProfileQueries } from "@/store/users/queries";
 
 
 export const CustomHeader: React.FC<DrawerHeaderProps> = (props) => {
   const styles = useStyles();
   const {widthPixel, isMobile, fontPixel} = useResponsive();
+  const { fullname, email } = useProfileQueries();
 
   return (
     <View style={styles.container}>
-      <HeaderButton onPress={props.navigation.toggleDrawer}>
+      {isMobile && <HeaderButton onPress={props.navigation.toggleDrawer}>
         <MaterialCommunityIcons name='text' color={'#676767'} size={fontPixel(28)} />
-      </HeaderButton>
+      </HeaderButton>}
       {!isMobile && <BaseTextInput inputProps={{placeholder: "Search"}} leftIcon="Ionicons.search" iconColor="#808080" style={styles.input} />}
       <View style={styles.sbs}>
         <Button iconOnly variant="tertiary" size='medium' icon="Ionicons.help-circle-outline" color={'#676767'} />
         <Button iconOnly variant="tertiary" size="medium" icon="Ionicons.notifications-outline" color={'#676767'} />
-        <Button iconOnly variant="tertiary" size="medium" icon={<Image source={generateAvatarImage({name: "user name", size: widthPixel(32)})} style={styles.image} />} color={'#676767'} />
+        <Button iconOnly variant="tertiary" size="medium" icon={<Image source={generateAvatarImage({name: fullname ?? '', size: widthPixel(32)})} style={styles.image} />} color={'#676767'} />
       </View>
     </View>
   );

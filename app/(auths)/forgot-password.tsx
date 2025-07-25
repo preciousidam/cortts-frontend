@@ -52,7 +52,7 @@ const ForgotPassword: React.FC = () => {
   };
 
   const onSubmit = ({confirmPassword, ...data}: ResetPasswordReq & { confirmPassword: string }) => {
-    console.log(data, "data");
+
     if (step === 'enter_password' && confirmPassword === data.new_password) {
       resetPassword(data);
     } else if (step === 'verification') {

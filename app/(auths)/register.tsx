@@ -35,7 +35,6 @@ const Register: React.FC = () => {
   const isMobile = isLt(breakpoint, 'md');
 
   const onSubmit = (data: RegisterReq & { confirmPassword: string }) => {
-    console.log(data, data);
     if (data.password !== data.confirmPassword) {
       alert("Passwords do not match");
       return;

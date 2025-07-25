@@ -69,7 +69,6 @@ const queryClient = new QueryClient();
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  console.log(colorScheme);
 
 
   return (
