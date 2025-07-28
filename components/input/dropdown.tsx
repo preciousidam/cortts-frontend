@@ -1,12 +1,13 @@
 
 
 import React, { useState } from 'react';
-import { Modal, Pressable, View, FlatList, TextInput, StyleSheet } from 'react-native';
+import { Modal, Pressable, View, FlatList, TextInput, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { Typography } from '../typography';
+import { generateColorScale } from '@/styleguide/theme/Colors';
 
 export type DropdownOption = {
   label: string;
@@ -17,18 +18,22 @@ type BaseDropdownProps = {
   label?: string;
   placeholder?: string;
   options: DropdownOption[];
-  selectedValues: string[];
-  onSelect: (selected: string[]) => void;
+  selectedValues?: string[];
+  onSelect?: (selected: string[]) => void;
   multiSelect?: boolean;
+  style?: ViewStyle;
+  icon_position?: 'left' | 'right';
 };
 
 export const BaseDropdown: React.FC<BaseDropdownProps> = ({
   label,
   placeholder = 'Select...',
   options,
-  selectedValues,
+  selectedValues = [],
   onSelect,
   multiSelect = true,
+  style,
+  icon_position = 'left',
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
@@ -46,12 +51,20 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
       const updated = exists
         ? selectedValues.filter((v) => v !== value)
         : [...selectedValues, value];
-      onSelect(updated);
+      onSelect?.(updated);
     } else {
-      onSelect([value]);
+      onSelect?.([value]);
       setModalVisible(false);
     }
   };
+
+  const renderLeftIcon = () => {
+    return <Ionicons name="chevron-down" size={scale(18)} color={colors.text} />;
+  }
+
+  const renderRightIcon = () => {
+    return <Ionicons name="chevron-down" size={scale(18)} color={colors.text} />;
+  }
 
   const renderItem = ({ item }: { item: DropdownOption }) => {
     const isSelected = selectedValues.includes(item.value);
@@ -67,12 +80,13 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
   };
 
   return (
-    <View>
+    <View style={style}>
       {label && <Typography variant='medium' size='body' style={[styles.label, { color: colors.text }]}>{label}</Typography>}
       <Pressable
         onPress={() => setModalVisible(true)}
-        style={[styles.selector, { borderColor: colors.border }]}
+        style={[styles.selector, { borderColor: colors.neutral }]}
       >
+        {icon_position == 'left' && <View style={styles.leftIconView}>{renderRightIcon()}</View>}
         <Typography style={{ color: colors.text }}>
           {selectedValues.length
             ? options
@@ -81,7 +95,7 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
                 .join(', ')
             : placeholder}
         </Typography>
-        <Ionicons name="chevron-down" size={scale(18)} color={colors.text} />
+        {icon_position == 'right' && <View style={styles.rightIconView}>{renderRightIcon()}</View>}
       </Pressable>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
@@ -122,12 +136,12 @@ const useStyles = () => {
       marginBottom: verticalScale(4),
     },
     selector: {
-      paddingVertical: verticalScale(10),
-      paddingHorizontal: scale(12),
+      // paddingVertical: verticalScale(10),
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      columnGap: scale(12),
       alignItems: 'center',
-      ...roundness.m
+      ...roundness.m,
+      height: verticalScale(44)
     },
     modalOverlay: {
       flex: 1,
@@ -165,6 +179,30 @@ const useStyles = () => {
       borderLeftColor: colors.primary
     },
     optionText: {
+    },
+    leftIconView: {
+      paddingHorizontal: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      borderTopLeftRadius: verticalScale(8),
+      borderBottomLeftRadius: verticalScale(8),
+      borderRightColor: generateColorScale(colors.neutral).normalBase,
+      borderRightWidth: scale(.7),
+      height: '100%',
+      zIndex: -1
+    },
+    rightIconView: {
+      paddingHorizontal: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      borderTopRightRadius: verticalScale(8),
+      borderBottomRightRadius: verticalScale(8),
+      borderLeftColor: generateColorScale(colors.neutral).normalBase,
+      borderLeftWidth: scale(.7),
+      height: '100%',
+      zIndex: -1
     },
   });
 }

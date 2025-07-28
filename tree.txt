@@ -14,18 +14,26 @@
 │   │   ├── _layout.tsx
 │   │   ├── (admin)
 │   │   │   ├── _layout.tsx
-│   │   │   └── index.tsx
-│   │   ├── (agent)
-│   │   │   ├── _layout.tsx
-│   │   │   └── index.tsx
-│   │   ├── (client)
-│   │   │   ├── _layout.tsx
 │   │   │   ├── index.tsx
 │   │   │   ├── Projects
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── [project_id]
 │   │   │   │   │   └── index.tsx
 │   │   │   │   └── index.tsx
+│   │   │   └── Units
+│   │   │       ├── _layout.tsx
+│   │   │       └── index.tsx
+│   │   ├── (agent)
+│   │   │   ├── _layout.tsx
+│   │   │   ├── index.tsx
+│   │   │   └── Projects
+│   │   │       ├── _layout.tsx
+│   │   │       ├── [project_id]
+│   │   │       │   └── index.tsx
+│   │   │       └── index.tsx
+│   │   ├── (client)
+│   │   │   ├── _layout.tsx
+│   │   │   ├── index.tsx
 │   │   │   └── Units
 │   │   │       ├── _layout.tsx
 │   │   │       └── index.tsx
@@ -75,12 +83,21 @@
 │   │   ├── otpInput.tsx
 │   │   ├── textInput.stories.tsx
 │   │   └── textInput.tsx
+│   ├── listHeader.tsx
 │   ├── navigation
 │   │   ├── drawer.tsx
 │   │   └── header.tsx
+│   ├── pages
+│   │   ├── projects
+│   │   │   └── list.tsx
+│   │   └── units
+│   │       └── list.tsx
 │   ├── picker
 │   │   ├── FloatingPicker.stories.tsx
 │   │   └── FloatingPicker.tsx
+│   ├── Table
+│   │   ├── index.tsx
+│   │   └── index.web.tsx
 │   ├── toast
 │   │   ├── index.tsx
 │   │   └── toast.stories.tsx
@@ -97,7 +114,7 @@
 │   │       │   └── web-6efd9ea466431316e356f92c93256d8c.css
 │   │       └── js
 │   │           └── web
-│   │               └── entry-af13aec38b60afba4fc3ffc641050d2c.js
+│   │               └── entry-360678a03e694db56f3e6f3f9526bb56.js
 │   ├── assets
 │   │   └── assets
 │   │       ├── fonts
@@ -160,4 +177,4 @@
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-47 directories, 114 files
+54 directories, 124 files

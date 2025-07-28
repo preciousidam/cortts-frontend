@@ -64,7 +64,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     if (!IconComponent) {
       throw new Error(`Icon with name "${name}" not found`);
     }
-    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ??corttsLightColors.text} />;
+    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ?? '#808080'} />;
   }
 
   const renderRightIcon = () => {
@@ -90,7 +90,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     if (!IconComponent) {
       throw new Error(`Icon with name "${name}" not found`);
     }
-    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ?? corttsLightColors.text} />;
+    return <IconComponent name={name} size={fontPixel(18)} color={iconColor ?? '#808080'} />;
   }
 
 

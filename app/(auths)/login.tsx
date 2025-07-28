@@ -83,7 +83,7 @@ const Login: React.FC = () => {
       </KeyboardAvoidingView>}
       {Platform.OS === 'web' && renderForm()}
       {!isMobile && <ImageBackground source={background} style={styles.imageBg} contentFit='fill'>
-        <Image source={logo} style={styles.logo_web} contentFit='cover' />
+        <Image source={logo} style={[styles.logo_web, {width: logo?.width, height: logo?.height}]} contentFit='cover' />
         <View>
           <Typography variant='bold' size='subtitle' style={styles.white_text}>Track your units. Upload your documents. Stay in control.</Typography>
           <Typography style={styles.white_text}>Built to keep your housing process clear, connected, and under control.</Typography>
