@@ -26,3 +26,17 @@ export interface Company {
   deleted: boolean;
   reason_for_delete: string;
 }
+
+export interface Project {
+  name: string
+  description: string
+  address: string
+  num_units: number
+  purpose: string
+  artwork_url: string
+  id: string
+  deleted: boolean
+  reason_for_delete: string
+  created_at: string
+  updated_at: string
+}

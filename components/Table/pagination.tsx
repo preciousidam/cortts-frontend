@@ -19,7 +19,7 @@ export const Pagination: React.FC<IPaginationProp> = ({
 }) => {
   const { fontPixel } = useResponsive();
   const styles = useStyles();
-  const currentPage = table.getState().pagination.pageIndex;
+  const currentPage = table.getState().pagination.pageIndex + 1;
 
 
   const generateOptions = () => {
@@ -66,7 +66,7 @@ export const Pagination: React.FC<IPaginationProp> = ({
             <Pressable
               key={i}
               onPress={() =>
-                table.setPageIndex((value as number))
+                table.setPageIndex((value as number) - 1)
               }
               disabled={value == 'hide' || value == currentPage}
               style={styles.pageButton}
@@ -119,8 +119,9 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(12),
       paddingVertical: heightPixel(8),
       flexDirection: 'row',
+      alignItems: 'center',
       columnGap: widthPixel(4),
-      borderWidth: widthPixel(.5),
+      borderWidth: widthPixel(.75),
       borderColor: generateColorScale(colors.neutral).lightActive
     },
     pageNumber: {

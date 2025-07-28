@@ -30,3 +30,13 @@ export interface ResetPasswordReq {
   new_password: string;
   code: string;
 }
+
+export interface IResonse<T> {
+  data: T;
+  count: number;
+}
+export interface IErrorResponse {
+  message: string;
+  status_code: number;
+  status: string;
+}

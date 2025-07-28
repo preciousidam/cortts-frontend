@@ -39,6 +39,7 @@ export type TableProps<T> = {
     options: { label: string; value: string }[];
     multiple: boolean
   };
+  style?: ViewStyle;
 };
 
 const includesSome: FilterFn<any> = (row, columnId, filterValue: string[]) => {
@@ -52,8 +53,8 @@ const defaultFilter = {
   multiple: false
 }
 
-const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading, loadingComponent, options = {} as TableOptions<T>, onRowSelected, filter = defaultFilter }: TableProps<T>) => {
-  const styles = useStyles();
+const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading, loadingComponent, options = {} as TableOptions<T>, onRowSelected, filter = defaultFilter, style }: TableProps<T>) => {
+  const styles = useTableStyles();
   const { widthPixel, heightPixel } = useResponsive();
   const [width, setWidth] = useState<number>();
   const emptyImage = useImage(require('@/assets/images/empty.png'), {maxWidth: widthPixel(293), maxHeight: widthPixel(109)});
@@ -126,7 +127,7 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
       {emptyImage && (
         <Image
           source={emptyImage}
-          style={{ width: emptyImage.width, height: emptyImage.height }}
+          style={styles.emptyImage}
           contentFit="contain"
         />
       )}
@@ -192,56 +193,58 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
   }
 
   return (
-    <ScrollView horizontal>
-      <View style={styles.tableWrapper}>
-        <View style={styles.headerAction}>
-          <BaseDropdown
-            selectedValues={selectedFilter}
-            options={filter?.options}
-            placeholder="Filter By"
-            style={styles.filter}
-            multiSelect={filter.multiple}
-            onSelect={handleFilter}
-          />
-          <BaseTextInput leftIcon="Ionicons.search" value={search} style={styles.search} onChangeText={handleSearch} />
-        </View>
-        {table.getRowModel().rows.length === 0 ? renderEmpty() :
-        <View style={styles.tableContent} onLayout={({nativeEvent: {layout : {width}}}) => {setWidth(width);}}>
-          <View style={styles.headerRow}>
-            {table.getHeaderGroups().map(headerGroup => (
-              <View key={headerGroup.id} style={styles.row}>
-                {headerGroup.headers.map(header => (
-                  <View
-                    key={header.id}
-                    style={[
-                      styles.cell,
-                      styles.headerCell, { width: (header.column.columnDef.meta as ExtendedColumnMeta<T>).width ?? equalWidth, alignItems: (header.column.columnDef.meta as ExtendedColumnMeta<T>).align }
-                    ]}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <Typography style={styles.headerText} variant='bold' size='body'>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                      </Typography>
-                    )}
-                  </View>
-                ))}
-              </View>
-            ))}
+    <View style={[{flex: 1}, style]}>
+      <ScrollView horizontal>
+        <View style={styles.tableWrapper}>
+          <View style={styles.headerAction}>
+            <BaseDropdown
+              selectedValues={selectedFilter}
+              options={filter?.options}
+              placeholder="Filter By"
+              style={styles.filter}
+              multiSelect={filter.multiple}
+              onSelect={handleFilter}
+            />
+            <BaseTextInput leftIcon="Ionicons.search" value={search} style={styles.search} onChangeText={handleSearch} />
           </View>
+          {table.getRowModel().rows.length === 0 ? renderEmpty() :
+          <View style={styles.tableContent} onLayout={({nativeEvent: {layout : {width}}}) => {setWidth(width);}}>
+            <View style={styles.headerRow}>
+              {table.getHeaderGroups().map(headerGroup => (
+                <View key={headerGroup.id} style={styles.row}>
+                  {headerGroup.headers.map(header => (
+                    <View
+                      key={header.id}
+                      style={[
+                        styles.cell,
+                        styles.headerCell, { width: (header.column.columnDef.meta as ExtendedColumnMeta<T>).width ?? equalWidth, alignItems: (header.column.columnDef.meta as ExtendedColumnMeta<T>).align }
+                      ]}
+                    >
+                      {header.isPlaceholder ? null : (
+                        <Typography style={styles.headerText} variant='bold' size='body'>
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </Typography>
+                      )}
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
 
-          <View style={styles.body}>
-            {handleLoadingRowRender()}
-          </View>
-          {renderPagination()}
-        </View>}
-      </View>
-    </ScrollView>
+            <View style={styles.body}>
+              {handleLoadingRowRender()}
+            </View>
+            {renderPagination()}
+          </View>}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 export default Table;
 
-const useStyles = () => {
+export const useTableStyles = () => {
   const { width, widthPixel, heightPixel, fontPixel } = useResponsive();
   const roundness = useRoundness();
   const {colors} = useTheme();
@@ -304,6 +307,10 @@ const useStyles = () => {
       borderColor: generateColorScale(colors.neutral).lightActive,
       backgroundColor: colors.card,
       rowGap: heightPixel(22)
+    },
+    emptyImage: {
+      width: widthPixel(111),
+      height: widthPixel(109),
     },
     hover: {
       backgroundColor: '#EDF9FF',
