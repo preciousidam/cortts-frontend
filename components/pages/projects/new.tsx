@@ -11,6 +11,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useProjectLogic } from './logic';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
+import { Breadcrumb } from '@/components/breadcrumb';
 
 const purpose: DropdownOption[] = [
   {label: "Commercial", value: 'commercial'},
@@ -27,6 +28,7 @@ const NewProject: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Breadcrumb />
       <View>
         <Typography variant="semiBold" size="subtitle">Create Project</Typography>
         <Typography size="body">Fill in the essential details to create a new project.</Typography>

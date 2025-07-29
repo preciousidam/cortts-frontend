@@ -19,7 +19,8 @@
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── [project_id]
 │   │   │   │   │   └── index.tsx
-│   │   │   │   └── index.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── new.tsx
 │   │   │   └── Units
 │   │   │       ├── _layout.tsx
 │   │   │       └── index.tsx
@@ -57,6 +58,7 @@
 │   └── images
 │       ├── adaptive-icon.png
 │       ├── auth_image.png
+│       ├── empty.png
 │       ├── favicon.png
 │       ├── icon.png
 │       ├── login_mobile.png
@@ -77,8 +79,12 @@
 │   ├── input
 │   │   ├── checkbox.stories.tsx
 │   │   ├── checkbox.tsx
-│   │   ├── dropdown.stories.tsx
-│   │   ├── dropdown.tsx
+│   │   ├── dropdown
+│   │   │   ├── dropdown.stories.tsx
+│   │   │   ├── dropdown.tsx
+│   │   │   ├── dropdown.web.tsx
+│   │   │   ├── dropdownStyles.ts
+│   │   │   └── form.tsx
 │   │   ├── index.tsx
 │   │   ├── otpInput.tsx
 │   │   ├── textInput.stories.tsx
@@ -89,15 +95,22 @@
 │   │   └── header.tsx
 │   ├── pages
 │   │   ├── projects
-│   │   │   └── list.tsx
+│   │   │   ├── list.tsx
+│   │   │   ├── logic.tsx
+│   │   │   └── new.tsx
 │   │   └── units
 │   │       └── list.tsx
 │   ├── picker
 │   │   ├── FloatingPicker.stories.tsx
 │   │   └── FloatingPicker.tsx
+│   ├── Pill
+│   │   ├── index.stories.tsx
+│   │   └── index.tsx
 │   ├── Table
+│   │   ├── index.stories.tsx
 │   │   ├── index.tsx
-│   │   └── index.web.tsx
+│   │   ├── index.web.tsx
+│   │   └── pagination.tsx
 │   ├── toast
 │   │   ├── index.tsx
 │   │   └── toast.stories.tsx
@@ -111,16 +124,17 @@
 │   ├── _expo
 │   │   └── static
 │   │       ├── css
-│   │       │   └── web-6efd9ea466431316e356f92c93256d8c.css
+│   │       │   └── web-69f0c94f5d2d19442899800d7404b090.css
 │   │       └── js
 │   │           └── web
-│   │               └── entry-360678a03e694db56f3e6f3f9526bb56.js
+│   │               └── entry-b565041183c3819bb717813357af263a.js
 │   ├── assets
 │   │   └── assets
 │   │       ├── fonts
 │   │       │   └── SpaceMono-Regular.49a79d66bdea2debf1832bf4d7aca127.ttf
 │   │       └── images
 │   │           ├── auth_image.b2f7b23ee1aa47860d3b866e46ba3cd0.png
+│   │           ├── empty.8175d4f5f606b77be962eeefe62689e9.png
 │   │           ├── login_mobile.03322d16ba8e28c93077b62f4d59a2a2.png
 │   │           ├── login_web.ca80768f4ad7164ca178ef24713872e1.png
 │   │           └── logo1.e84adcdd366f45642321ba6d574e9fde.png
@@ -156,6 +170,9 @@
 │   ├── auth
 │   │   ├── index.ts
 │   │   └── mutations.ts
+│   ├── projects
+│   │   ├── mutation.ts
+│   │   └── queries.ts
 │   ├── query.ts
 │   └── users
 │       └── queries.ts
@@ -166,6 +183,7 @@
 │       ├── Colors.ts
 │       ├── Fonts.ts
 │       ├── index.tsx
+│       ├── shadow.ts
 │       └── ThemeContext.ts
 ├── tailwind.config.js
 ├── tree.txt
@@ -174,7 +192,8 @@
 │   ├── index.ts
 │   └── models.ts
 ├── utilities
+│   ├── error.ts
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-54 directories, 124 files
+57 directories, 140 files

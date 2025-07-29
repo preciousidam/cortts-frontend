@@ -24,20 +24,33 @@
 - [x] Form Input Variants
   - [x] Text input (default)
   - [x] Password input (toggle visibility)
-  - [ ] Number input
+  - [x] Number input
   - [x] Select dropdown (single & multi-select)
+  - [x] Floating dropdown (with @floating-ui)
+  - [x] Searchable dropdown
+  - [x] Dismiss behavior on dropdown
+  - [x] Country picker (with dial code)
   - [x] Checkbox
-  - [ ] Radio button
+  - [x] Radio button
   - [ ] Toggle switch
   - [x] Error & validation states
   - [x] Disabled state
   - [x] Currency
   - [ ] URL
 
+## 📊 Table
+
+- [x] Column configuration (custom render, dynamic width)
+- [x] Filtering (with dropdown UI)
+- [x] Pagination
+- [ ] Sorting
+- [ ] Column resizing
+- [ ] Row-level actions
+
 - [ ] Toast Notifications
-  - [ ] Success toast
-  - [ ] Error toast
-  - [ ] Info toast
+  - [x] Success toast
+  - [x] Error toast
+  - [x] Info toast
   - [ ] Custom icons / close behavior
 
 ## 📱 Screens (by role)
@@ -50,6 +63,7 @@
 - [ ] Settings
 - [ ] Profile
 - [ ] Notifications or Updates feed (optional)
+- [x] Shared pages implemented in `components/pages`
 
 ### Agent
 - [ ] Dashboard
@@ -58,10 +72,11 @@
 - [ ] Document handling (view/download)
 - [ ] Profile & settings
 - [ ] Assigned Units View (if applicable)
+- [x] Shared pages implemented in `components/pages`
 
 ### Admin
 - [ ] Admin Dashboard
-- [ ] Project CRUD
+- [x] Project CRUD
 - [ ] Unit CRUD
 - [ ] Client Management (view-only)
 - [ ] Agent Management
@@ -71,6 +86,7 @@
 - [ ] Settings
 - [ ] Notifications Log or System Logs
 - [ ] Audit Log Viewer (based on backend discussion)
+- [x] Shared pages implemented in `components/pages`
 
 ## 🎨 Theming
 - [x] Light & dark theme support
@@ -79,7 +95,7 @@
 - [ ] Custom Theme Toggle Component
 - [x] Custom `useTheme` hook integration for styled components
 - [x] Context-aware color usage in reusable components (e.g., buttons, cards)
-- [ ] Color palette documentation or Storybook showcase
+- [x] Color palette documentation or Storybook showcase
 
 ## 🧪 Testing
 - [ ] Component snapshot tests
@@ -107,3 +123,6 @@
 - [x] Checkbox stories
 - [x] Dropdown stories
 - [x] Typography stories
+- [x] FloatingPicker stories
+- [x] Table stories
+- [x] PhoneFormInput story
