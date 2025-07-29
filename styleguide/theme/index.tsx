@@ -3,6 +3,7 @@ import { corttsDarkColors, corttsLightColors } from "@/styleguide/theme/Colors";
 import { Fonts } from "@/styleguide/theme/Fonts";
 import ThemeContext from "@/styleguide/theme/ThemeContext";
 import React, { useEffect, useState } from "react";
+import { shadow } from "./shadow";
 
 export const AppThemeProvider: React.FC<{
   children: React.ReactNode;
@@ -27,5 +28,6 @@ export const AppThemeProvider: React.FC<{
     isDarkMode,
     isLightMode,
     colors: isLightMode ? corttsLightColors : corttsDarkColors,
+    shadow
   }}>{children}</ThemeContext.Provider>);
 }

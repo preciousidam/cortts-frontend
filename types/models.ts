@@ -23,8 +23,8 @@ export interface Company {
   id: string;
   created_at: string;
   updated_at: string;
-  deleted: boolean;
-  reason_for_delete: string;
+  deleted?: boolean;
+  reason_for_delete?: string;
 }
 
 export interface Project {
@@ -35,8 +35,9 @@ export interface Project {
   purpose: string
   artwork_url: string
   id: string
-  deleted: boolean
-  reason_for_delete: string
+  status: 'ongoing' | 'archived' | 'completed'
+  deleted?: boolean
+  reason_for_delete?: string
   created_at: string
   updated_at: string
 }

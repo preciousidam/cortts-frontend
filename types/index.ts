@@ -35,8 +35,19 @@ export interface IResonse<T> {
   data: T;
   count: number;
 }
+
 export interface IErrorResponse {
-  message: string;
-  status_code: number;
-  status: string;
+  detail: Detail[] | string;
+}
+
+export interface Detail {
+  type: string;
+  loc: string[];
+  msg: string;
+  input: any;
+  ctx?: Ctx;
+}
+
+export interface Ctx {
+  expected: string;
 }

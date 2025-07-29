@@ -17,7 +17,7 @@ import { BaseTextInput } from '../input';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { BaseDropdown } from '../input/dropdown';
+import { BaseDropdown } from '../input/dropdown/dropdown';
 import { Typography } from '../typography';
 import { Image, useImage } from 'expo-image';
 import { Pagination } from './pagination';
@@ -250,7 +250,7 @@ export const useTableStyles = () => {
   const {colors} = useTheme();
   return StyleSheet.create({
     tableWrapper: {
-      width: widthPixel(1104),
+      // width: widthPixel(1104),
       rowGap: heightPixel(8)
     },
     tableContent: {

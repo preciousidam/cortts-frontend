@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { AppThemeProvider } from '@/styleguide/theme';
 import { BaseDropdown } from './dropdown';
-import { Button } from '../button';
-import { Typography } from '../typography';
+import { Button } from '../../button';
+import { Typography } from '../../typography';
 import { DropdownOption } from './dropdownStyles';
 
 const meta: Meta<typeof BaseDropdown> = {

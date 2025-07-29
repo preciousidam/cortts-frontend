@@ -9,7 +9,7 @@ import { LinkText, Typography } from '@/components/typography';
 import { FormTextInput, PasswordFormInput } from '@/components/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/button';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Image, ImageBackground, useImage } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LoginReq } from '@/types';
@@ -27,10 +27,9 @@ type ViewProps = {
 
 const Login: React.FC = () => {
   const { email } = useLocalSearchParams<{email: string}>();
-  const { isPortrait, breakpoint, widthPixel, heightPixel } = useResponsive();
+  const { breakpoint, widthPixel, heightPixel } = useResponsive();
   const styles = useStyles();
   const {login, isLoading, isError} = useAuth();
-  const { push } = useRouter();
   const logo = useImage(require('../../assets/images/logo1.png'), {
     maxWidth: widthPixel(150),
     maxHeight: heightPixel(50),

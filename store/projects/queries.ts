@@ -6,9 +6,8 @@ import { IResonse } from "@/types";
 
 export const useProjectQueries = () => {
   const { token } = useAuthStore();
-  console.log(token, 'token in useProjectQueries');
 
-  const { data } = useQuery<IResonse<Project[]>>({queryFn: getProjects as unknown as () => Promise<IResonse<Project[]>>, queryKey: ['projects'], enabled: !!token?.access_token});
+  const { data } = useQuery<IResonse<Project[]>>({queryFn: getProjects as unknown as () => Promise<IResonse<Project[]>>, queryKey: ['projects'], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
 
   return {
     projects: data?.data || [],

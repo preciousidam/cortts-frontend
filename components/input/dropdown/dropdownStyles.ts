@@ -3,7 +3,8 @@ import { useRoundness } from "@/styleguide/theme/Border";
 import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { ReactNode } from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { ValidationRule } from "react-hook-form";
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 export type DropdownOption = {
   label: string;
@@ -13,20 +14,24 @@ export type DropdownOption = {
 export type BaseDropdownProps = {
   label?: string;
   placeholder?: string;
-  options: DropdownOption[];
+  options?: DropdownOption[];
   selectedValues?: string[];
   onSelect?: (selected: string[]) => void;
   multiSelect?: boolean;
   style?: ViewStyle;
+  labelStyle?: TextStyle;
   icon_position?: 'left' | 'right';
   isSearchable?: boolean;
-  anchor?: (props: {value: string, ref: (node: any) => void, onPress: () => void}) => ReactNode
+  required?: string | boolean | ValidationRule<boolean>;
+  error?: string;
+  info?: string;
+  anchor?: (props: {value: string, ref: (node: any) => void, onPress: () => void}) => ReactNode;
 };
 
 export const useDropdownStyles = () => {
-  const { scale, verticalScale } = useResponsive();
+  const { scale, verticalScale, fontPixel } = useResponsive();
   const roundness = useRoundness();
-  const { colors, fonts } = useTheme();
+  const { colors, fonts, shadow } = useTheme();
 
   return StyleSheet.create({
     label: {
@@ -49,10 +54,7 @@ export const useDropdownStyles = () => {
       paddingVertical: verticalScale(12),
       ...roundness.m,
       borderColor: colors.border,
-      elevation: verticalScale(2),
-      shadowColor: '#00000067',
-      shadowOffset: { width: 0, height: verticalScale(2)},
-      shadowOpacity: .3
+      ...shadow(verticalScale(2), scale(8))
     },
     modalHeader: {
       flexDirection: 'row',
@@ -108,5 +110,28 @@ export const useDropdownStyles = () => {
       height: '100%',
       zIndex: -1
     },
+    paddingLeft: {
+      paddingLeft: scale(12)
+    },
+    paddingRight: {
+      paddingRight: scale(12)
+    },
+    sb: {
+      columnGap: scale(4),
+      flexDirection: 'row',
+    },
+    required: {
+      color: colors.notification,
+      fontSize: fontPixel(12),
+    },
+    errorText: {
+      color: colors.notification,
+      fontSize: fontPixel(12),
+      ...fonts.regular,
+    },
+    infoText: {
+      color: colors.neutral,
+      fontSize: fontPixel(12),
+    }
   });
 }

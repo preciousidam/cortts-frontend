@@ -5,7 +5,7 @@ import { Pressable, View, FlatList, TextInput } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { Ionicons } from '@expo/vector-icons';
-import { Typography } from '../typography';
+import { Typography } from '../../typography';
 import { useFloating, flip, offset } from '@floating-ui/react-native';
 import { BaseDropdownProps, DropdownOption, useDropdownStyles } from './dropdownStyles';
 
@@ -14,13 +14,18 @@ import { BaseDropdownProps, DropdownOption, useDropdownStyles } from './dropdown
 export const BaseDropdown: React.FC<BaseDropdownProps> = ({
   label,
   placeholder = 'Select...',
-  options,
+  options = [],
   selectedValues = [],
   onSelect,
-  multiSelect = true,
+  multiSelect = false,
   style,
   icon_position = 'left',
-  isSearchable = true
+  isSearchable = true,
+  required = false,
+  anchor,
+  error,
+  info,
+  labelStyle = {}
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
@@ -77,26 +82,33 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
     );
   };
 
+  const renderValue = selectedValues.length
+    ? options
+        .filter((opt) => selectedValues.includes(opt.value))
+        .map((o) => o.label)
+        .join(', ')
+    : placeholder
+
   return (
-    <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000 }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
-      {label && <Typography variant='medium' size='body' style={[styles.label, { color: colors.text }]}>{label}</Typography>}
-      <Pressable
-        onPress={showModal}
-        style={[styles.selector, { borderColor: colors.neutral }]}
-        ref={refs.setReference}
-        collapsable={false}
-      >
-        {icon_position == 'left' && <View style={styles.leftIconView}>{renderIcon()}</View>}
-        <Typography style={{ color: colors.text }}>
-          {selectedValues.length
-            ? options
-                .filter((opt) => selectedValues.includes(opt.value))
-                .map((o) => o.label)
-                .join(', ')
-            : placeholder}
-        </Typography>
-        {icon_position == 'right' && <View style={styles.rightIconView}>{renderIcon()}</View>}
-      </Pressable>
+    <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
+      {label && <View style={[styles.sb ]}>
+        {Boolean(required) && <Typography variant='medium' size='body' style={styles.required}>*</Typography>}
+        <Typography variant='medium' size='body' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
+      </View>}
+      {!anchor ? (
+          <Pressable
+            onPress={showModal}
+            style={[styles.selector, icon_position === 'left' ? styles.paddingRight : styles.paddingLeft, { borderColor: colors.neutral }]}
+            ref={(node) => refs.setReference(node as any)}
+            collapsable={false}
+          >
+          {icon_position == 'left' && <View style={styles.leftIconView}>{renderIcon()}</View>}
+          <Typography style={{ color: colors.text, flex: 1 }}>
+            {renderValue}
+          </Typography>
+          {icon_position == 'right' && <View style={styles.rightIconView}>{renderIcon()}</View>}
+        </Pressable>
+      ) : anchor({ ref: refs.setReference, value: renderValue, onPress: showModal })}
 
       {modalVisible && <View  ref={refs.setFloating} collapsable={false} style={[styles.modalContent, { backgroundColor: colors.card, width: dropdownWidth }, floatingStyles]}>
         {isSearchable && <View style={styles.modalHeader}>
@@ -115,6 +127,8 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
           style={{ maxHeight: heightPixel(400) }}
         />
       </View>}
+      {error && <Typography style={styles.errorText}>{error}</Typography>}
+      {info && <Typography style={styles.infoText}>{info}</Typography>}
     </View>
   );
 };

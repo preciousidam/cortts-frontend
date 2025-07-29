@@ -8,6 +8,7 @@ import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { corttsLightColors, generateColorScale } from '@/styleguide/theme/Colors';
 import * as Icon from '@expo/vector-icons';
 import CountryFlag from "react-native-country-flag";
+import { Typography } from '../typography';
 
 type BaseTextInputProps = {
   value?: string;
@@ -77,7 +78,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     }
 
     if (rightIcon === 'NGN') {
-      return <Text style={styles.iconText}>NGN</Text>;
+      return <Typography style={styles.iconText}>NGN</Typography>;
     }
 
 
@@ -98,7 +99,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     <View style={[styles.container, { rowGap: verticalScale(8) }, style]}>
       {label && <View style={styles.sb}>
           {Boolean(required) && <Text style={styles.required}>*</Text>}
-          <Text style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Text>
+          <Typography style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
         </View>}
       <View style={[styles.inputWrapper, ROUNDNESS.m, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]}>
         {leftIcon && <View style={styles.leftIconView}>{renderLeftIcon()}</View>}
@@ -120,8 +121,8 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
         />
         {rightIcon && <View style={styles.rightIconView}>{renderRightIcon()}</View>}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      {info && <Text style={styles.infoText}>{info}</Text>}
+      {error && <Typography style={styles.errorText}>{error}</Typography>}
+      {info && <Typography style={styles.infoText}>{info}</Typography>}
     </View>
   );
 };
@@ -148,6 +149,13 @@ export const PasswordBaseInput: React.FC<BaseTextInputProps> = (props) => {
     />
   );
 };
+
+export const BaseTextarea: React.FC<BaseTextInputProps> = (props) => {
+  const styles = useStyle();
+  return (
+    <BaseTextInput {...props} inputProps={{ ...props.inputProps, multiline: true, numberOfLines: 4, textAlignVertical: 'top', style: [styles.textArea, props.inputProps?.style] }} />
+  )
+}
 
 export const PhoneBaseInput: React.FC<BaseTextInputProps> = (props) => {
   // Simple country list. Extend as needed or import from country-data
@@ -203,6 +211,17 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
   labelStyle,
   info,
 }) => {
+  if (!control) {
+    console.warn("FormDropdown requires a control prop from react-hook-form");
+    return <BaseTextInput
+      label={label}
+      info={info}
+      inputProps={inputProps}
+      style={style}
+      labelStyle={labelStyle}
+      required={rules.required}
+    />;
+  }
   return (
     <Controller
       control={control}
@@ -227,6 +246,10 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
 };
 
 export const PasswordFormInput: React.FC<FormTextInputProps> = (props) => {
+  if (!props.control) {
+    console.warn("FormDropdown requires a control prop from react-hook-form");
+    return <BaseTextInput {...props} />;
+  }
   return (
     <Controller
       control={props.control}
@@ -247,6 +270,10 @@ export const PasswordFormInput: React.FC<FormTextInputProps> = (props) => {
 }
 
 export const PhoneFormInput: React.FC<FormTextInputProps> = (props) => {
+  if (!props.control) {
+    console.warn("FormDropdown requires a control prop from react-hook-form");
+    return <BaseTextInput {...props} />;
+  }
   return (
     <Controller
       control={props.control}
@@ -265,6 +292,31 @@ export const PhoneFormInput: React.FC<FormTextInputProps> = (props) => {
     />
   );
 }
+
+export const TextAreaFormInput: React.FC<FormTextInputProps & { multiline?: boolean; numberOfLines?: number }> = (props) => {
+  if (!props.control) {
+    console.warn("FormDropdown requires a control prop from react-hook-form");
+    return <BaseTextarea {...props} />;
+  }
+  return (
+    <Controller
+      control={props?.control}
+      name={props.name}
+      rules={props.rules}
+      render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+        <BaseTextInput
+          {...props}
+          value={value}
+          onChangeText={onChange}
+          onBlur={onBlur}
+          error={error?.message}
+          required={props.rules?.required}
+          inputProps={{ ...props.inputProps, multiline: true, numberOfLines: props.numberOfLines || 4, textAlignVertical: 'top' }}
+        />
+      )}
+    />
+  );
+};
 
 const useStyle = () => {
   const { heightPixel, fontPixel, scale, verticalScale } = useResponsive();
@@ -338,6 +390,11 @@ const useStyle = () => {
     required: {
       color: colors.notification,
       fontSize: fontPixel(12),
-    }
+    },
+    textArea: {
+      height: heightPixel(100),
+      textAlignVertical: 'top',
+      paddingVertical: heightPixel(12)
+    },
   });
 };
