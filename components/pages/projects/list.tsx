@@ -15,7 +15,7 @@ const Projects: React.FC = () => {
   const tableStyles = useTableStyles();
   const { projects, count } = useProjectQueries();
   const { widthPixel } = useResponsive();
-  const columns: ColumnDef<any, Project[]>[] =  [
+  const columns: ColumnDef<Project, string>[] =  [
     {
       header: 'Project Name',
       accessorKey: 'name',
@@ -46,7 +46,7 @@ const Projects: React.FC = () => {
       accessorKey: 'status',
       meta: { width: widthPixel(133) },
       cell(props) {
-        return <Typography style={tableStyles.bodyText}>N/A</Typography>;
+        return <Typography style={tableStyles.bodyText}>{props.cell.getValue()}</Typography>;
       },
     },
     {

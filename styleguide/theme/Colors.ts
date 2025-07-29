@@ -62,9 +62,9 @@ export const corttsDarkColors = {
   border: '#4F4F4F',          // divider lines, input borders
   notification: '#DF0000',  // red for error messages
   neutral: '#ABABAB',      // neutral text color
-  textWeaker: '#B8B8B8',   // weaker text color
-  textWeakest: '#E8E8E8', // weakest text color
-  textWeak: '#4D4D4D', // weak text color
+  textWeaker: '#8C8C8C',   // weaker text color
+  textWeakest: '#3D3D3D', // weakest text color
+  textWeak: '#CFCFCF', // weak text color
   success: '#22C55E',  // green for success messages
   warning:  '#FFC115'  // yellow for warning messages
 };

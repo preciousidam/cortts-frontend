@@ -96,7 +96,7 @@ export type IButtonProp = Omit<ButtonProps, 'title' | 'children'> & {
   size?: Size;
 };
 
-export const Button: React.FC<IButtonProp> = forwardRef<
+export const Button = forwardRef<
   any,
   IButtonProp
 >(

@@ -1,0 +1,112 @@
+import { useResponsive } from "@/hooks/useResponsive";
+import { useRoundness } from "@/styleguide/theme/Border";
+import { generateColorScale } from "@/styleguide/theme/Colors";
+import { useTheme } from "@/styleguide/theme/ThemeContext";
+import { ReactNode } from "react";
+import { StyleSheet, ViewStyle } from "react-native";
+
+export type DropdownOption = {
+  label: string;
+  value: string;
+};
+
+export type BaseDropdownProps = {
+  label?: string;
+  placeholder?: string;
+  options: DropdownOption[];
+  selectedValues?: string[];
+  onSelect?: (selected: string[]) => void;
+  multiSelect?: boolean;
+  style?: ViewStyle;
+  icon_position?: 'left' | 'right';
+  isSearchable?: boolean;
+  anchor?: (props: {value: string, ref: (node: any) => void, onPress: () => void}) => ReactNode
+};
+
+export const useDropdownStyles = () => {
+  const { scale, verticalScale } = useResponsive();
+  const roundness = useRoundness();
+  const { colors, fonts } = useTheme();
+
+  return StyleSheet.create({
+    label: {
+      marginBottom: verticalScale(4),
+    },
+    selector: {
+      // paddingVertical: verticalScale(10),
+      flexDirection: 'row',
+      columnGap: scale(12),
+      alignItems: 'center',
+      ...roundness.m,
+      height: verticalScale(44)
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: '#00000070',
+      justifyContent: 'flex-end',
+    },
+    modalContent: {
+      paddingVertical: verticalScale(12),
+      ...roundness.m,
+      borderColor: colors.border,
+      elevation: verticalScale(2),
+      shadowColor: '#00000067',
+      shadowOffset: { width: 0, height: verticalScale(2)},
+      shadowOpacity: .3
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: scale(12),
+      marginBottom: 16,
+      width: '100%',
+      paddingHorizontal: scale(16)
+    },
+    searchInput: {
+      borderWidth: 1,
+      borderRadius: scale(8),
+      paddingHorizontal: scale(10),
+      paddingVertical: verticalScale(6),
+      ...fonts.medium,
+      width: '100%'
+    },
+    option: {
+      paddingVertical: verticalScale(10),
+      paddingHorizontal: scale(12),
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    selected: {
+      backgroundColor: '#F5FBFF',
+      borderLeftWidth: scale(4),
+      borderLeftColor: colors.primary
+    },
+    optionText: {
+    },
+    leftIconView: {
+      paddingHorizontal: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      borderTopLeftRadius: verticalScale(8),
+      borderBottomLeftRadius: verticalScale(8),
+      borderRightColor: generateColorScale(colors.neutral).normalBase,
+      borderRightWidth: scale(.7),
+      height: '100%',
+      zIndex: -1
+    },
+    rightIconView: {
+      paddingHorizontal: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      borderTopRightRadius: verticalScale(8),
+      borderBottomRightRadius: verticalScale(8),
+      borderLeftColor: generateColorScale(colors.neutral).normalBase,
+      borderLeftWidth: scale(.7),
+      height: '100%',
+      zIndex: -1
+    },
+  });
+}

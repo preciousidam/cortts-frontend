@@ -8,10 +8,31 @@ export const getProjects = async () => {
   });
 };
 
-export const updateProject = async (data: Project) => {
+export const getProject = async (id: string) => {
+  return queryFn<Project>({
+    queryKey: ['project/', {id}],
+  });
+};
+
+export const updateProject = async ({id, ...data}: Project) => {
   return mutationFn<Project>({
     method: 'patch',
+    url: `/project/${id}`,
+    data,
+  });
+};
+
+export const createProject = async (data: Project) => {
+  return mutationFn<Project>({
+    method: 'post',
     url: '/project/',
     data,
+  });
+};
+
+export const deleteProject = async (id: string) => {
+  return mutationFn<Project>({
+    method: 'delete',
+    url: `/project/${id}`,
   });
 };
