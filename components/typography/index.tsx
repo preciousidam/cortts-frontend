@@ -15,6 +15,7 @@ interface AppTextProps extends TextProps {
   size?: Size;
   style?: TextStyle | TextStyle[];
   children?: React.ReactNode;
+  color?: string;
 }
 
 export const Typography: React.FC<AppTextProps> = ({
@@ -22,6 +23,7 @@ export const Typography: React.FC<AppTextProps> = ({
   size = 'body',
   style,
   children,
+  color,
   ...props
 }) => {
   const { colors } = useTheme();
@@ -34,7 +36,7 @@ export const Typography: React.FC<AppTextProps> = ({
         styles.base,
         styles[variant],
         styles[size],
-        { color: colors.text },
+        { color: color ?? colors.text },
         style,
       ]}
     >
@@ -43,7 +45,7 @@ export const Typography: React.FC<AppTextProps> = ({
   );
 };
 
-export const LinkText: React.FC<AppTextProps & LinkProps> = (Props) => {
+export const LinkTypography: React.FC<AppTextProps & LinkProps> = (Props) => {
   const styles = useStyles();
   const s: TextStyle[] = [styles.link,{ textDecorationLine: 'none' }];
   if (Array.isArray(Props.style)) {

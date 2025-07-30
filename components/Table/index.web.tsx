@@ -1,126 +1,33 @@
 'use client';;
-import { View, ScrollView, StyleSheet, Pressable, ViewStyle } from 'react-native';
-import React, { ReactNode, useMemo, useState } from 'react';
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  ColumnDef,
-  ColumnMeta,
-  TableOptions,
-  getFilteredRowModel,
-  FilterFn,
-  getPaginationRowModel
-} from '@tanstack/react-table';
+import { View, ScrollView, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { flexRender } from '@tanstack/react-table';
 import { useResponsive } from '@/hooks/useResponsive';
 import { BaseTextInput } from '../input';
-import { useRoundness } from '@/styleguide/theme/Border';
-import { generateColorScale } from '@/styleguide/theme/Colors';
-import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { BaseDropdown } from '../input/dropdown/dropdown';
 import { Typography } from '../typography';
 import { Image, useImage } from 'expo-image';
 import { Pagination } from './pagination';
+import { useTableStyles } from './style';
+import { ExtendedColumnMeta, TableProps, useTableLogic } from './logic';
 
-export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'] };
-
-export type TableProps<T> = {
-  columns: ColumnDef<T, any>[];
-  data: T[];
-  renderRow?: (row: ReturnType<ReturnType<typeof useReactTable<T>>['getRowModel']>['rows'][number]) => React.ReactNode;
-  emptyStateText?: string;
-  onSearch?: (text: string) => void;
-  loading?: boolean;
-  loadingComponent?: ReactNode; // Loading skeleton component
-  options?: TableOptions<T>;
-  onRowSelected?: () => void;
-  filter?: {
-    field: string;
-    options: { label: string; value: string }[];
-    multiple: boolean
-  };
-  style?: ViewStyle;
-};
-
-const includesSome: FilterFn<any> = (row, columnId, filterValue: string[]) => {
-  if (filterValue.length == 0) return true
-  return filterValue.includes(row.getValue(columnId));
-};
-
-const defaultFilter = {
-  field: '',
-  options: [],
-  multiple: false
-}
-
-const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading, loadingComponent, options = {} as TableOptions<T>, onRowSelected, filter = defaultFilter, style }: TableProps<T>) => {
+const Table = <T,>(props: TableProps<T>) => {
   const styles = useTableStyles();
   const { widthPixel, heightPixel } = useResponsive();
-  const [width, setWidth] = useState<number>();
   const emptyImage = useImage(require('@/assets/images/empty.png'), {maxWidth: widthPixel(293), maxHeight: widthPixel(109)});
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<string[]>([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 10, //default page size
-  });
-
-  const extendedColumns = columns.map(column => {
-    // @ts-ignore
-  const isFilterTarget = column.accessorKey === filter.field;
-  return {
-    ...column,
-    meta: {
-      ...column.meta,
-      width: (column.meta as ExtendedColumnMeta<T>)?.width,
-      align: (column.meta as ExtendedColumnMeta<T>)?.align,
-    },
-    ...(isFilterTarget && filter.multiple ? { filterFn: 'includesSome' } : {}),
-  };
-}) as ColumnDef<T, any>[];
-
-  const table = useReactTable({
-    ...options,
-    data,
-    columns: extendedColumns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    rowCount: 10,
-    state: {
-      ...options?.state,
+  const {
+      handleFilter,
+      handleSearch,
+      equalWidth,
+      table,
+      width,
+      setWidth,
+      search,
+      selectedFilter,
       pagination,
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    filterFns: {
-      includesSome
-    }
-  });
-
-  const computeEqualWidth = () => {
-    const totalWidth = width || widthPixel(1440);
-
-    const fixedWidthSum = columns.reduce((sum, col) => {
-      const colWidth = (col.meta as ExtendedColumnMeta<T>)?.width;
-      return colWidth ? sum + colWidth : sum;
-    }, 0);
-
-
-    // Count how many columns do NOT have a defined width
-    const dynamicColumns = columns.filter(
-      col => !(col.meta && (col.meta as ExtendedColumnMeta<T>)?.width)
-    );
-
-    const dynamicCount = dynamicColumns.length || 1; // Prevent divide by 0
-
-    const remainingWidth = totalWidth - fixedWidthSum;
-    return remainingWidth / dynamicCount;
-  };
-
-  const equalWidth = useMemo(computeEqualWidth, [columns, width]);
+      filter
+    } = useTableLogic(props);
 
   const renderEmpty = () => (
     <View style={styles.emptyView}>
@@ -131,7 +38,7 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
           contentFit="contain"
         />
       )}
-      <Typography>{emptyStateText || 'No data available yet!'}</Typography>
+      <Typography>{props.emptyStateText || 'No data available yet!'}</Typography>
     </View>
   )
 
@@ -143,33 +50,17 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
     setHoveredRow(null);
   };
 
-  const handleSearch  = (text: string) => {
-    setSearch(text);
-    setGlobalFilter(text);
-    onSearch?.(text);
-  }
-
-  const handleFilter = (selected: string[]) => {
-    const column = table.getColumn(filter.field);
-    if (!column) {
-      console.warn(`Column ${filter.field} not found in table columns.`);
-      setSelectedFilter(selected);
-      return;
-    }
-    column.setFilterValue(selected);
-    setSelectedFilter(selected);
-  }
 
   const handleLoadingRowRender = () => {
-    if (loading){
-      return Array.from({length: pagination.pageSize}, (_, index) => <View style={[styles.row, { minHeight: heightPixel(72)}]} key={index}> {loadingComponent ?? 'loading...'} </View>)
+    if (props.loading){
+      return Array.from({length: pagination.pageSize}, (_, index) => <View style={[styles.row, { minHeight: heightPixel(72)}]} key={index}> {props.loadingComponent ?? 'loading...'} </View>)
     }
 
     return (table.getRowModel().rows.map(row =>
-      renderRow ? (
-        <React.Fragment key={row.id}>{renderRow(row)}</React.Fragment>
+      props.renderRow ? (
+        <React.Fragment key={row.id}>{props.renderRow(row)}</React.Fragment>
       ) : (
-        <Pressable key={row.id} style={[styles.row, hoveredRow === row.id && styles.hover]} accessibilityRole="button" accessibilityLabel={`Row ${row.id}`} onPointerEnter={() => handleRowHover(row.id)} onPointerLeave={handleRowLeave} onPress={onRowSelected}>
+        <Pressable key={row.id} style={[styles.row, hoveredRow === row.id && styles.hover]} accessibilityRole="button" accessibilityLabel={`Row ${row.id}`} onPointerEnter={() => handleRowHover(row.id)} onPointerLeave={handleRowLeave} onPress={() => props.onRowSelected?.(row.original)}>
           {row.getVisibleCells().map(cell => (
             <View
               key={cell.id}
@@ -193,7 +84,7 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
   }
 
   return (
-    <View style={[{flex: 1}, style]}>
+    <View style={[{flex: 1}, props.style]}>
       <ScrollView horizontal>
         <View style={styles.tableWrapper}>
           <View style={styles.headerAction}>
@@ -243,82 +134,3 @@ const Table = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading
 }
 
 export default Table;
-
-export const useTableStyles = () => {
-  const { width, widthPixel, heightPixel, fontPixel } = useResponsive();
-  const roundness = useRoundness();
-  const {colors} = useTheme();
-  return StyleSheet.create({
-    tableWrapper: {
-      // width: widthPixel(1104),
-      rowGap: heightPixel(8)
-    },
-    tableContent: {
-      ...roundness.m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
-      backgroundColor: colors.card
-    },
-    headerRow: {
-      width: '100%',
-    },
-    headerCell: {
-      paddingHorizontal: widthPixel(24),
-      paddingVertical: heightPixel(20)
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      width: '100%',
-      zIndex: -1,
-      borderBottomWidth: 1,
-      borderBottomColor: generateColorScale(colors.neutral).lightActive
-    },
-    cell: {
-      paddingHorizontal: widthPixel(24),
-      paddingVertical: heightPixel(16),
-    },
-    headerText: {
-      color: colors.textWeak,
-      fontSize: fontPixel(14),
-    },
-    bodyText: {
-      color: colors.text,
-      fontSize: fontPixel(13),
-    },
-    body: {
-    },
-    headerAction: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    },
-    search: {
-      width: widthPixel(404)
-    },
-    filter: {
-      width: widthPixel(200)
-    },
-    emptyView: {
-      width: widthPixel(1104),
-      height: heightPixel(764),
-      justifyContent: 'center',
-      alignItems: 'center',
-      ...roundness.m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
-      backgroundColor: colors.card,
-      rowGap: heightPixel(22)
-    },
-    emptyImage: {
-      width: widthPixel(111),
-      height: widthPixel(109),
-    },
-    hover: {
-      backgroundColor: '#EDF9FF',
-    },
-    footer: {
-      paddingHorizontal: widthPixel(24),
-      paddingVertical: heightPixel(16),
-      alignItems: 'flex-end',
-    }
-  });
-};

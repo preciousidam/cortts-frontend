@@ -5,7 +5,7 @@ import { useRoundness } from '@/styleguide/theme/Border';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { isGte, isLt } from '@/styleguide/breakpoints';
-import { LinkText, Typography } from '@/components/typography';
+import { LinkTypography, Typography } from '@/components/typography';
 import { FormTextInput, PasswordFormInput } from '@/components/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/button';
@@ -64,12 +64,12 @@ const Login: React.FC = () => {
       <View style={styles.inputArea}>
         <FormTextInput name='username' control={control} label='Email' inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none' }} rules={{ required: "Email is required" }} />
         <PasswordFormInput name='password' control={control} label='Password' rules={{ required: "Password is required" }} />
-        <LinkText href='./forgot-password' size='body' variant='bold' style={{ alignSelf: 'flex-end' }}>Forgot Password?</LinkText>
+        <LinkTypography href='./forgot-password' size='body' variant='bold' style={{ alignSelf: 'flex-end' }}>Forgot Password?</LinkTypography>
       </View>
       <View style={styles.buttonArea}>
         <Button size='large' title='Login' onPress={handleSubmit(onSubmit, onError)} isLoading={isLoading} disabled={isLoading}></Button>
         <Typography size='body' style={{ marginTop: heightPixel(12) }}>
-          Don't have an account? <LinkText href='./register' variant='bold'>Sign Up</LinkText>
+          Don't have an account? <LinkTypography href='./register' variant='bold'>Sign Up</LinkTypography>
         </Typography>
       </View>
     </View>

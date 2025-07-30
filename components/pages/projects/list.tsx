@@ -1,9 +1,10 @@
 import { ListHeader } from '@/components/listHeader';
 import { ColoredPill } from '@/components/Pill';
-import Table, { useTableStyles } from '@/components/Table/index.web';
+import Table from '@/components/Table';
+import { useTableStyles } from '@/components/Table/style';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
-import { useProjectQueries } from '@/store/projects/queries';
+import { useGetProjectsQueries } from '@/store/projects/queries';
 import { Project } from '@/types/models';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
@@ -16,10 +17,10 @@ import { View, StyleSheet } from 'react-native';
 const Projects: React.FC = () => {
   const styles = useStyles();
   const tableStyles = useTableStyles();
-  const { projects, count } = useProjectQueries();
+  const { projects, count } = useGetProjectsQueries();
   const { widthPixel } = useResponsive();
   const { push } = useRouter();
-  const columns: ColumnDef<Project, string>[] =  [
+  const columns: ColumnDef<Project>[] =  [
     {
       header: 'Project Name',
       accessorKey: 'name',
@@ -40,7 +41,7 @@ const Projects: React.FC = () => {
       accessorKey: 'purpose',
       meta: { width: widthPixel(125) },
       cell(props) {
-        return <Typography style={tableStyles.bodyText}>{capitalize(props.cell.getValue())}</Typography>;
+        return <Typography style={tableStyles.bodyText}>{capitalize(props.cell.getValue() as string)}</Typography>;
       },
     },
     {
@@ -53,7 +54,7 @@ const Projects: React.FC = () => {
       accessorKey: 'status',
       meta: { width: widthPixel(133) },
       cell(props) {
-        return <ColoredPill title={capitalize(props.cell.getValue())} color={props.cell.getValue() == 'ongoing' ? 'yellow'  : props.cell.getValue() == 'completed' ? 'green' : 'gray'} />;
+        return <ColoredPill title={capitalize(props.cell.getValue() as string)} color={(props.cell.getValue() as string) == 'ongoing' ? 'yellow'  : (props.cell.getValue() as string) == 'completed' ? 'green' : 'gray'} />;
       },
     },
     {
@@ -61,7 +62,7 @@ const Projects: React.FC = () => {
       accessorKey: 'created_at',
       meta: { width: widthPixel(150) },
       cell(props) {
-        return <Typography style={tableStyles.bodyText}>{format(new Date(props.cell.getValue()), 'MMMM dd, yyyy')}</Typography>;
+        return <Typography style={tableStyles.bodyText}>{format(new Date(props.cell.getValue() as string), 'MMMM dd, yyyy')}</Typography>;
       },
     },
   ];
@@ -78,7 +79,12 @@ const Projects: React.FC = () => {
         primaryAction={{ title: 'Create New Project', onPress: createNewProject }}
         secondaryAction={{ title: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }}
       />
-      <Table columns={columns} data={projects} filter={{ field: 'purpose', options: [{ label: 'Residential', value: 'residential' }, { label: 'Commercial', value: 'commercial' }], multiple: false }} />
+      <Table
+        columns={columns}
+        data={projects}
+        filter={{ field: 'purpose', options: [{ label: 'Residential', value: 'residential' }, { label: 'Commercial', value: 'commercial' }], multiple: false }}
+        onRowSelected={(row) => push(`./${row.id}`, { relativeToDirectory: true })}
+      />
     </View>
   );
 };

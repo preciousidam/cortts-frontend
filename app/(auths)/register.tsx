@@ -5,7 +5,7 @@ import { useRoundness } from '@/styleguide/theme/Border';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { isGte, isLt } from '@/styleguide/breakpoints';
-import { LinkText, Typography } from '@/components/typography';
+import { LinkTypography, Typography } from '@/components/typography';
 import { FormTextInput, PasswordFormInput, PhoneFormInput } from '@/components/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/button';
@@ -65,13 +65,13 @@ const Register: React.FC = () => {
         <PasswordFormInput name='password' control={control} label='Password' rules={{ required: "Password is required" }} />
         <PasswordFormInput name='confirmPassword' control={control} label='Confirm Password' rules={{ required: "Confirm Password is required" }} />
         <Typography>
-          By clicking "Create Account", you agree to our <LinkText style={{textDecorationLine: 'underline'}} href='https://cortts.com/terms' variant='regular'>Terms of Service</LinkText> and <LinkText style={{textDecorationLine: 'underline'}} href='https://cortts.com/privacy' variant='regular'>Privacy Policy</LinkText>.
+          By clicking "Create Account", you agree to our <LinkTypography style={{textDecorationLine: 'underline'}} href='https://cortts.com/terms' variant='regular'>Terms of Service</LinkTypography> and <LinkTypography style={{textDecorationLine: 'underline'}} href='https://cortts.com/privacy' variant='regular'>Privacy Policy</LinkTypography>.
         </Typography>
       </View>
       <View style={styles.buttonArea}>
         <Button size='large' title='Create Account' onPress={handleSubmit(onSubmit, onError)} isLoading={isLoading} disabled={isLoading}></Button>
         <Typography size='body' style={{ marginTop: heightPixel(12) }}>
-          Already have an account? <LinkText href='./login' variant='bold'>Sign In</LinkText>
+          Already have an account? <LinkTypography href='./login' variant='bold'>Sign In</LinkTypography>
         </Typography>
       </View>
     </View>

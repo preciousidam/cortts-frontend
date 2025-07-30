@@ -10,7 +10,7 @@ export const getProjects = async () => {
 
 export const getProject = async (id: string) => {
   return queryFn<Project>({
-    queryKey: ['project/', {id}],
+    queryKey: [`project/${id}`],
   });
 };
 

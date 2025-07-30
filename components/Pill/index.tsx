@@ -5,6 +5,7 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { useRoundness } from "@/styleguide/theme/Border";
 import { generateColorScale } from "@/styleguide/theme/Colors";
+import { capitalize } from "lodash";
 
 type Props = {
   title: string;
@@ -17,7 +18,7 @@ export const ColoredPill: React.FC<Props> = ({ title, style, color = 'gray' }) =
   return (
     <View style={[styles.pill, style]}>
       <ColorIndicator color={color} />
-      <Typography style={styles.text}>{title}</Typography>
+      <Typography style={styles.text}>{capitalize(title)}</Typography>
     </View>
   );
 }
