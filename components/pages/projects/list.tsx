@@ -17,7 +17,7 @@ import { View, StyleSheet } from 'react-native';
 const Projects: React.FC = () => {
   const styles = useStyles();
   const tableStyles = useTableStyles();
-  const { projects, count } = useGetProjectsQueries();
+  const { projects, count, isLoading } = useGetProjectsQueries();
   const { widthPixel } = useResponsive();
   const { push } = useRouter();
   const columns: ColumnDef<Project>[] =  [
@@ -79,11 +79,12 @@ const Projects: React.FC = () => {
         primaryAction={{ title: 'Create New Project', onPress: createNewProject }}
         secondaryAction={{ title: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }}
       />
-      <Table
+      <Table<Project>
         columns={columns}
         data={projects}
         filter={{ field: 'purpose', options: [{ label: 'Residential', value: 'residential' }, { label: 'Commercial', value: 'commercial' }], multiple: false }}
         onRowSelected={(row) => push(`./${row.id}`, { relativeToDirectory: true })}
+        loading={isLoading}
       />
     </View>
   );

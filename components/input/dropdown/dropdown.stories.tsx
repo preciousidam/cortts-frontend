@@ -28,7 +28,7 @@ export default meta;
 
 type Story = StoryObj<typeof BaseDropdown>;
 
-const sampleOptions: DropdownOption[] = [
+const sampleOptions: DropdownOption<string>[] = [
   { label: 'Apartment', value: 'apartment' },
   { label: 'Terrace', value: 'terrace' },
   { label: 'Duplex', value: 'duplex' },
@@ -38,13 +38,13 @@ const sampleOptions: DropdownOption[] = [
 
 export const SingleSelect: Story = {
   render: () => {
-    const [value, setValue] = useState<string[]>([]);
+    const [value, setValue] = useState<string | null>(null);
     return (
       <BaseDropdown
         label="Unit Type"
         placeholder="Select one"
         options={sampleOptions}
-        selectedValues={value}
+        selectedValue={value}
         onSelect={setValue}
         multiSelect={false}
       />
@@ -60,7 +60,7 @@ export const MultiSelect: Story = {
         label="Unit Types"
         placeholder="Select multiple"
         options={sampleOptions}
-        selectedValues={value}
+        selectedValue={value}
         onSelect={setValue}
         multiSelect={true}
       />
@@ -76,7 +76,7 @@ export const SelectWithAnchor: Story = {
         label="Unit Types"
         placeholder="Select multiple"
         options={sampleOptions}
-        selectedValues={value}
+        selectedValue={value}
         onSelect={setValue}
         multiSelect={true}
         anchor={({ ref, value, onPress }) => (

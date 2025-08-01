@@ -72,6 +72,8 @@
 ├── components
 │   ├── __tests__
 │   │   └── StyledText-test.js
+│   ├── breadcrumb
+│   │   └── index.tsx
 │   ├── button
 │   │   ├── Button.stories.tsx
 │   │   ├── Button.tsx
@@ -95,6 +97,7 @@
 │   │   └── header.tsx
 │   ├── pages
 │   │   ├── projects
+│   │   │   ├── detail.tsx
 │   │   │   ├── list.tsx
 │   │   │   ├── logic.tsx
 │   │   │   └── new.tsx
@@ -110,7 +113,9 @@
 │   │   ├── index.stories.tsx
 │   │   ├── index.tsx
 │   │   ├── index.web.tsx
-│   │   └── pagination.tsx
+│   │   ├── logic.ts
+│   │   ├── pagination.tsx
+│   │   └── style.ts
 │   ├── toast
 │   │   ├── index.tsx
 │   │   └── toast.stories.tsx
@@ -196,4 +201,4 @@
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-57 directories, 140 files
+58 directories, 144 files

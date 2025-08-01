@@ -6,18 +6,15 @@ import { ReactNode } from "react";
 import { ValidationRule } from "react-hook-form";
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
-export type DropdownOption = {
+export interface DropdownOption<T>  {
   label: string;
-  value: string;
+  value: T;
 };
 
-export type BaseDropdownProps = {
+interface BaseDropdownSharedProps<T> {
   label?: string;
   placeholder?: string;
-  options?: DropdownOption[];
-  selectedValues?: string[];
-  onSelect?: (selected: string[]) => void;
-  multiSelect?: boolean;
+  options?: DropdownOption<T>[];
   style?: ViewStyle;
   labelStyle?: TextStyle;
   icon_position?: 'left' | 'right';
@@ -25,8 +22,25 @@ export type BaseDropdownProps = {
   required?: string | boolean | ValidationRule<boolean>;
   error?: string;
   info?: string;
-  anchor?: (props: {value: string, ref: (node: any) => void, onPress: () => void}) => ReactNode;
-};
+  anchor?: (props: {
+    value: string;
+    ref: (node: any) => void;
+    onPress: () => void;
+  }) => ReactNode;
+}
+interface MultiSelectProps<T> extends BaseDropdownSharedProps<T> {
+  multiSelect: true;
+  selectedValue?: T[];
+  onSelect?: (selected: T[]) => void;
+}
+
+interface SingleSelectProps<T> extends BaseDropdownSharedProps<T> {
+  multiSelect?: false;
+  selectedValue?: T;
+  onSelect?: (selected: T) => void;
+}
+
+export type BaseDropdownProps<T> = MultiSelectProps<T> | SingleSelectProps<T>;
 
 export const useDropdownStyles = () => {
   const { scale, verticalScale, fontPixel } = useResponsive();

@@ -39,12 +39,12 @@ const defaultFilter = {
   multiple: false
 }
 
-export const useTableLogic = <T,>({ columns, data, renderRow, emptyStateText, onSearch, loading, loadingComponent, options = {} as TableOptions<T>, onRowSelected, filter = defaultFilter, style }: TableProps<T>) => {
+export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as TableOptions<T>, filter = defaultFilter, ...rest }: TableProps<T>) => {
   const [width, setWidth] = useState<number>();
   const { widthPixel } = useResponsive();
   const [search, setSearch] = useState('');
     const [globalFilter, setGlobalFilter] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState<string[]>([]);
+    const [selectedFilter, setSelectedFilter] = useState<string[] | string>();
     const [pagination, setPagination] = useState({
       pageIndex: 0, //initial page index
       pageSize: 10, //default page size
@@ -114,7 +114,7 @@ export const useTableLogic = <T,>({ columns, data, renderRow, emptyStateText, on
     onSearch?.(text);
   }
 
-  const handleFilter = (selected: string[]) => {
+  const handleFilter = (selected: string[] | string) => {
     const column = table.getColumn(filter.field as string);
     if (!column) {
       console.warn(`Column ${filter.field as string} not found in table columns.`);
@@ -138,6 +138,7 @@ export const useTableLogic = <T,>({ columns, data, renderRow, emptyStateText, on
     pagination,
     setPagination,
     extendedColumns,
-    filter
+    filter,
+    ...rest
   }
 }

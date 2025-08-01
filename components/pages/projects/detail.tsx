@@ -15,12 +15,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { ColumnDef } from '@/components/Table/logic';
 import { Unit } from '@/types/models';
 import Table from '@/components/Table';
+import { Image } from 'expo-image';
+import generateAvatarImage from '@/utilities/generateAvatarImage';
 
 const  columns: ColumnDef<Unit>[] = [
 
 ]
 
-const purpose: DropdownOption[] = [
+const purpose: DropdownOption<string>[] = [
   {label: "Commercial", value: 'commercial'},
   {label: "Residential", value: 'residential'},
   {label: "Mixed Use", value: 'mixed_use'},
@@ -31,6 +33,7 @@ const purpose: DropdownOption[] = [
 const Project: React.FC = () => {
   const {project_id} = useLocalSearchParams<{project_id: string}>();
   const styles = useStyles();
+  const { widthPixel, heightPixel } = useResponsive();
   const { colors } = useTheme();
   const {fontPixel} = useResponsive();
   const { back } = useRouter();
@@ -40,20 +43,41 @@ const Project: React.FC = () => {
     <View style={styles.container}>
       <Breadcrumb />
       <View style={styles.formArea}>
-        <View style={styles.header}>
-          <View style={styles.ctaView}>
-            <Typography size="subtitle" variant='bold' >{project?.name}</Typography>
-            <ColoredPill title={project?.status ?? ''} color={project?.status ==  'completed' ? 'green' : project?.status == 'archived' ? 'gray' : 'yellow'} />
+        <View style={styles.row}>
+          <Image placeholder={generateAvatarImage({name: project?.name ?? '', size: widthPixel(88) })} style={styles.image} />
+          <View style={styles.header}>
+            <View style={styles.ctaView}>
+              <Typography size="subtitle" variant='bold' >{project?.name}</Typography>
+              <ColoredPill title={project?.status ?? ''} color={project?.status ==  'completed' ? 'green' : project?.status == 'archived' ? 'gray' : 'yellow'} />
+            </View>
+            <Typography color={colors.textWeak}>{project?.description}</Typography>
+            <View style={styles.smallGap}>
+              <Typography color={colors.primary}>{capitalize(project?.purpose)}</Typography>
+              <ColorIndicator color='gray' />
+              <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
+            </View>
           </View>
-          <Typography color={colors.textWeak}>{project?.description}</Typography>
-          <View style={styles.smallGap}>
-            <Typography color={colors.primary}>{capitalize(project?.purpose)}</Typography>
-            <ColorIndicator color='gray' />
-            <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.card}>
+            <Typography variant='regular' color={generateColorScale(colors.neutral).normalHover}>Total Revenue Generated</Typography>
+            <Typography  variant='semiBold' size='subtitle' style={styles.cardValue}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(project?.total_revenue ?? 0)}</Typography>
+          </View>
+          <View style={styles.card}>
+            <Typography variant='regular' color={generateColorScale(colors.neutral).normalHover}>Total Units</Typography>
+            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.num_units ?? 0}</Typography>
+          </View>
+          <View style={styles.card}>
+            <Typography variant='regular' color={generateColorScale(colors.neutral).normalHover}>Sold Units</Typography>
+            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.sold_units ?? 0}</Typography>
+          </View>
+          <View style={styles.card}>
+            <Typography variant='regular' color={generateColorScale(colors.neutral).normalHover}>Assigned Agents</Typography>
+            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>1</Typography>
           </View>
         </View>
       </View>
-      <Table<Unit> columns={[]} data={[]} filter={{ field: 'type', options: [], }} />
+      <Table<Unit> columns={columns} data={project?.units ?? []} filter={{ field: 'type', options: purpose }} loading={isLoading} />
     </View>
   );
 };
@@ -61,7 +85,7 @@ const Project: React.FC = () => {
 const useStyles = () => {
   const { fontPixel, widthPixel, heightPixel } = useResponsive();
   const { colors, shadow } = useTheme();
-  const { m, large } = useRoundness()
+  const { m, large, circle } = useRoundness();
 
   return StyleSheet.create({
     container: {
@@ -87,6 +111,7 @@ const useStyles = () => {
     },
     header: {
       rowGap: heightPixel(8),
+      flex: 1,
     },
     ctaView: {
       columnGap: widthPixel(24),
@@ -106,6 +131,25 @@ const useStyles = () => {
     },
     cancel: {
       width: widthPixel(151)
+    },
+    card: {
+      backgroundColor: colors.card,
+      paddingHorizontal: widthPixel(12),
+      paddingVertical: heightPixel(16),
+      ...m,
+      borderColor: generateColorScale(colors.neutral).lightActive,
+      ...shadow(heightPixel(1), m.borderRadius),
+      rowGap: heightPixel(4),
+      flex: 1,
+    },
+    cardValue: {
+      fontSize: fontPixel(20),
+      color: colors.text,
+    },
+    image: {
+      width: widthPixel(88),
+      height: widthPixel(88),
+      ...circle
     }
   });
 };

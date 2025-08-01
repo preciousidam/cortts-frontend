@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { ScrollView, View } from 'react-native';
 
-import Table, { ExtendedColumnMeta } from './index.web';
+import Table from './index';
 import { AppThemeProvider } from '@/styleguide/theme';
 import { Button } from '../button';
+import { ExtendedColumnMeta } from './logic';
 
 const meta: Meta<typeof Table> = {
   title: 'Core/Table',
@@ -25,7 +26,7 @@ const meta: Meta<typeof Table> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Table>;
+type Story = StoryObj<typeof Table<any>>;
 
 export const BasicTable: Story = {
   args: {
@@ -43,7 +44,7 @@ export const BasicTable: Story = {
         header: 'Column 3',
         accessorKey: 'col3',
         cell(props) {
-          return <Button>{props.getValue()}</Button>
+          return <Button>{String(props.getValue())}</Button>
         },
       },
     ],
@@ -85,7 +86,7 @@ export const EmptyTable: Story = {
         header: 'Column 3',
         accessorKey: 'col3',
         cell(props) {
-          return <Button>{props.getValue()}</Button>
+          return <Button>{String(props.getValue())}</Button>
         },
       },
     ],

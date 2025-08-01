@@ -1,6 +1,4 @@
-
-
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, View, FlatList, TextInput } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -11,22 +9,24 @@ import { BaseDropdownProps, DropdownOption, useDropdownStyles } from './dropdown
 
 
 
-export const BaseDropdown: React.FC<BaseDropdownProps> = ({
-  label,
-  placeholder = 'Select...',
-  options = [],
-  selectedValues = [],
-  onSelect,
-  multiSelect = false,
-  style,
-  icon_position = 'left',
-  isSearchable = true,
-  required = false,
-  anchor,
-  error,
-  info,
-  labelStyle = {}
-}) => {
+export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
+  const {
+    label = '',
+    placeholder = 'Select...',
+    options = [],
+    onSelect,
+    multiSelect,
+    style,
+    icon_position = 'left',
+    isSearchable = true,
+    anchor,
+    required = false,
+    error,
+    info,
+    labelStyle = {},
+    selectedValue
+  } = props;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const { colors } = useTheme();
@@ -42,15 +42,15 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
     opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const toggleValue = (value: string) => {
+  const toggleValue = (value: T) => {
     if (multiSelect) {
-      const exists = selectedValues.includes(value);
+      const exists = selectedValue?.includes(value);
       const updated = exists
-        ? selectedValues.filter((v) => v !== value)
-        : [...selectedValues, value];
-      onSelect?.(updated);
+        ? selectedValue?.filter((v) => v !== value)
+        : [...(selectedValue ?? []), value];
+      onSelect?.(updated ?? []);
     } else {
-      onSelect?.([value]);
+      onSelect?.(value);
       setModalVisible(false);
     }
   };
@@ -69,8 +69,8 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
     return <Ionicons name="chevron-down" size={scale(18)} color={'#808080'} />;
   }
 
-  const renderItem = ({ item }: { item: DropdownOption }) => {
-    const isSelected = selectedValues.includes(item.value);
+  const renderItem = ({ item }: { item: DropdownOption<T> }) => {
+    const isSelected = Array.isArray(selectedValue) && selectedValue.includes(item.value);
     return (
       <Pressable
         style={[styles.option, isSelected && styles.selected]}
@@ -82,12 +82,15 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
     );
   };
 
-  const renderValue = selectedValues.length
-    ? options
-        .filter((opt) => selectedValues.includes(opt.value))
-        .map((o) => o.label)
-        .join(', ')
-    : placeholder
+  const renderValue = (multiSelect
+    ? (selectedValue && selectedValue.length
+        ? options
+            .filter((opt) => selectedValue.includes(opt.value))
+            .map((o) => o.label)
+            .join(', ')
+        : placeholder)
+    : (selectedValue ? options.find(opt => opt.value === selectedValue)?.label ?? placeholder : placeholder)
+  );
 
   return (
     <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
@@ -122,7 +125,7 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
         </View>}
         <FlatList
           data={filteredOptions}
-          keyExtractor={(item) => item.value}
+          keyExtractor={(item) => String(item.value)}
           renderItem={renderItem}
           style={{ maxHeight: heightPixel(400) }}
         />
