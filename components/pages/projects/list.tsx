@@ -62,7 +62,7 @@ const Projects: React.FC = () => {
       accessorKey: 'created_at',
       meta: { width: widthPixel(150) },
       cell(props) {
-        return <Typography style={tableStyles.bodyText}>{format(new Date(props.cell.getValue() as string), 'MMMM dd, yyyy')}</Typography>;
+        return <Typography style={tableStyles.bodyText}>{format(new Date(props.cell.getValue() as string), 'MMM dd, yyyy')}</Typography>;
       },
     },
   ];

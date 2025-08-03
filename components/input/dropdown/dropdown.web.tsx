@@ -30,12 +30,13 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const { colors } = useTheme();
-  const { scale, fontPixel, heightPixel } = useResponsive();
+  const { scale, widthPixel, heightPixel } = useResponsive();
   const styles = useDropdownStyles();
   const [dropdownWidth, setDropdownWidth] = useState<number | null>(null);
+  const [hoveredId, setIsHovered] = useState<T | null>(null);
 
   const { refs, floatingStyles, update, context } = useFloating({
-    placement: 'bottom',
+    placement: 'bottom-start',
     whileElementsMounted: autoUpdate,
     middleware: [offset(heightPixel(8)), flip()],
     open: modalVisible,
@@ -89,10 +90,13 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
 
   const renderItem = ({ item }: { item: DropdownOption<T> }) => {
     const isSelected = multiSelect ? Array.isArray(selectedValue) && selectedValue.includes(item.value) : selectedValue === item.value;
+    const isHovered = item.value == hoveredId
     return (
       <Pressable
-        style={[styles.option, isSelected && styles.selected]}
+        style={[styles.option, isHovered && styles.hovered, isSelected && styles.selected]}
         onPress={() => toggleValue(item.value)}
+        onPointerEnter={() => setIsHovered(item.value)}
+        onPointerLeave={() => setIsHovered(null)}
       >
         <Typography style={[styles.optionText, { color: !isSelected ? colors.text : colors.textWeak }]}>{item.label}</Typography>
         {isSelected && <Ionicons name="checkmark" size={scale(18)} color={colors.primary} />}
@@ -109,9 +113,6 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
         : placeholder)
     : (selectedValue ? options.find(opt => opt.value === selectedValue)?.label ?? placeholder : placeholder)
   );
-
-  console.log(renderValue,selectedValue, options, placeholder);
-  
 
   return (
     <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
@@ -137,7 +138,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
       <FloatingPortal>
         {modalVisible && (
           <View
-            style={[styles.modalContent, { backgroundColor: colors.card, width: dropdownWidth }, floatingStyles as ViewStyle]}
+            style={[styles.modalContent, { backgroundColor: colors.card, width: dropdownWidth, minWidth: widthPixel(200) }, props.listContainerStyle, floatingStyles as ViewStyle]}
             ref={(node) => refs.setFloating?.(node as any | null)}
             {...getFloatingProps()}
           >

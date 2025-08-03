@@ -87,7 +87,7 @@ const useStyles = () => {
       fontSize: fontPixel(14),
     },
     caption: {
-      fontSize: fontPixel(10),
+      fontSize: fontPixel(12),
     },
     subtitle: {
       fontSize: fontPixel(32),

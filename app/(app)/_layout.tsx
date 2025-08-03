@@ -1,14 +1,27 @@
 import { Redirect, Slot, useSegments } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
+import { ActivityIndicator } from 'react-native';
 
 export default function Layout() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   const segments = useSegments();
   const inAuthGroup = segments[0] === '(auths)';
 
   if (!isAuthenticated && !inAuthGroup) {
     return <Redirect href="/(auths)/login" />;
   }
+
+  if (!role){
+    return <ActivityIndicator />
+  }
+
+  // if (role == 'admin') {
+  //   return <Redirect href="/(app)/(admin)" />
+  // } else if (role == 'agent') {
+  //   return <Redirect href="/(app)/(agent)" />
+  // } else if (role == 'client') {
+  //   return <Redirect href="/(app)/(client)" />
+  // }
 
   return <Slot />;
 }

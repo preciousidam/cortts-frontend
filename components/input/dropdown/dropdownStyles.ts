@@ -19,6 +19,7 @@ interface BaseDropdownSharedProps<T> {
   labelStyle?: TextStyle;
   icon_position?: 'left' | 'right';
   isSearchable?: boolean;
+  listContainerStyle?: ViewStyle;
   required?: string | boolean | ValidationRule<boolean>;
   error?: string;
   info?: string;
@@ -97,6 +98,9 @@ export const useDropdownStyles = () => {
       backgroundColor: '#F5FBFF',
       borderLeftWidth: scale(4),
       borderLeftColor: colors.primary
+    },
+    hovered: {
+      backgroundColor: '#F5FBFF',
     },
     optionText: {
     },

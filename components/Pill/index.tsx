@@ -29,7 +29,7 @@ export const ColorIndicator: React.FC<Omit<Props, 'title'>> = ({ color, style })
 };
 
 const useStyles = (variantColor: Props['color']) => {
-  const { widthPixel, heightPixel } = useResponsive();
+  const { widthPixel, heightPixel, fontPixel } = useResponsive();
   const { colors } = useTheme();
   const { circle } = useRoundness();
   let color = colors.textWeak;
@@ -51,7 +51,8 @@ const useStyles = (variantColor: Props['color']) => {
 
   return StyleSheet.create({
     text: {
-      color
+      color,
+      fontSize: fontPixel(12)
     },
     pill: {
       backgroundColor,

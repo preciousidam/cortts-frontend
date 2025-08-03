@@ -30,11 +30,11 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState('');
   const { colors } = useTheme();
-  const { scale, fontPixel, heightPixel } = useResponsive();
+  const { scale, widthPixel, heightPixel } = useResponsive();
   const styles = useDropdownStyles();
   const [dropdownWidth, setDropdownWidth] = useState<number | null>(null);
   const { refs, floatingStyles, update } = useFloating({
-    placement: 'bottom',
+    placement: 'bottom-start',
     middleware: [offset(heightPixel(8)), flip()],
   });
 
@@ -113,7 +113,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
         </Pressable>
       ) : anchor({ ref: refs.setReference, value: renderValue, onPress: showModal })}
 
-      {modalVisible && <View  ref={refs.setFloating} collapsable={false} style={[styles.modalContent, { backgroundColor: colors.card, width: dropdownWidth }, floatingStyles]}>
+      {modalVisible && <View  ref={refs.setFloating} collapsable={false} style={[styles.modalContent, { backgroundColor: colors.card, width: dropdownWidth, minWidth: widthPixel(200) }, props.listContainerStyle, floatingStyles]}>
         {isSearchable && <View style={styles.modalHeader}>
           <TextInput
             placeholder="Search..."

@@ -36,7 +36,7 @@ const includesSome: FilterFn<any> = (row, columnId, filterValue: string[]) => {
 const defaultFilter = {
   field: '' as any,
   options: [],
-  multiple: false
+  multiple: true
 }
 
 export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as TableOptions<T>, filter = defaultFilter, ...rest }: TableProps<T>) => {
@@ -44,7 +44,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as Tab
   const { widthPixel } = useResponsive();
   const [search, setSearch] = useState('');
     const [globalFilter, setGlobalFilter] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState<string[] | string>();
+    const [selectedFilter, setSelectedFilter] = useState<string[] | string>([]);
     const [pagination, setPagination] = useState({
       pageIndex: 0, //initial page index
       pageSize: 10, //default page size

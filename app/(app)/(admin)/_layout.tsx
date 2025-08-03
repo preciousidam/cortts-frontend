@@ -12,6 +12,11 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { CustomHeader } from '@/components/navigation/header';
 
+export const unstable_settings = {
+  // Ensure any route can link back to `/`
+  initialRouteName: 'index',
+};
+
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; color: string }) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
@@ -55,6 +60,8 @@ const Layout: React.FC = () => {
           header: props => <CustomHeader {...props} />
         })}
         drawerContent={props => <CustomDrawer {...props} />}
+        backBehavior='initialRoute'
+        initialRouteName='index'
       >
         <Drawer.Screen
           name="index"

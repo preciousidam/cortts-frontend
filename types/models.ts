@@ -40,6 +40,9 @@ export interface Project {
   reason_for_delete?: string
   created_at: string
   updated_at: string
+  units?: Unit[];
+  sold_units?: number;
+  total_revenue?: number;
 }
 
 export interface Unit {
@@ -65,6 +68,7 @@ export interface Unit {
   payment_summary: PaymentSummary;
   graph_data: GraphDaum[];
   total_paid: number;
+  development_status: 'not_started' | 'in_progress' | 'completed';
   created_at: string;
   updated_at: string;
 }

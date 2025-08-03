@@ -16,27 +16,29 @@ export const TableControl: React.FC = () => {
   const { handleFilter, handleSearch, search, selectedFilter, filter } = useTableContext();
   return (
     <View style={styles.headerAction}>
-      {filter.multiple && <BaseDropdown
-        selectedValue={selectedFilter as string[]}
-        options={filter?.options}
-        placeholder="Filter By"
-        style={styles.filter}
-        onSelect={handleFilter}
-        multiSelect={true}
-      />}
-      {!filter.multiple && <BaseDropdown
-        selectedValue={selectedFilter as string}
-        options={filter?.options}
-        placeholder="Filter By"
-        style={styles.filter}
-        onSelect={handleFilter}
-        multiSelect={false}
-      />}
+      {filter.multiple ? (
+        <BaseDropdown
+          multiSelect={true}
+          selectedValue={selectedFilter as string[]}
+          options={filter?.options}
+          placeholder="Filter By"
+          style={styles.filter}
+          onSelect={handleFilter}
+        />
+      ) : (
+        <BaseDropdown
+          selectedValue={selectedFilter as string}
+          options={filter?.options}
+          placeholder="Filter By"
+          style={styles.filter}
+          onSelect={handleFilter}
+        />
+      )}
       <BaseTextInput
         leftIcon="Ionicons.search"
         value={search}
         style={styles.search}
-        onChangeText={(text: string) => handleSearch(text)} 
+        onChangeText={(text: string) => handleSearch(text)}
       />
     </View>
   )

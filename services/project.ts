@@ -14,7 +14,7 @@ export const getProject = async (id: string) => {
   });
 };
 
-export const updateProject = async ({id, ...data}: Project) => {
+export const updateProject = async (id: string, data: Project) => {
   return mutationFn<Project>({
     method: 'patch',
     url: `/project/${id}`,

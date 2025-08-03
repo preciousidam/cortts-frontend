@@ -4,19 +4,20 @@ import { TextStyle, ViewStyle } from "react-native";
 import { BaseDropdown } from "./dropdown";
 
 
-type FormDropdownProps = {
+type FormDropdownProps<T> = {
   name: string;
   control?: Control<any, any, any>;
   label?: string;
   rules?: Omit<RegisterOptions<any, string>, "disabled" | "valueAsNumber" | "valueAsDate" | "setValueAs"> | undefined;
-  inputProps?: BaseDropdownProps;
+  inputProps?: BaseDropdownProps<T>;
   style?: ViewStyle;
   labelStyle?: TextStyle;
   info?: string;
 };
 
-export const FormDropdown: React.FC<FormDropdownProps> = (props) => {
+export const FormDropdown = <T,>(props: FormDropdownProps<T>) => {
   const { name, control, label, rules, inputProps, style, labelStyle, info } = props;
+  const multi = inputProps?.multiSelect ? { multiSelect: true } : { multiSelect: false };
   if (!control) {
     console.warn("FormDropdown requires a control prop from react-hook-form");
     return <BaseDropdown
@@ -28,13 +29,6 @@ export const FormDropdown: React.FC<FormDropdownProps> = (props) => {
     />;
   }
 
-  const formatValue = (value: string[]) => {
-    if (value.length === 1){
-      return value[0]
-    }
-    return value.join(",");
-  }
-
   return (
     <Controller
       name={name}
@@ -43,9 +37,10 @@ export const FormDropdown: React.FC<FormDropdownProps> = (props) => {
       render={({ field: { onChange, onBlur, value, ref }, fieldState }) => (
         <BaseDropdown
           {...inputProps}
+          {...multi}
           label={label}
-          onSelect={(values) => onChange(formatValue(values))}
-          selectedValues={value?.split(',')}
+          onSelect={(selected: T | T[]) => onChange(selected)}
+          selectedValue={value}
           error={fieldState.error?.message}
           style={style}
           labelStyle={labelStyle}

@@ -6,10 +6,10 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useProjectLogic } from './logic';
+import { useUpdateProjectLogic } from './logic';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
 
@@ -21,17 +21,18 @@ const purpose: DropdownOption<string>[] = [
   {label: "Others", value: 'others'},
 ].sort((a, b) => a.label.localeCompare(b.label))
 
-const NewProject: React.FC = () => {
+const EditProject: React.FC = () => {
   const styles = useStyles();
+  const { project_id } = useLocalSearchParams<{ project_id: string }>();
   const { back } = useRouter();
-  const {control, onSubmit, isLoading} = useProjectLogic();
+  const {control, onSubmit, isLoading} = useUpdateProjectLogic(project_id);
 
   return (
     <View style={styles.container}>
       <Breadcrumb />
       <View>
-        <Typography variant="semiBold" size="subtitle">Create Project</Typography>
-        <Typography size="body">Fill in the essential details to create a new project.</Typography>
+        <Typography variant="semiBold" size="subtitle">Edit Project</Typography>
+        <Typography size="body">Update the essential details to edit the project.</Typography>
       </View>
       <View style={styles.formArea}>
         {/* Form components will go here */}
@@ -52,7 +53,7 @@ const NewProject: React.FC = () => {
         </View>
         <View style={styles.ctaView}>
           <Button title="Cancel" variant='outlined' onPress={back} style={styles.cancel} />
-          <Button title="Create Project" onPress={onSubmit} isLoading={isLoading} />
+          <Button title="Update Project" onPress={onSubmit} isLoading={isLoading} />
         </View>
       </View>
     </View>
@@ -101,4 +102,4 @@ const useStyles = () => {
   });
 };
 
-export default NewProject;
+export default EditProject;
