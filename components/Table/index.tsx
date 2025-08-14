@@ -1,4 +1,4 @@
-'use client';;
+'use client';
 import { View, ScrollView } from 'react-native';
 import { useTableStyles } from './style';
 import { TableProps } from './logic';
@@ -13,7 +13,7 @@ const Table = <T,>(props: TableProps<T>) => {
   return (
     <TableProvider {...props}>
       <View style={[{flex: 1}, props.style]}>
-        <ScrollView horizontal>
+        <ScrollView horizontal contentContainerStyle={{ flex: 1}}>
           <View style={styles.tableWrapper}>
             <TableControl />
             <TableBody<T> />

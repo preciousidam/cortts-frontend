@@ -3,8 +3,9 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
-import { Pressable, View, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
+import { Pressable, View, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { Controller, Control } from 'react-hook-form';
+import { Typography } from '../typography';
 
 type BaseCheckboxProps = {
   checked: boolean;
@@ -20,7 +21,7 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
   onChange,
   label,
   disabled,
-  labelStyle,
+  labelStyle = {},
   style,
 }) => {
   const styles = useStyles();
@@ -38,7 +39,7 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
       <View style={[styles.checkbox, checked && styles.checked, disabled && styles.disabled]}>
         {checked && <Ionicons name="checkmark" color={colors.card} size={scale(14)} />}
       </View>
-      {label ? <Text style={[styles.label, disabled && styles.labelDisabled, labelStyle]}>{label}</Text> : null}
+      {label ? <Typography style={[styles.label, disabled ? styles.labelDisabled : {}, labelStyle]}>{label}</Typography> : null}
     </Pressable>
   );
 };

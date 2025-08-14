@@ -64,6 +64,8 @@ export const TableBody = <T,>(): React.ReactElement => {
     )
 
   const renderPagination = () => {
+    console.log(table.getRowCount(), 'Row count');
+    
     // Implement pagination logic here if needed
     return <View style={[styles.footer, {borderBottomWidth: 0}]}>
       <Pagination table={table} />
@@ -131,11 +133,11 @@ export const TableBody = <T,>(): React.ReactElement => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         onEndReachedThreshold={0.1}
-        onEndReached={() => {
-          if (table.getCanNextPage()) {
-            table.nextPage();
-          }
-        }}
+        // onEndReached={() => {
+        //   if (table.getCanNextPage()) {
+        //     table.nextPage();
+        //   }
+        // }}
         initialNumToRender={pagination.pageSize}
         maxToRenderPerBatch={pagination.pageSize}
         windowSize={5}

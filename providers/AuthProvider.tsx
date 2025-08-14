@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Constants from "expo-constants";
-import { Platform, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { useSyncQueriesExternal } from "react-query-external-sync";
 import { secureStorage } from '@/libs/secureStorage';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -230,6 +230,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutateResetPassword(data);
   };
 
+  if (!token) {
+    return <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} /> ;
+  }
 
   return (
     <AuthContext.Provider

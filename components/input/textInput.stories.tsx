@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { BaseTextInput, PasswordBaseInput, PhoneBaseInput } from './textInput';
+import { BaseCurrencyInput, BaseTextInput, PasswordBaseInput, PhoneBaseInput } from './textInput';
 import { View } from 'react-native';
 import { AppThemeProvider } from '@/styleguide/theme';
 import { OTPBaseInput } from './otpInput';
@@ -109,18 +109,18 @@ export const PasswordInput: Story = {
   },
 };
 
-export const NGNCurrencyInput: Story = {
+export const CurrencyInput: Story = {
   args: {
-    label: 'NGN Currency Input',
+    label: 'Currency Input',
     inputProps: {
       placeholder: 'Enter amount',
       keyboardType: 'numeric',
       style: { width: '100%' },
       placeholderTextColor: '#888',
     },
-    leftIcon: 'NGN',
     style: { width: '100%' },
   },
+  render: (args) => <BaseCurrencyInput {...args} />
 };
 
 export const PhoneInput: Story = {

@@ -1,0 +1,206 @@
+import { Unit } from "@/types/models";
+import { handleError } from "@/utilities/error";
+import { useRouter } from "expo-router";
+import { useForm } from "react-hook-form";
+import Toast from "react-native-toast-message";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCreateUnitMutation, useUpdateUnitMutation } from "@/store/units/mutation";
+import { useGetUnitQuery } from "@/store/units/queries";
+import { FileLike } from "@/services/upload";
+import { useMultipleUploadMutation } from "@/store/uploads/mutation";
+
+type Form = {
+  name: string;
+  amount: number;
+  expected_initial_payment?: number | null;
+  discount?: number | null;
+  type: string;
+  installment?: number | null;
+  payment_plan: boolean;
+  warranty_period: number;
+  project_id: string;
+  development_status?: Unit['development_status'];
+  images?: string[] | null;
+};
+
+const schema: yup.ObjectSchema<Form> = yup.object({
+  name: yup.string().required('Unit name is required'),
+  amount: yup.number().required('Unit amount is required'),
+  type: yup.string().required('Unit type is required'),
+  warranty_period: yup.number().required('Unit warranty period is required').positive(),
+  project_id: yup.string().required('Project is required'),
+  payment_plan: yup.boolean().default(false),
+  development_status: yup.mixed<"not_started" | "in_progress" | "completed">().required("Development status is required").oneOf(['not_started', 'in_progress', 'completed'], 'Invalid development status'),
+  discount: yup.number().notRequired(),
+  images: yup.array().of(yup.string().defined()).nullable().notRequired(),
+  installment: yup.number()
+    .when('payment_plan', {
+      is: true,
+      then: schema => schema.required('Installment is required when payment plan is enabled').min(1),
+      otherwise: schema => schema.notRequired()
+    }),
+
+  expected_initial_payment: yup.number()
+    .nullable()
+    .when('payment_plan', {
+      is: true,
+      then: schema => schema.required('Initial payment is required when payment plan is enabled'),
+      otherwise: schema => schema.notRequired()
+    })
+}).required();
+
+export const useUnitLogic = () => {
+  const { replace } = useRouter();
+  const queryClient = useQueryClient();
+  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<Form>({
+    defaultValues: {payment_plan: false},
+    resolver: yupResolver(schema),
+  });
+
+  const { mutate: uploadImages, isPending: isUploading } = useMultipleUploadMutation({
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error uploading images', text2: handleError(error.response?.data, error.message), type: 'error'});
+      // Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+      replace('../', { relativeToDirectory: true });
+    },
+  });
+  const { mutate: createUnitMutation, isPending } = useCreateUnitMutation({
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error creating unit', text2: handleError(error.response?.data, error.message), type: 'error'})
+    }
+  });
+
+  const createUnit = async (unitData: Form) => {
+    if (isPending) {
+      return;
+    }
+    const {images, ...data} = unitData;
+    console.log(images);
+    // return
+    await createUnitMutation(data as Unit, {
+      onSuccess: async (data) => {
+        console.log(images);
+        if (images) {
+          await uploadImages({files: images, extra: {unit_id: data.id}}, {
+            onSuccess: () => {
+              Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+              queryClient.invalidateQueries({ queryKey: ['units'] });
+              replace('../', { relativeToDirectory: true });
+            }
+          });
+        } else {
+          Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+          queryClient.invalidateQueries({ queryKey: ['units'] });
+          replace('../', { relativeToDirectory: true });
+        }
+      }
+    });
+  };
+
+  const installment_amount = () => {
+    if( !watch('amount') || !watch('installment') || !watch('discount')) {
+      return 0;
+    }
+    const total = watch('amount') - (watch('amount') * (watch('discount') ?? 0) / 100) - (watch('expected_initial_payment') ?? 0)
+    const installments = watch('installment') ?? 1
+    return total / installments;
+  };
+
+  const total_amount = () => {
+    const amount = watch('amount') ?? 0;
+    const discount = watch('discount') ?? 0;
+    setValue('expected_initial_payment', amount - (amount * discount / 100));
+    return amount - (amount * discount / 100);
+  }
+
+  const handleImageUpload = (files: FileLike[] | null) => {
+    if (!files || files.length === 0 || files.some(file => typeof file !== 'string')) {
+      return;
+    }
+    // Handle file upload logic here, e.g., using a mutation to upload files
+    setValue('images', files as string[]);
+  }
+
+  return {
+    onSubmit: handleSubmit(createUnit),
+    control,
+    isLoading: isPending || isUploading,
+    watch,
+    installment_amount,
+    total_amount,
+    handleImageUpload,
+  };
+}
+
+export const useUpdateProjectLogic = (id: string) => {
+  const { replace } = useRouter();
+  const { unit, isLoading } = useGetUnitQuery(id);
+  const { control, handleSubmit } = useForm<Form>({
+    defaultValues: unit ? {
+      name: unit.name,
+      type: unit.type,
+      amount: unit.amount,
+      expected_initial_payment: unit.expected_initial_payment,
+      discount: unit.discount,
+      installment: unit.installment,
+      payment_plan: unit.payment_plan,
+      warranty_period: unit.warranty_period,
+      project_id: unit.project_id,
+    } : {
+      name: '',
+      type: '',
+      amount: 0,
+      expected_initial_payment: null,
+      discount: null,
+      installment: null,
+      payment_plan: false,
+      warranty_period: 0,
+      project_id: '',
+    },
+    resolver: yupResolver(schema),
+  });
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (unit) {
+      control._reset({
+        name: unit.name,
+        type: unit.type,
+        amount: unit.amount,
+        expected_initial_payment: unit.expected_initial_payment,
+        discount: unit.discount,
+        installment: unit.installment,
+        payment_plan: unit.payment_plan,
+        warranty_period: unit.warranty_period,
+        project_id: unit.project_id,
+      });
+    }
+  }, [unit, control]);
+
+  const { mutate: createUnitMutation, isPending } = useUpdateUnitMutation(id,{
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error updating project', text2: handleError(error.response?.data, error.message), type: 'error'})
+    },
+    onSuccess: () => {
+      Toast.show({text1: 'Project updated successfully', text2: 'Your project has been updated.', type: 'success'});
+      queryClient.invalidateQueries({ queryKey: ['project', id] });
+      replace('../', { relativeToDirectory: true });
+    }
+  });
+
+  const updateProject = async (projectData: Form) => {
+    if (isPending) {
+      return;
+    }
+    const response = await createUnitMutation(projectData as Unit);
+  };
+
+  return {
+    onSubmit: handleSubmit(updateProject),
+    control,
+    isLoading: isPending
+  };
+}

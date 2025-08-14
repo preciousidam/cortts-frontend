@@ -69,7 +69,7 @@ export const Pagination: React.FC<IPaginationProp> = ({
                 table.setPageIndex((value as number) - 1)
               }
               disabled={value == 'hide' || value == currentPage}
-              style={styles.pageButton}
+              style={[styles.pageButton, value == currentPage && styles.activePage]}
             >
               {value === 'hide' ? (
                 <Ionicons
@@ -138,6 +138,9 @@ const useStyles = () => {
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
       borderColor: generateColorScale(colors.neutral).lightActive
+    },
+    activePage: {
+      backgroundColor: generateColorScale(colors.neutral).lightActive
     }
   });
 }

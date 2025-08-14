@@ -23,13 +23,14 @@ type MutationOptions = {
 
 export const mutationFn = async <T = any>({ method = 'post', url, data, headers }: MutationOptions): Promise<T> => {
   const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
-
+  console.log(data, isFormData);
+  
   const response: AxiosResponse<T, AxiosError> = await api.request({
     method,
     url,
     data,
     headers: isFormData
-      ? { 'Content-Type': 'multipart/form-data', ...headers }
+      ? { ...headers }
       : { 'Content-Type': 'application/json', Accept: 'application/json', ...headers },
   });
 

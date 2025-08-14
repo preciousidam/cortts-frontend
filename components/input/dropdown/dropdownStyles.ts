@@ -19,6 +19,7 @@ interface BaseDropdownSharedProps<T> {
   labelStyle?: TextStyle;
   icon_position?: 'left' | 'right';
   isSearchable?: boolean;
+  onSearch?: (q: string) => void;
   listContainerStyle?: ViewStyle;
   required?: string | boolean | ValidationRule<boolean>;
   error?: string;
@@ -50,7 +51,6 @@ export const useDropdownStyles = () => {
 
   return StyleSheet.create({
     label: {
-      marginBottom: verticalScale(4),
     },
     selector: {
       // paddingVertical: verticalScale(10),

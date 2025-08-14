@@ -4,7 +4,7 @@ import { Unit } from "@/types/models";
 
 export const getUnits = async () => {
   return queryFn<IResonse<Unit[]>>({
-    queryKey: ['unit/'],
+    queryKey: ['unit/', {limit: 100, skip: 0}],
   });
 };
 

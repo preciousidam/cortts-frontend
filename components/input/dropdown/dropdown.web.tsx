@@ -25,6 +25,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     info,
     labelStyle = {},
     selectedValue,
+    onSearch
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -57,22 +58,27 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     dismiss,
   ]);
 
+  const searchFunc = (q: string) => {
+    setSearch(q);
+    onSearch?.(q);
+  }
+
   const filteredOptions = options.filter((opt) =>
     opt.label.toLowerCase().includes(search.toLowerCase()),
   );
 
   const toggleValue = (value: T) => {
-      if (multiSelect) {
-        const exists = Array.isArray(selectedValue) && selectedValue.includes(value);
-        const updated: T[] = exists
-          ? selectedValue?.filter((v: T) => v !== value) ?? []
-          : [...(selectedValue ?? []), value];
-        onSelect?.(updated);
-      } else {
-        onSelect?.(value);
-        setModalVisible(false);
-      }
-    };
+    if (multiSelect) {
+      const exists = Array.isArray(selectedValue) && selectedValue.includes(value);
+      const updated: T[] = exists
+        ? selectedValue?.filter((v: T) => v !== value) ?? []
+        : [...(selectedValue ?? []), value];
+      onSelect?.(updated);
+    } else {
+      onSelect?.(value);
+      setModalVisible(false);
+    }
+  };
 
   const showModal = () => {
     setModalVisible(prev => !prev);
@@ -114,11 +120,13 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     : (selectedValue ? options.find(opt => opt.value === selectedValue)?.label ?? placeholder : placeholder)
   );
 
+  const isPlaceholder = renderValue === placeholder;
+
   return (
     <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
       {label && <View style={[styles.sb ]}>
         {Boolean(required) && <Typography variant='medium' size='body' style={styles.required}>*</Typography>}
-        <Typography variant='medium' size='body' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
+        <Typography variant='semiBold' size='caption' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
       </View>}
       {!anchor ? (
         <Pressable
@@ -129,7 +137,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
           {...getReferenceProps()}
         >
         {icon_position == 'left' && <View style={styles.leftIconView}>{renderIcon()}</View>}
-        <Typography style={{ color: colors.text, flex: 1 }}>
+        <Typography style={{ color: isPlaceholder ? colors.textWeaker : colors.text, flex: 1 }}>
           {renderValue}
         </Typography>
         {icon_position == 'right' && <View style={styles.rightIconView}>{renderIcon()}</View>}
@@ -146,7 +154,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
             <TextInput
               placeholder="Search..."
               value={search}
-              onChangeText={setSearch}
+              onChangeText={searchFunc}
               style={[styles.searchInput, { color: colors.text, borderColor: colors.border }]}
               placeholderTextColor={colors.textWeaker}
             />

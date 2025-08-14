@@ -47,7 +47,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as Tab
     const [selectedFilter, setSelectedFilter] = useState<string[] | string>([]);
     const [pagination, setPagination] = useState({
       pageIndex: 0, //initial page index
-      pageSize: 10, //default page size
+      pageSize: 10, //initial page size
     });
 
     const extendedColumns = columns.map((column) => {
@@ -71,7 +71,6 @@ export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as Tab
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    rowCount: 10,
     onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
     state: {
       ...options?.state,

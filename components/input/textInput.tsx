@@ -10,6 +10,8 @@ import * as Icon from '@expo/vector-icons';
 import CountryFlag from "react-native-country-flag";
 import { Typography } from '../typography';
 
+type Currency = 'NGN' | 'USD'
+
 type BaseTextInputProps = {
   value?: string;
   onChangeText?: (text: string) => void;
@@ -20,8 +22,8 @@ type BaseTextInputProps = {
   inputProps?: TextInputProps;
   style?: ViewStyle;
   labelStyle?: TextStyle;
-  leftIcon?: string | 'NGN' | React.ReactNode;
-  rightIcon?: string | 'NGN' | React.ReactNode;
+  leftIcon?: string | Currency | React.ReactNode;
+  rightIcon?: string | Currency | React.ReactNode;
   iconColor?: string;
   required?: string | boolean | ValidationRule<boolean>;
 };
@@ -56,7 +58,11 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     }
 
     if (leftIcon === 'NGN') {
-      return <Text style={styles.iconText}>NGN</Text>;
+      return <Typography style={styles.iconText}>&#8358;</Typography>;
+    }
+
+    if (leftIcon === 'USD') {
+      return <Typography style={styles.iconText}>&#36;</Typography>;
     }
 
     const iconType = leftIcon.split('.')[0];
@@ -157,6 +163,86 @@ export const BaseTextarea: React.FC<BaseTextInputProps> = (props) => {
   )
 }
 
+type CurrencyFormatMode = 'input' | 'blur' | 'none';
+
+export const BaseCurrencyInput: React.FC<
+  Omit<BaseTextInputProps, 'rightIcon' | 'leftIcon'> & { formatMode?: CurrencyFormatMode }
+> = (props) => {
+  const {
+    formatMode = 'input', // 'input' = live formatting, 'blur' = format on blur, 'none' = no formatting
+    onChangeText,
+    onBlur,
+    value,
+    ...rest
+  } = props;
+
+  const formatValue = (n: number) =>
+    Number.isFinite(n) ? Intl.NumberFormat('en-NG').format(n) : '';
+
+  const toNumericString = (text?: string | number) =>
+    String(text ?? '').replace(/,/g, '').trim();
+
+  // Local display state controls what the TextInput shows
+  const [display, setDisplay] = React.useState<string>('');
+
+  // Sync local display when external value changes
+  React.useEffect(() => {
+    const raw = toNumericString(value);
+    if (raw === '') {
+      setDisplay('');
+      return;
+    }
+    if (formatMode === 'input') {
+      setDisplay(formatValue(Number(raw)));
+    } else if (formatMode === 'blur') {
+      // show raw while focused/typing
+      setDisplay(raw);
+    } else {
+      // none
+      setDisplay(raw);
+    }
+  }, [value, formatMode]);
+
+  const handleChange = (text: string) => {
+    const raw = toNumericString(text);
+
+    if (formatMode === 'input') {
+      // live format in the UI
+      setDisplay(raw === '' ? '' : formatValue(Number(raw)));
+    } else {
+      // blur/none: show raw while typing
+      setDisplay(raw);
+    }
+
+    // Always notify parent with raw (no commas)
+    onChangeText?.(raw);
+  };
+
+  const handleBlur = () => {
+    if (formatMode === 'blur') {
+      const raw = toNumericString(display);
+      setDisplay(raw === '' ? '' : formatValue(Number(raw)));
+      // Do NOT call onChangeText again here, keep parent value raw
+    }
+    onBlur?.();
+  };
+
+  return (
+    <BaseTextInput
+      {...rest}
+      leftIcon="NGN"
+      value={display}
+      onChangeText={handleChange}
+      onBlur={handleBlur}
+      // keep any inputProps passed in
+      inputProps={{
+        keyboardType: 'numeric',
+        ...rest.inputProps,
+      }}
+    />
+  );
+};
+
 export const PhoneBaseInput: React.FC<BaseTextInputProps> = (props) => {
   // Simple country list. Extend as needed or import from country-data
   const countryList = {
@@ -245,6 +331,30 @@ export const FormTextInput: React.FC<FormTextInputProps> = ({
   );
 };
 
+export const FormCurrencyInput: React.FC<FormTextInputProps> = (props) => {
+  if (!props.control) {
+    console.warn("FormDropdown requires a control prop from react-hook-form");
+    return <BaseCurrencyInput {...props} />;
+  }
+  return (
+    <Controller
+      control={props.control}
+      name={props.name}
+      rules={props.rules}
+      render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+        <BaseCurrencyInput
+          {...props}
+          value={value}
+          onChangeText={onChange}
+          onBlur={onBlur}
+          error={error?.message}
+          required={props.rules?.required}
+        />
+      )}
+    />
+  );
+};
+
 export const PasswordFormInput: React.FC<FormTextInputProps> = (props) => {
   if (!props.control) {
     console.warn("FormDropdown requires a control prop from react-hook-form");
@@ -304,7 +414,7 @@ export const TextAreaFormInput: React.FC<FormTextInputProps & { multiline?: bool
       name={props.name}
       rules={props.rules}
       render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-        <BaseTextInput
+        <BaseTextarea
           {...props}
           value={value}
           onChangeText={onChange}

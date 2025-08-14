@@ -57,12 +57,14 @@ export interface Unit {
   payment_plan: boolean;
   handover_date: string;
   warranty_period: number;
+  payment_duration: number;
   client_id: string;
   project_id: string;
   agent_id: string;
   sales_rep: string;
   id: string;
   deleted: boolean;
+  images?: string[];
   reason_for_delete: string;
   warranty: Warranty;
   payment_summary: PaymentSummary;

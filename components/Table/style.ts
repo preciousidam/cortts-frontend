@@ -11,7 +11,8 @@ export const useTableStyles = () => {
   return StyleSheet.create({
     tableWrapper: {
       // width: widthPixel(1104),
-      rowGap: heightPixel(8)
+      rowGap: heightPixel(8),
+      flex: 1,
     },
     tableContent: {
       ...roundness.m,

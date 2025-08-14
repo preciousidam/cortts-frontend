@@ -24,7 +24,8 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     error,
     info,
     labelStyle = {},
-    selectedValue
+    selectedValue,
+    onSearch
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,6 +38,11 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     placement: 'bottom-start',
     middleware: [offset(heightPixel(8)), flip()],
   });
+
+  const searchFunc = (q: string) => {
+    setSearch(q);
+    onSearch?.(q);
+  }
 
   const filteredOptions = options.filter((opt) =>
     opt.label.toLowerCase().includes(search.toLowerCase()),
@@ -92,11 +98,13 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     : (selectedValue ? options.find(opt => opt.value === selectedValue)?.label ?? placeholder : placeholder)
   );
 
+  const isPlaceholder = renderValue === placeholder;
+
   return (
     <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
       {label && <View style={[styles.sb ]}>
         {Boolean(required) && <Typography variant='medium' size='body' style={styles.required}>*</Typography>}
-        <Typography variant='medium' size='body' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
+        <Typography variant='semiBold' size='caption' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
       </View>}
       {!anchor ? (
           <Pressable
@@ -106,7 +114,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
             collapsable={false}
           >
           {icon_position == 'left' && <View style={styles.leftIconView}>{renderIcon()}</View>}
-          <Typography style={{ color: colors.text, flex: 1 }}>
+          <Typography style={[{ color: isPlaceholder ? colors.textWeaker : colors.text, flex: 1 }, ]}>
             {renderValue}
           </Typography>
           {icon_position == 'right' && <View style={styles.rightIconView}>{renderIcon()}</View>}
@@ -118,7 +126,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
           <TextInput
             placeholder="Search..."
             value={search}
-            onChangeText={setSearch}
+            onChangeText={searchFunc}
             style={[styles.searchInput, { color: colors.text, borderColor: colors.border }]}
             placeholderTextColor={colors.textWeaker}
           />
