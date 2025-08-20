@@ -45,6 +45,20 @@ export interface Project {
   total_revenue?: number;
 }
 
+export interface UnitClient {
+  fullname: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export enum PaymentDuration {
+  MONTHLY = "monthly",
+  QUARTERLY = "quarterly",
+  BI_ANNUALLY = "bi_annually",
+  ANNUALLY = "annually",
+}
+
 export interface Unit {
   name: string;
   amount: number;
@@ -57,7 +71,7 @@ export interface Unit {
   payment_plan: boolean;
   handover_date: string;
   warranty_period: number;
-  payment_duration: number;
+  payment_duration: PaymentDuration;
   client_id: string;
   project_id: string;
   agent_id: string;
@@ -73,6 +87,8 @@ export interface Unit {
   development_status: 'not_started' | 'in_progress' | 'completed';
   created_at: string;
   updated_at: string;
+  client?: UnitClient;
+  unit_agents?: UnitAgent[];
 }
 
 export interface Warranty {
@@ -81,6 +97,7 @@ export interface Warranty {
 }
 
 export interface PaymentSummary {
+  total: number;
   outstanding: number;
   total_deposit: number;
   total_unpaid: number;
@@ -91,9 +108,35 @@ export interface PaymentSummary {
   installment_amount: number;
   total_sch: number;
   installment_diff: number;
+  duration: PaymentDuration;
 }
 
 export interface GraphDaum {
   month: number;
   amount: number;
+}
+
+export interface UnitAgent {
+  id: string;
+  unit_id: string;
+  agent_id: string;
+  created_at: string;
+  updated_at: string;
+  agent: User;
+  unit: Unit;
+}
+
+export interface Payment {
+  amount: number
+  due_date: string
+  status: string
+  unit_id: string
+  id: string
+  deleted: boolean
+  reason_for_delete: string
+  created_at: string
+  updated_at: string
+  reason_for_payment: string;
+  payment_date: string;
+  installment: number;
 }

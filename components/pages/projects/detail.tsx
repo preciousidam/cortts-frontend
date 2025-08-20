@@ -17,10 +17,9 @@ import { Unit } from '@/types/models';
 import Table from '@/components/Table';
 import { Image } from 'expo-image';
 import generateAvatarImage from '@/utilities/generateAvatarImage';
-import { Button } from '@/components/button';
-import { BaseDropdown } from '@/components/input/dropdown/dropdown';
 import { useTableStyles } from '@/components/Table/style';
 import { format } from 'date-fns';
+import PopupMenuV1 from '@/components/PopupMenu';
 
 const purpose: DropdownOption<string>[] = [
   { label: "Detached", value: "Detached" },
@@ -110,21 +109,11 @@ const Project: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.row}>
         <Breadcrumb />
-        <BaseDropdown
+        <PopupMenuV1
           options={[
-            { label: 'Edit Project', value: 'edit' },
-            { label: 'Delete', value: 'delete' }
+            { label: 'Edit Project', onPress: () => onSelect('edit') },
+            { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
           ]}
-          isSearchable={false}
-          onSelect={onSelect}
-          anchor={props => <Button
-            onPress={props.onPress}
-            ref={props.ref}
-            size='medium'
-            iconOnly
-            icon="Ionicons.ellipsis-vertical"
-            variant='secondary'
-          />}
         />
       </View>
       <View style={styles.formArea}>

@@ -119,12 +119,12 @@ export const TableBody = <T,>(): React.ReactElement => {
   }
 
   return (
-    <View style={styles.tableContent} onLayout={({nativeEvent: {layout : {width}}}) => {setWidth(width);}}>
+    <View style={styles.tableContent} >
       <FlatList
         data={table.getRowModel().rows}
         keyExtractor={(item, index) => `${item.id ?? index}`}
         renderItem={renderItem}
-        stickyHeaderIndices={[0, 1]}
+        stickyHeaderIndices={[0]}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={renderEmpty}
         ListFooterComponent={renderPagination}

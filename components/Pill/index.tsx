@@ -10,14 +10,15 @@ import { capitalize } from "lodash";
 type Props = {
   title: string;
   style?: ViewStyle;
-  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray'
+  color: 'green' | 'yellow' | 'blue' | 'red' | 'gray';
+  showIndicator?: boolean;
 }
 
-export const ColoredPill: React.FC<Props> = ({ title, style, color = 'gray' }) => {
-  const styles = useStyles(color)
+export const ColoredPill: React.FC<Props> = ({ title, style, color = 'gray', showIndicator = true }) => {
+  const styles = useStyles(color);
   return (
     <View style={[styles.pill, style]}>
-      <ColorIndicator color={color} />
+      {showIndicator && <ColorIndicator color={color} />}
       <Typography style={styles.text}>{capitalize(title)}</Typography>
     </View>
   );

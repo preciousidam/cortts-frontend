@@ -19,11 +19,11 @@ type Story = StoryObj<typeof FloatingPicker>;
 export const Default: Story = {
   args: {
     items: sampleItems,
-    visible: true,
+    visible: false,
     onClose: () => {},
   },
   render: ({items, ...rest}) => {
-    const [visible, setVisible] = React.useState(true);
+    const [visible, setVisible] = React.useState(rest.visible);
 
     return (
       <View style={{ flex: 1 }}>

@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../auth";
-import { Unit } from "@/types/models";
+import { Payment, Unit, UnitAgent } from "@/types/models";
 import { IResonse } from "@/types";
-import { getUnit, getUnits } from "@/services/unit";
+import { getUnit, getUnitAgents, getUnitPayments, getUnits } from "@/services/unit";
 
 export const useGetUnitsQueries = () => {
   const { token } = useAuthStore();
@@ -19,10 +19,34 @@ export const useGetUnitsQueries = () => {
 export const useGetUnitQuery = (id: string) => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<Unit>({queryFn: (props) => getUnit(id) as unknown as Promise<Unit>, queryKey: ['unit', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
+  const { data, ...rest } = useQuery<Unit>({queryFn: (props) => getUnit(id) as unknown as Promise<Unit>, queryKey: ['unit', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
 
   return {
     unit: data || null,
     ...rest
   };
 };
+
+export const useGetUnitPaymentsQuery = (id: string) => {
+  const { token } = useAuthStore();
+
+  const { data, ...rest } = useQuery<IResonse<Payment[]>>({queryFn: (props) => getUnitPayments(id) as unknown as Promise<IResonse<Payment[]>>, queryKey: ['unit_payments', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
+
+  return {
+    payments: data?.data || [],
+    count: data?.count || 0,
+    ...rest
+  };
+};
+
+
+export const useGetUnitAgentQuery = (id: string) => {
+  const { token } = useAuthStore();
+
+  const { data, ...rest } = useQuery<UnitAgent[]>({queryFn: (props) => getUnitAgents(id) as unknown as Promise<UnitAgent[]>, queryKey: ['unit_agents', id], enabled: !!token?.access_token || !!id, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
+
+  return {
+    agents: data || [],
+    ...rest
+  };
+}

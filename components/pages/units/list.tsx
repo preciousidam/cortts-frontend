@@ -98,7 +98,7 @@ const Units: React.FC = () => {
         meta: { width: widthPixel(151) },
         cell: props => <Typography>{props.cell.getValue() ? format(props.cell.getValue() as string, 'MMM dd, yyyy') : '--'}</Typography>
       },
-    ], [])
+    ], [widthPixel])
 
     const createNewUnit = () => {
     push('./new', { relativeToDirectory: true });

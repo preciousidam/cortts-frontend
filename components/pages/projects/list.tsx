@@ -1,5 +1,6 @@
 import { ListHeader } from '@/components/listHeader';
 import { ColoredPill } from '@/components/Pill';
+import { CustomTab } from '@/components/tab';
 import Table from '@/components/Table';
 import { useTableStyles } from '@/components/Table/style';
 import { Typography } from '@/components/typography';
@@ -8,19 +9,21 @@ import { useGetProjectsQueries } from '@/store/projects/queries';
 import { Project } from '@/types/models';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { capitalize } from 'lodash';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Route, SceneRendererProps } from 'react-native-tab-view';
 
 
 const Projects: React.FC = () => {
   const styles = useStyles();
   const tableStyles = useTableStyles();
   const { projects, count, isLoading } = useGetProjectsQueries();
-  const { widthPixel } = useResponsive();
-  const { push } = useRouter();
-  const columns: ColumnDef<Project>[] =  [
+  const { widthPixel, heightPixel } = useResponsive();
+  const { push, setParams } = useRouter();
+  const { tab } = useLocalSearchParams<{tab: 'all' | 'ongoing' | 'completed' | 'archived'}>()
+  const columns: ColumnDef<Project>[] =  useMemo(() => [
     {
       header: 'Project Name',
       accessorKey: 'name',
@@ -65,11 +68,45 @@ const Projects: React.FC = () => {
         return <Typography style={tableStyles.bodyText}>{format(new Date(props.cell.getValue() as string), 'MMM dd, yyyy')}</Typography>;
       },
     },
-  ];
+  ], [widthPixel, tableStyles.bodyText]);
 
   const createNewProject = () => {
     push('./new', { relativeToDirectory: true });
   };
+
+  const renderPage = useCallback((props: SceneRendererProps & { route: Route}) => {
+    return (
+      <View style={{ paddingVertical: heightPixel(32)}}>
+        <Table<Project>
+          columns={columns}
+          data={projects}
+          filter={{ field: 'purpose', options: [{ label: 'Residential', value: 'residential' }, { label: 'Commercial', value: 'commercial' }], multiple: false }}
+          onRowSelected={(row) => push(`./${row.id}`, { relativeToDirectory: true })}
+          loading={isLoading}
+        />
+      </View>
+    )
+  }, [columns, projects, push, isLoading]);
+
+  const onIndexChange = (index: number) => {
+    const tabKey = ['all', 'ongoing', 'completed', 'archived'][index];
+    setParams({ tab: tabKey });
+  }
+
+  const getInitialTabIndex = () => {
+    switch (tab) {
+      case 'all':
+        return 0;
+      case 'ongoing':
+        return 1;
+      case 'completed':
+        return 2;
+      case 'archived':
+        return 3;
+      default:
+        return 0;
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -79,12 +116,11 @@ const Projects: React.FC = () => {
         primaryAction={{ title: 'Create New Project', onPress: createNewProject }}
         secondaryAction={{ title: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }}
       />
-      <Table<Project>
-        columns={columns}
-        data={projects}
-        filter={{ field: 'purpose', options: [{ label: 'Residential', value: 'residential' }, { label: 'Commercial', value: 'commercial' }], multiple: false }}
-        onRowSelected={(row) => push(`./${row.id}`, { relativeToDirectory: true })}
-        loading={isLoading}
+      <CustomTab
+        initialIndex={getInitialTabIndex()}
+        routes={[{ key: 'all', title: 'All' }, { key: 'ongoing', title: 'Ongoing' }, { key: 'completed', title: 'Completed' }, { key: 'archived', title: 'Archived' }]}
+        renderScene={renderPage}
+        onIndexChange={onIndexChange}
       />
     </View>
   );

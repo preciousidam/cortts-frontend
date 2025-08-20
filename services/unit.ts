@@ -1,6 +1,6 @@
 import { mutationFn, queryFn } from "@/store/query";
 import { IResonse } from "@/types";
-import { Unit } from "@/types/models";
+import { Payment, Unit, UnitAgent } from "@/types/models";
 
 export const getUnits = async () => {
   return queryFn<IResonse<Unit[]>>({
@@ -34,5 +34,17 @@ export const deleteUnit = async (id: string) => {
   return mutationFn<Unit>({
     method: 'delete',
     url: `/unit/${id}`,
+  });
+};
+
+export const getUnitAgents = async (id: string) => {
+  return queryFn<IResonse<UnitAgent[]>>({
+    queryKey: [`/unit_agents/unit/${id}`,  {id}],
+  });
+};
+
+export const getUnitPayments = async (id: string) => {
+  return queryFn<IResonse<Payment[]>>({
+    queryKey: [`/unit/${id}/payments`,  {id, limit: 100, skip: 0}],
   });
 };

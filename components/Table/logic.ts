@@ -18,6 +18,7 @@ export type TableProps<T> = {
   loadingComponent?: ReactNode; // Loading skeleton component
   options?: TableOptions<T>;
   onRowSelected?: (row: T) => void;
+  rowCount?: number; // Number of rows to display in the table
   filter?: {
     field: keyof T;
     options: { label: string; value: string }[];
@@ -39,7 +40,7 @@ const defaultFilter = {
   multiple: true
 }
 
-export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as TableOptions<T>, filter = defaultFilter, ...rest }: TableProps<T>) => {
+export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, options = {} as TableOptions<T>, filter = defaultFilter, ...rest }: TableProps<T>) => {
   const [width, setWidth] = useState<number>();
   const { widthPixel } = useResponsive();
   const [search, setSearch] = useState('');
@@ -47,7 +48,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, options = {} as Tab
     const [selectedFilter, setSelectedFilter] = useState<string[] | string>([]);
     const [pagination, setPagination] = useState({
       pageIndex: 0, //initial page index
-      pageSize: 10, //initial page size
+      pageSize: rowCount, //initial page size
     });
 
     const extendedColumns = columns.map((column) => {

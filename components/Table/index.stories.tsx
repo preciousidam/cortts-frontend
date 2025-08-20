@@ -12,7 +12,7 @@ const meta: Meta<typeof Table> = {
   decorators: [
     (Story) => (
       <AppThemeProvider>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16, }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', padding: 16,  }}>
           <ScrollView>
             <Story />
           </ScrollView>
@@ -34,11 +34,12 @@ export const BasicTable: Story = {
       {
         header: 'Column 1',
         accessorKey: 'col1',
+        // meta: { width: 300, align: 'center' } as ExtendedColumnMeta<any>,
       },
       {
         header: 'Column 2',
         accessorKey: 'col2',
-        meta: { width: 300, align: 'center' } as ExtendedColumnMeta<any>,
+        meta: { width: 500, align: 'center' } as ExtendedColumnMeta<any>,
       },
       {
         header: 'Column 3',
@@ -46,6 +47,7 @@ export const BasicTable: Story = {
         cell(props) {
           return <Button>{String(props.getValue())}</Button>
         },
+        // meta: { width: 300, align: 'center' } as ExtendedColumnMeta<any>,
       },
     ],
     data: [
@@ -68,6 +70,7 @@ export const BasicTable: Story = {
     filter: {field: 'col1', options: [{value: "Data 1", label: "Data 1"}, {value: "Data 4", label: "Data 4"}, {value: "Data 9", label: "Data 9"}], multiple: true},
     loading: false
   },
+  render: (args) => <View style={{ width: 1000 }}><Table {...args} /></View>,
 };
 
 export const EmptyTable: Story = {

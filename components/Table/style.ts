@@ -12,15 +12,16 @@ export const useTableStyles = () => {
     tableWrapper: {
       // width: widthPixel(1104),
       rowGap: heightPixel(8),
-      flex: 1,
+      // minWidth: '100%'
     },
     tableContent: {
       ...roundness.m,
       borderColor: generateColorScale(colors.neutral).lightActive,
-      backgroundColor: colors.card
+      backgroundColor: colors.card,
+      // minWidth: '100%',
     },
     headerRow: {
-      width: '100%',
+      // width: '100%',
     },
     headerCell: {
       paddingHorizontal: widthPixel(24),
@@ -29,7 +30,7 @@ export const useTableStyles = () => {
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      width: '100%',
+      // width: '100%',
       zIndex: -1,
       borderBottomWidth: 1,
       borderBottomColor: generateColorScale(colors.neutral).lightActive

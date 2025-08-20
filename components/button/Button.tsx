@@ -5,13 +5,13 @@ import { useResponsive } from '@/hooks/useResponsive';
 import React, { ReactNode, forwardRef, useState } from 'react';
 import {
   ActivityIndicator,
-  ButtonProps,
   Pressable,
   StyleSheet,
   Text,
   TextStyle,
   ViewStyle,
-  View
+  View,
+  PressableProps,
 } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { generateColorScale } from '@/styleguide/theme/Colors';
@@ -66,7 +66,7 @@ const useVariantHoverStyle = (variant: Variant) => {
   }
 };
 
-const useStyleText = (variant: Variant, disabled?: boolean) => {
+const useStyleText = (variant: Variant, disabled?: boolean | null) => {
   const { colors } = useTheme();
   switch (variant) {
     case 'primary':
@@ -83,17 +83,18 @@ const useStyleText = (variant: Variant, disabled?: boolean) => {
 };
 
 
-export type IButtonProp = Omit<ButtonProps, 'title' | 'children'> & {
+export type IButtonProp = Omit<PressableProps, 'title' | 'children'> & {
   titleStyle?: TextStyle;
   icon?: string | ReactNode;
   rightIcon?: ReactNode;
   isLoading?: boolean;
   variant?: Variant;
-  style?: ViewStyle;
+  style?: ViewStyle | (ViewStyle | undefined)[];
   children?: ReactNode;
   title?: string;
   iconOnly?: boolean;
   size?: Size;
+  color?: string;
 };
 
 export const Button = forwardRef<
@@ -234,7 +235,7 @@ export const Button = forwardRef<
             renderChildren()
           ) : (
             <Text
-              disabled={rest.disabled}
+              disabled={Boolean(rest.disabled)}
               style={[
                 styles.buttonText,
                 textStyle,
