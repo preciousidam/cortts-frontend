@@ -3,17 +3,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ActivityIndicator } from 'react-native';
 
 export default function Layout() {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role, isFetching } = useAuth();
   const segments = useSegments();
   const inAuthGroup = segments[0] === '(auths)';
+
+  if (isFetching && !role){
+    return <ActivityIndicator />
+  }
 
   if (!isAuthenticated && !inAuthGroup) {
     return <Redirect href="/(auths)/login" />;
   }
 
-  if (!role){
-    return <ActivityIndicator />
-  }
 
   // if (role == 'admin') {
   //   return <Redirect href="/(app)/(admin)" />

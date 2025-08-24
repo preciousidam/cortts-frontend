@@ -1,17 +1,21 @@
-import { useAuthStore } from '@/store/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import { Redirect } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 const HomeScreen = () => {
-  const { token } = useAuthStore();
+  const { role, isFetching } = useAuth();
 
-  if (!token) {
+  if (isFetching) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (!role && !isFetching) {
     return (
       <Redirect href="/(auths)/login" />
     );
-  } else if (token.role === 'admin') {
+  } else if (role === 'admin') {
     return <Redirect href="/(app)/(admin)" />;
-  } else if (token.role === 'agent') {
+  } else if (role === 'agent') {
     return <Redirect href="/(app)/(agent)" />;
   } else {
     return <Redirect href="/(app)/(client)" />;

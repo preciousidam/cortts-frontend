@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../auth";
 import { Project } from "@/types/models";
 import { getProject, getProjects } from "@/services/project";
-import { IResonse } from "@/types";
+import { IResponse } from "@/types";
 
 export const useGetProjectsQueries = () => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<IResonse<Project[]>>({queryFn: getProjects as unknown as () => Promise<IResonse<Project[]>>, queryKey: ['projects'], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
+  const { data, ...rest } = useQuery<IResponse<Project[]>>({queryFn: getProjects as unknown as () => Promise<IResponse<Project[]>>, queryKey: ['projects'], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
 
   return {
     projects: data?.data || [],

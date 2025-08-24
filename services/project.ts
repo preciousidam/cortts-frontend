@@ -1,9 +1,9 @@
 import { mutationFn, queryFn } from "@/store/query";
-import { IResonse } from "@/types";
+import { IResponse } from "@/types";
 import { Project } from "@/types/models";
 
 export const getProjects = async () => {
-  return queryFn<IResonse<Project[]>>({
+  return queryFn<IResponse<Project[]>>({
     queryKey: ['project/'],
   });
 };

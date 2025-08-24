@@ -3,25 +3,22 @@ import { useRoundness } from "@/styleguide/theme/Border";
 import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { ReactNode } from "react";
-import { ValidationRule } from "react-hook-form";
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
-export interface DropdownOption<T>  {
+export interface DropdownOption<T> {
   label: string;
   value: T;
-};
+}
 
 interface BaseDropdownSharedProps<T> {
   label?: string;
   placeholder?: string;
-  options?: DropdownOption<T>[];
   style?: ViewStyle;
   labelStyle?: TextStyle;
   icon_position?: 'left' | 'right';
   isSearchable?: boolean;
-  onSearch?: (q: string) => void;
   listContainerStyle?: ViewStyle;
-  required?: string | boolean | ValidationRule<boolean>;
+  required?: string | boolean;
   error?: string;
   info?: string;
   anchor?: (props: {
@@ -30,6 +27,26 @@ interface BaseDropdownSharedProps<T> {
     onPress: () => void;
   }) => ReactNode;
 }
+
+/** Data source variants (mutually exclusive) */
+type WithOptions<T> = {
+  options: DropdownOption<T>[];
+  asyncOptions?: never;
+};
+
+export type WithAsyncOptions<T> = {
+  asyncOptions: (
+    query?: string,
+    skip?: number
+  ) => Promise<{
+    items: DropdownOption<T>[];
+    total: number;
+    hasMore: boolean;
+    nextSkip: number;
+  }>;
+  options?: never;
+};
+
 interface MultiSelectProps<T> extends BaseDropdownSharedProps<T> {
   multiSelect: true;
   selectedValue?: T[];
@@ -42,7 +59,11 @@ interface SingleSelectProps<T> extends BaseDropdownSharedProps<T> {
   onSelect?: (selected: T) => void;
 }
 
-export type BaseDropdownProps<T> = MultiSelectProps<T> | SingleSelectProps<T>;
+export type BaseDropdownProps<T> = (
+  | MultiSelectProps<T>
+  | SingleSelectProps<T>
+) &
+  (WithOptions<T> | WithAsyncOptions<T>);
 
 export const useDropdownStyles = () => {
   const { scale, verticalScale, fontPixel } = useResponsive();

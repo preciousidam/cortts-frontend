@@ -30,6 +30,8 @@ import FilePicker from '@/components/fileUpload/file';
 import { FormTextInput } from '@/components/input';
 import { useUnitLogic } from './logic';
 import { downloadFile } from '@/utilities/download';
+import { withRole } from '@/libs/route';
+import { BaseDropdown } from '@/components/input/dropdown/dropdown';
 
 const purpose: DropdownOption<string>[] = [
   { label: "Detached", value: "Detached" },
@@ -71,7 +73,16 @@ const UnitDetail: React.FC = () => {
     showSignedDocumentUpload,
     setShowSignedDocumentUpload,
     setShowAssignClientForm,
-    showAssignClientForm
+    showAssignClientForm,
+    loadMoreUsers,
+    setClientId,
+    clientId,
+    assignClient,
+    setAgentId,
+    agentId,
+    showAssignAgentForm,
+    setShowAssignAgentForm,
+    assignAgent
   } = useUnitLogic();
 
   const onViewPaymentReceipt = useCallback((paymentId: string) => {
@@ -117,10 +128,11 @@ const UnitDetail: React.FC = () => {
     },
     {
       header: 'Actions',
-      meta: { width: widthPixel(119) },
+      meta: { width: widthPixel(119), align: 'flex-end' },
       cell: (props) => {
         return (
           <PopupMenuV1
+            style={{ alignSelf: 'flex-end' }}
             options={[
               { label: 'View Receipt', onPress: () => onViewPaymentReceipt(props.row.original?.id), disabled: true },
               { label: 'Delete Payment', onPress: () => {}, destructive: true, disabled: true }
@@ -230,6 +242,13 @@ const UnitDetail: React.FC = () => {
     }
   }
 
+  const openPhone = (phone?: string) => {
+    // Logic to open phone dialer with the given phone number
+    if (phone) {
+      openURL(`tel:${phone}`);
+    }
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -264,20 +283,26 @@ const UnitDetail: React.FC = () => {
             <View style={[styles.formArea, ]}>
               <View style={styles.row}>
                 <View style={styles.gapBetween}>
-                  <Typography size='caption' color={colors.neutral}>Assigned Client</Typography>
-                  <Typography variant='semiBold'>{unit?.client ? unit?.client?.fullname : "No assigned client"}</Typography>
+                  <Typography size='caption' color={colors.neutral}>Client</Typography>
+                  <Typography variant='semiBold'>{unit?.client ? unit?.client?.fullname : "No client assigned"}</Typography>
                 </View>
-                <Button onPress={() => {}} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Client</Button>
+                {!unit?.client ? <Button onPress={() => setShowAssignClientForm(true)} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Client</Button> : <View style={styles.smallGap}>
+                  <Button iconOnly icon="SimpleLineIcons.refresh" variant='tertiary' onPress={() => setShowAssignClientForm(true)} />
+                  <Button iconOnly icon="Feather.phone" variant='tertiary' onPress={() => openPhone(unit?.client?.phone)} />
+                </View>}
               </View>
               <Divider />
               <View style={{ rowGap: heightPixel(8) }}>
-                {unit?.unit_agents?.length == 0 && <View style={styles.row}>
+                <View style={styles.row}>
                   <View style={styles.gapBetween}>
-                    <Typography size='caption' color={colors.neutral}>Assigned Agent</Typography>
-                    <Typography variant='semiBold'>No assigned agent</Typography>
+                    <Typography size='caption' color={colors.neutral}>Assigned Agents</Typography>
+                    <Typography variant='semiBold'>{unit?.unit_agents?.[0]?.agent?.fullname ?? "No assigned agent"}</Typography>
                   </View>
-                  <Button onPress={() => {}} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Agent</Button>
-                </View>}
+                  {!unit?.client ? <Button onPress={() => setShowAssignAgentForm(true)} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Agent</Button> : <View style={styles.smallGap}>
+                    <Button iconOnly icon="SimpleLineIcons.refresh" variant='tertiary' onPress={() => setShowAssignAgentForm(true)} />
+                    <Button iconOnly icon="Feather.phone" variant='tertiary' onPress={() => openPhone(unit?.unit_agents?.[0]?.agent?.phone)} />
+                  </View>}
+                </View>
                 {(unit?.unit_agents?.length ?? 0) > 1 && <Button title="See All Agents" variant='tertiary' size='small' />}
               </View>
             </View>
@@ -389,27 +414,57 @@ const UnitDetail: React.FC = () => {
           </View>
         </Modal>
         <Modal
-          visible={showSignedDocumentUpload}
-          onRequestClose={() => setShowSignedDocumentUpload(false)}
+          visible={showAssignClientForm}
+          onRequestClose={() => setShowAssignClientForm(false)}
           transparent={true}
           animationType="fade"
         >
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <View style={[styles.formArea, styles.uploadContainer]}>
               <View style={styles.row}>
-                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Upload Signed Document</Typography>
-                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowSignedDocumentUpload(false)} variant='tertiary' size='medium' />
+                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Assign a Client</Typography>
+                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowAssignClientForm(false)} variant='tertiary' size='medium' />
               </View>
-              <FormTextInput
-                label="Document Name"
-                control={templateControl}
-                name="name"
-                inputProps={{ placeholder: 'Enter document name' }}
+              <BaseDropdown<string | null>
+                label="Select Client"
+                asyncOptions={loadMoreUsers}
+                placeholder="Choose a client"
+                isSearchable
+                style={{ width: '100%'}}
+                selectedValue={clientId}
+                onSelect={setClientId}
               />
-              <FilePicker onSelect={(file) => setTemplateValue('file', file)} />
               <View style={{ flexDirection: 'row', justifyContent: 'flex-end', columnGap: widthPixel(12)}}>
-                <Button title="Cancel" disabled={isMutating} onPress={() => setShowDocumentUpload(false)} variant="outlined" />
-                <Button title="Upload" disabled={isMutating} isLoading={isMutating} onPress={onCreateTemplate} />
+                <Button title="Cancel" disabled={isMutating} onPress={() => setShowAssignClientForm(false)} variant="outlined" />
+                <Button title="Assign Client" disabled={isMutating} isLoading={isMutating} onPress={assignClient} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={showAssignAgentForm}
+          onRequestClose={() => setShowAssignAgentForm(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={[styles.formArea, styles.uploadContainer]}>
+              <View style={styles.row}>
+                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Assign an Agent</Typography>
+                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowAssignAgentForm(false)} variant='tertiary' size='medium' />
+              </View>
+              <BaseDropdown<string | null>
+                label="Select Agent"
+                asyncOptions={(q, skip) => loadMoreUsers(q, skip, 'agent')}
+                placeholder="Choose an agent"
+                isSearchable
+                style={{ width: '100%'}}
+                selectedValue={agentId}
+                onSelect={setAgentId}
+              />
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', columnGap: widthPixel(12)}}>
+                <Button title="Cancel" disabled={isMutating} onPress={() => setShowAssignAgentForm(false)} variant="outlined" />
+                <Button title="Assign Agent" disabled={isMutating} isLoading={isMutating} onPress={assignAgent} />
               </View>
             </View>
           </View>
@@ -458,7 +513,7 @@ const useStyles = () => {
     smallGap: {
       columnGap: widthPixel(12),
       flexDirection: 'row',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     blue: {
       color: colors.primary
@@ -516,4 +571,4 @@ const useStyles = () => {
   });
 };
 
-export default UnitDetail;
+export default withRole(UnitDetail);

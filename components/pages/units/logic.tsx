@@ -11,6 +11,7 @@ import { useCreateSignedMutation, useCreateTemplateMutation, useCreateUnitMutati
 import { useGetUnitQuery } from "@/store/units/queries";
 import { FileLike } from "@/services/upload";
 import { useMultipleUploadMutation, useSingleUploadMutation } from "@/store/uploads/mutation";
+import { getUsers } from "@/services/user";
 
 type Form = {
   name: string;
@@ -103,6 +104,18 @@ export const useUnitLogic = () => {
   const {mutate: createTemplateMutation, isPending: isCreatingTemplate} = useCreateTemplateMutation({});
   const {mutate: createSignedMutation, isPending: isCreatingSigned} = useCreateSignedMutation({});
   const [showAssignClientForm, setShowAssignClientForm] = useState(false);
+  const [clientId, setClientId] = useState<string | null>(null);
+  const [showAssignAgentForm, setShowAssignAgentForm] = useState(false);
+  const [agentId, setAgentId] = useState<string | null>(null);
+  const { mutate: updateUnitMutation, isPending: isUpdating } = useUpdateUnitMutation(unit_id,{
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error updating unit', text2: handleError(error.response?.data, error.message), type: 'error'})
+    },
+    onSuccess: () => {
+      Toast.show({text1: 'Unit updated successfully', text2: 'Your unit has been updated.', type: 'success'});
+      queryClient.invalidateQueries({ queryKey: ['unit', unit_id] });
+    }
+  });
 
   const createUnit = async (unitData: Form) => {
     if (isPending) {
@@ -186,10 +199,50 @@ export const useUnitLogic = () => {
     setValue('images', files as string[]);
   }
 
+  const loadMoreUsers = async (q = '', skip = 0, role?: string) => {
+    const response = await queryClient.fetchQuery({
+      queryKey: ['/users/', { q, limit: 100, skip, role }],
+      queryFn: getUsers
+    });
+
+    const hasMore = response.count > skip + (response.data?.length || 0);
+    const nextSkip = hasMore ? skip + 100 : skip;
+
+    return {
+      items: response.data.map((user: any) => ({ label: user.fullname, value: user.id })),
+      total: response.count,
+      hasMore,
+      nextSkip
+    };
+  };
+
+  const assignClient = async () => {
+    if (isUpdating || !clientId) {
+      return;
+    }
+    await updateUnitMutation({client_id: clientId},{
+      onSuccess: () => {
+        setShowAssignClientForm(false);
+        setClientId(null);
+      }
+    });
+  }
+  const assignAgent = async () => {
+    if (isUpdating || !agentId) {
+      return;
+    }
+    await updateUnitMutation({agents: [{agent_id: agentId, unit_id, role: 'sales_rep'}]},{
+      onSuccess: () => {
+        setShowAssignAgentForm(false);
+        setAgentId(null);
+      }
+    });
+  }
+
   return {
     onSubmit: handleSubmit(createUnit),
     control,
-    isLoading: isPending || isUploading || isUploadingTemplate || isCreatingTemplate,
+    isLoading: isPending || isUploading || isUploadingTemplate || isCreatingTemplate || isUpdating || isCreatingSigned,
     watch,
     installment_amount,
     total_amount,
@@ -203,6 +256,15 @@ export const useUnitLogic = () => {
     showSignedDocumentUpload,
     setShowAssignClientForm,
     showAssignClientForm,
+    loadMoreUsers,
+    setClientId,
+    clientId,
+    assignClient,
+    setAgentId,
+    agentId,
+    showAssignAgentForm,
+    setShowAssignAgentForm,
+    assignAgent,
   };
 }
 

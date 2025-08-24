@@ -17,7 +17,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     onSelect,
     multiSelect,
     style,
-    icon_position = 'left',
+    icon_position = 'right',
     isSearchable = true,
     anchor,
     required = false,
@@ -25,7 +25,6 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     info,
     labelStyle = {},
     selectedValue,
-    onSearch
   } = props;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -41,7 +40,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
 
   const searchFunc = (q: string) => {
     setSearch(q);
-    onSearch?.(q);
+    // onSearch?.(q);
   }
 
   const filteredOptions = options.filter((opt) =>

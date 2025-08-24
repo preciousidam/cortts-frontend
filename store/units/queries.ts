@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../auth";
 import { Document, Payment, Unit, UnitAgent } from "@/types/models";
-import { IResonse } from "@/types";
+import { IResponse } from "@/types";
 import { getUnit, getUnitAgents, getUnitDocuments, getUnitPayments, getUnits } from "@/services/unit";
 
 export const useGetUnitsQueries = () => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<IResonse<Unit[]>>({queryFn: getUnits as unknown as () => Promise<IResonse<Unit[]>>, queryKey: ['units'], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
+  const { data, ...rest } = useQuery<IResponse<Unit[]>>({queryFn: getUnits as unknown as () => Promise<IResponse<Unit[]>>, queryKey: ['units'], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
 
   return {
     units: data?.data || [],
@@ -30,7 +30,7 @@ export const useGetUnitQuery = (id: string) => {
 export const useGetUnitPaymentsQuery = (id: string) => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<IResonse<Payment[]>>({queryFn: (props) => getUnitPayments(id) as unknown as Promise<IResonse<Payment[]>>, queryKey: ['unit_payments', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
+  const { data, ...rest } = useQuery<IResponse<Payment[]>>({queryFn: (props) => getUnitPayments(id) as unknown as Promise<IResponse<Payment[]>>, queryKey: ['unit_payments', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
 
   return {
     payments: data?.data || [],
@@ -42,7 +42,7 @@ export const useGetUnitPaymentsQuery = (id: string) => {
 export const useGetUnitDocumentsQuery = (id: string) => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<IResonse<Document[]>>({queryFn: (props) => getUnitDocuments(id) as unknown as Promise<IResonse<Document[]>>, queryKey: ['unit_documents', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
+  const { data, ...rest } = useQuery<IResponse<Document[]>>({queryFn: (props) => getUnitDocuments(id) as unknown as Promise<IResponse<Document[]>>, queryKey: ['unit_documents', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
 
   return {
     documents: data?.data || [],

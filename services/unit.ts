@@ -1,9 +1,9 @@
 import { mutationFn, queryFn } from "@/store/query";
-import { IResonse } from "@/types";
+import { IResponse } from "@/types";
 import { Document, Payment, SignedDocument, Template, Unit, UnitAgent } from "@/types/models";
 
 export const getUnits = async () => {
-  return queryFn<IResonse<Unit[]>>({
+  return queryFn<IResponse<Unit[]>>({
     queryKey: ['unit/', {limit: 100, skip: 0}],
   });
 };
@@ -14,7 +14,7 @@ export const getUnit = async (id: string) => {
   });
 };
 
-export const updateUnit = async (id: string, data: Unit) => {
+export const updateUnit = async (id: string, data: Partial<Unit> & {agents?: Partial<UnitAgent>[]}) => {
   return mutationFn<Unit>({
     method: 'patch',
     url: `/unit/${id}`,
@@ -38,19 +38,19 @@ export const deleteUnit = async (id: string) => {
 };
 
 export const getUnitAgents = async (id: string) => {
-  return queryFn<IResonse<UnitAgent[]>>({
+  return queryFn<IResponse<UnitAgent[]>>({
     queryKey: [`/unit_agents/unit/${id}`,  {id}],
   });
 };
 
 export const getUnitPayments = async (id: string) => {
-  return queryFn<IResonse<Payment[]>>({
+  return queryFn<IResponse<Payment[]>>({
     queryKey: [`/unit/${id}/payments`,  {id, limit: 100, skip: 0}],
   });
 };
 
 export const getUnitDocuments = async (id: string) => {
-  return queryFn<IResonse<Document[]>>({
+  return queryFn<IResponse<Document[]>>({
     queryKey: [`/unit/${id}/documents`,  { limit: 100, skip: 0}],
   });
 };

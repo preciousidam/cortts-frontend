@@ -15,6 +15,7 @@ interface AuthContextType {
   isError: boolean;
   isPending: boolean;
   isLoading: boolean;
+  isFetching: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -29,6 +30,7 @@ export const AuthContext = createContext<AuthContextType>({
   isError: false,
   isPending: false,
   isLoading: false,
+  isFetching: true
 });
 
 

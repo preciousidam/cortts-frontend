@@ -74,7 +74,7 @@ export interface Unit {
   payment_duration: PaymentDuration;
   client_id: string;
   project_id: string;
-  agent_id: string;
+  // agent_id: string;
   sales_rep: string;
   id: string;
   deleted: boolean;
@@ -120,6 +120,7 @@ export interface UnitAgent {
   id: string;
   unit_id: string;
   agent_id: string;
+  role: 'external_agent' | 'sales_rep';
   created_at: string;
   updated_at: string;
   agent: User;

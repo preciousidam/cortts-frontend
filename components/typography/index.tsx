@@ -65,7 +65,6 @@ const useStyles = () => {
     base: {
       includeFontPadding: false,
       color: colors.text,
-      flex: 1
     },
     regular: {
       ...Fonts.regular,

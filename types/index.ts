@@ -31,7 +31,7 @@ export interface ResetPasswordReq {
   code: string;
 }
 
-export interface IResonse<T> {
+export interface IResponse<T> {
   data: T;
   count: number;
 }

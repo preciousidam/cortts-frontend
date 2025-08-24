@@ -247,7 +247,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isError: isError || isRegError || isVerError,
         isLoading: isPending || isFetching || isRegPending || isVerPending,
         isPending: isPending || isRegPending || isVerPending,
-        register
+        register,
+        isFetching
       }}
     >
       <View style={{ flex: 1 }}>
