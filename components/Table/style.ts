@@ -31,13 +31,14 @@ export const useTableStyles = () => {
       flexDirection: 'row',
       alignItems: 'center',
       // width: '100%',
-      zIndex: -1,
+      // zIndex: -1,
       borderBottomWidth: 1,
       borderBottomColor: generateColorScale(colors.neutral).lightActive
     },
     cell: {
       paddingHorizontal: widthPixel(24),
       paddingVertical: heightPixel(16),
+      flex: 1
     },
     headerText: {
       color: colors.textWeak,

@@ -47,14 +47,15 @@ export const Typography: React.FC<AppTextProps> = ({
 
 export const LinkTypography: React.FC<AppTextProps & LinkProps> = (Props) => {
   const styles = useStyles();
-  const s: TextStyle[] = [styles.link,{ textDecorationLine: 'none' }];
+  const { colors } = useTheme();
+  const s: TextStyle[] = [styles.link,{ textDecorationLine: 'none', color: colors.primary }];
   if (Array.isArray(Props.style)) {
     s.push(...(Props.style as TextStyle[]));
   } else if (Props.style) {
     s.push(Props.style);
   }
 
-  return <Link {...Props}><Typography {...Props} style={s} /></Link>;
+  return <Link {...Props}><Typography {...Props} style={s} color={colors.primary} /></Link>;
 };
 
 const useStyles = () => {
@@ -64,6 +65,7 @@ const useStyles = () => {
     base: {
       includeFontPadding: false,
       color: colors.text,
+      flex: 1
     },
     regular: {
       ...Fonts.regular,

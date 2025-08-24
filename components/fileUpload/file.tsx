@@ -1,26 +1,25 @@
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoundness } from "@/styleguide/theme/Border";
 import * as DocumentPicker from 'expo-document-picker';
-import { Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Platform, Pressable, StyleSheet, TextStyle, View } from "react-native";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Typography } from "../typography";
 import { Button } from "../button";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ValidationRule } from "react-hook-form";
 import { generateColorScale } from "@/styleguide/theme/Colors";
-import { Image } from "expo-image";
+import { Accept, useDropzone } from "react-dropzone";
+import { FileLike } from "@/services/upload";
 
 type MultiSelect = {
   multiSelect: true;
-  selectedValue?: string[];
-  onSelect?: (selected: string[]) => Promise<void> | void;
+  onSelect?: (selected: FileLike[] | null) => Promise<void> | void;
 };
 
 type SingleSelect = {
   multiSelect?: false;
-  selectedValue?: string;
-  onSelect?: (selected: string) => Promise<void> | void;
+  onSelect?: (selected: FileLike | null) => Promise<void> | void;
 };
 
 export type FilePickerProps = {
@@ -28,14 +27,41 @@ export type FilePickerProps = {
   labelStyle?: TextStyle,
   required?: string | boolean | ValidationRule<boolean>;
   error?: string;
+  accept?: Accept;
+  placeholder?: string;
 } & (MultiSelect | SingleSelect);
 
 
-export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, selectedValue, label, labelStyle = {}, required, error }) => {
+export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, label, labelStyle = {}, required, error, accept, placeholder }) => {
   const styles = useStyles();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
   const { heightPixel, widthPixel } = useResponsive();
-  const [selectedAsset, setSelectedAsset] = useState<DocumentPicker.DocumentPickerAsset[] | null>(null);
+  const [fileList, setFileList] = useState<File[] | DocumentPicker.DocumentPickerAsset[]>([]);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+      // Do something with the files
+      console.log(acceptedFiles, 'dropped files', 'multiselect:', multiSelect);
+
+      if (multiSelect) {
+        const all = [...(fileList as File[]), ...acceptedFiles];
+        setFileList(prev => [...(prev as File[]), ...all]);
+        onSelect?.(all);
+      } else {
+        setFileList(acceptedFiles);
+        onSelect?.(acceptedFiles[0]);
+      }
+    }, [multiSelect, onSelect]);
+
+  const { getRootProps, getInputProps, isDragActive, open } = Platform.OS === 'web'
+    ? useDropzone({
+        multiple: multiSelect,
+        maxFiles: multiSelect ? 15 : 1,
+        accept: accept ?? { '*/*': [], },
+        onDrop,
+        noClick: true, // keep click to your existing “Browse Files” button
+      })
+    : // dummy fallbacks for native so spreading props doesn't break
+      ({ getRootProps: () => ({} as any), getInputProps: () => ({} as any), isDragActive: false });
 
   const handlePress = async () => {
     try {
@@ -45,12 +71,15 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, s
         copyToCacheDirectory: true,
       });
       if (!res.canceled) {
-        setSelectedAsset(res.assets);
+        setFileList(res.assets || []);
         if (multiSelect) {
-          const updated = [...(selectedValue ?? []), res.assets[0].uri];
+          const all = [...(fileList as DocumentPicker.DocumentPickerAsset[]), ...res.assets];
+          const updated = [...(all as DocumentPicker.DocumentPickerAsset[]).map(asset => Platform.OS == 'web' && asset.file ? asset.file : asset.uri)];
+          setFileList(all);
           onSelect?.(updated);
         } else {
-          onSelect?.(res.assets[0].uri);
+          setFileList([res.assets[0]]);
+          onSelect?.(Platform.OS == 'web' && res.assets?.[0].file ? res.assets[0].file : res.assets[0].uri);
         }
       } else {
         console.log('File selection was cancelled');
@@ -60,40 +89,161 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, s
     }
   }
 
-  const renderSelectedFiles = () => (
-    <View style={styles.list}>
-      {selectedAsset?.map((asset, index) => (
-        <View key={index} style={styles.fileItem}>
-          <Image source={{ uri: asset.uri }} style={{ width: '100%', height: '100%' }} />
-        </View>
-      ))}
-    </View>
-  )
+  const byteToSize = (bytes: number) => {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Byte';
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
+  }
 
-  const imageUploadHandler = async (uri: string) => {
-    try {
-      
-    } catch (error) {
-      console.error("Error picking image:", error);
+  const handleDelete = (index: number) => {
+    if (!fileList || fileList.length === 0) return;
+    if (Platform.OS === 'web') {
+      const updatedList = fileList.filter((_, i) => i !== index) as File[];
+      setFileList(updatedList);
+      if (multiSelect) {
+        onSelect?.(updatedList);
+      } else {
+        onSelect?.(updatedList[0]);
+      }
+    } else {
+      const updatedList = fileList.filter((_, i) => i !== index) as DocumentPicker.DocumentPickerAsset[];
+      setFileList(updatedList);
+      if (multiSelect) {
+        const updatedListPath = updatedList.map(file => file.uri);
+        onSelect?.(updatedListPath);
+      } else {
+        onSelect?.(updatedList?.[0] ? updatedList[0].uri : null);
+      }
     }
   }
 
-  const renderPicker = () => (
-    <Pressable style={[styles.container, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase}]} onPress={handlePress}>
+  const handleReplace = (index: number) => {
+    if (!fileList || fileList.length === 0) return;
+    handleDelete(index);
+    handlePress();
+  }
+
+  const renderSelectedFiles = () => {
+    if (multiSelect && fileList.length > 0) {
+      return (
+        <View style={styles.list}>
+          {fileList.map((file, index) => (
+            <View key={index} style={styles.fileItem}>
+              <View>
+                {/* <Image source={{ uri: file.uri }} style={styles.image} /> */}
+              </View>
+              <View style={{ flex: 1, rowGap: heightPixel(8) }}>
+                <Typography variant="bold" numberOfLines={1} ellipsizeMode="middle">{file.name}</Typography>
+                <View style={styles.sb}>
+                  <Typography size="caption" color={colors.textWeaker}>{byteToSize(file.size ?? 0)} • {((file as File)?.type ?? (file as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
+                </View>
+              </View>
+              <View style={styles.sb}>
+                <Button
+                  iconOnly
+                  icon="EvilIcons.refresh"
+                  title="Remove"
+                  variant='tertiary'
+                  size="medium"
+                  onPress={() => handleReplace(index)}
+                />
+                <Button
+                  iconOnly
+                  icon="Ionicons.trash-outline"
+                  title="Remove"
+                  color={colors.notification}
+                  variant='tertiary'
+                  size="medium"
+                  onPress={() => handleDelete(index)}
+                />
+              </View>
+          </View>
+        ))}
+      </View>);
+    } else {
+      return (
+        <View style={styles.fileItem}>
+            <View>
+              {/* <Image source={{ uri: file.uri }} style={styles.image} /> */}
+            </View>
+            <View style={{ flex: 1, rowGap: heightPixel(8) }}>
+              <Typography variant="bold" numberOfLines={1} ellipsizeMode="middle">{fileList[0].name}</Typography>
+              <View style={styles.sb}>
+                <Typography size="caption" color={colors.textWeaker}>{byteToSize(fileList[0].size ?? 0)} • {((fileList[0] as File)?.type ?? (fileList[0] as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
+              </View>
+            </View>
+            <View style={styles.sb}>
+              <Button
+                iconOnly
+                icon="EvilIcons.refresh"
+                title="Remove"
+                variant='tertiary'
+                size="medium"
+                onPress={() => handleReplace(0)}
+              />
+              <Button
+                iconOnly
+                icon="Ionicons.trash-outline"
+                title="Remove"
+                color={colors.notification}
+                variant='tertiary'
+                size="medium"
+                onPress={() => handleDelete(0)}
+              />
+            </View>
+        </View>
+      );
+    }
+  };
+
+  const renderWebPicker = () => (
+    <div {...getRootProps()}>
+      <Pressable style={[styles.container, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]} onPress={open}>
+        {Platform.OS === 'web' && <input {...getInputProps()} style={{ display: 'none' }} />}
+        <View style={styles.white_circle}>
+          <Ionicons name="cloud-upload-outline" size={24} color="#606B85" />
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', rowGap: heightPixel(2) }}>
+          {isDragActive && <Typography variant="semiBold" color={colors.primary}>Drop files here</Typography>}
+          {!isDragActive && <Typography variant="semiBold" color={colors.primary}>Click to upload <Typography color={colors.textWeak}>or drag and drop</Typography></Typography>}
+          <Typography color={colors.textWeak} variant="regular" size="caption">{placeholder ?? "Import images, pdf or other files"}</Typography>
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
+          <View style={{ width: '100%', height: heightPixel(1), backgroundColor: '#F0F2F5', position: 'absolute' }} />
+          <Typography color={colors.textWeak} variant="regular" size="caption" style={{ backgroundColor: isDarkMode ? colors.background : '#F7F7F7' }}>OR</Typography>
+        </View>
+        <Button onPress={open} variant='secondary' title="Browse Files" color={colors.primary} style={{ backgroundColor: '#E6F2FA' }} />
+      </Pressable>
+    </div>
+  )
+
+  const renderNativePicker = () => (
+    <Pressable {...getRootProps()} style={[styles.container, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase}]} onPress={handlePress}>
+      {Platform.OS === 'web' && <input {...getInputProps()} style={{ display: 'none' }} />}
       <View style={styles.white_circle}>
         <Ionicons name="cloud-upload-outline" size={24} color="#606B85" />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', rowGap: heightPixel(2) }}>
-        <Typography variant="semiBold" color={colors.primary}>Click to upload <Typography color={colors.textWeak}>or drag and drop</Typography></Typography>
+        {isDragActive && <Typography variant="semiBold" color={colors.primary}>Drop files here</Typography>}
+        {!isDragActive && <Typography variant="semiBold" color={colors.primary}>Click to upload <Typography color={colors.textWeak}>or drag and drop</Typography></Typography>}
         <Typography color={colors.textWeak} variant="regular" size="caption">JPEG, PNG, GIF, WEBP</Typography>
       </View>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
         <View style={{ width: '100%', height: heightPixel(1), backgroundColor: '#F0F2F5', position: 'absolute' }} />
         <Typography color={colors.textWeak} variant="regular" size="caption" style={{ backgroundColor: '#F7F7F7' }}>OR</Typography>
       </View>
-      <Button variant='secondary' title="Browse Files" color={colors.primary} style={{ backgroundColor: '#E6F2FA' }} />
+      <Button onPress={handlePress} variant='secondary' title="Browse Files" color={colors.primary} style={{ backgroundColor: '#E6F2FA' }} />
     </Pressable>
-  )
+  );
+
+  const renderPicker = () => {
+    if (Platform.OS === 'web') {
+      return renderWebPicker();
+    } else {
+      return renderNativePicker();
+    }
+  }
 
   return (
     <View style={[ { width: '100%', rowGap: heightPixel(8) } ]}>
@@ -101,7 +251,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, s
         {Boolean(required) && <Typography style={styles.required}>*</Typography>}
         <Typography size="caption" variant='semiBold' style={[ { color: colors.text }, labelStyle]}>{label}</Typography>
       </View>}
-      {selectedAsset ? renderSelectedFiles() : renderPicker()}
+      {Boolean(fileList) && (fileList?.length ?? 0) > 0 ? renderSelectedFiles() : renderPicker()}
     </View>
   );
 }
@@ -109,21 +259,22 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, s
 const useStyles = () => {
   const { heightPixel, widthPixel, scale, fontPixel } = useResponsive();
   const { m, circle } = useRoundness();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   return StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      height: heightPixel(243),
       width: '100%',
       ...m,
       borderStyle: 'dashed',
       borderColor: colors.neutral,
-      backgroundColor: '#F7F7F7',
+      backgroundColor: isDarkMode ? colors.background : '#F7F7F7',
       paddingVertical: heightPixel(20),
       paddingHorizontal: widthPixel(16),
+      paddingBottom: heightPixel(32),
+      paddingTop: heightPixel(32),
       rowGap: widthPixel(16),
     },
     white_circle: {
@@ -143,21 +294,22 @@ const useStyles = () => {
       fontSize: fontPixel(12),
     },
     list: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      columnGap: widthPixel(8),
-      rowGap: heightPixel(8),
-      flexWrap: 'wrap',
+      flexDirection: 'column',
+      rowGap: heightPixel(16),
       width: '100%',
     },
     fileItem: {
-      width: widthPixel(126.25),
-      height: heightPixel(105),
+      width: '100%',
+      height: heightPixel(68),
       ...m,
-      justifyContent: 'center',
-      alignItems: 'center',
       overflow: 'hidden',
       borderColor: generateColorScale(colors.neutral).normalHover,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      columnGap: widthPixel(16),
+      paddingHorizontal: widthPixel(10),
+      paddingVertical: heightPixel(10),
     }
   });
 }

@@ -140,3 +140,60 @@ export interface Payment {
   payment_date: string;
   installment: number;
 }
+
+export enum DocumentKind {
+  TEMPLATE = "template",
+  SIGNED = "signed"
+}
+export interface Document {
+  id: string;
+  name: string;
+  unit_id?: string;
+  kind: DocumentKind;
+  created_at: string;
+  media_file?: MediaFile;
+  media_file_id: string;
+}
+
+export interface MediaFile {
+  file_type: string;
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  created_at: string;
+  updated_at: string;
+  uploaded_by: string;
+  uploader: User;
+  unit_id: string;
+  project_id: string;
+  deleted: boolean;
+  id: string;
+}
+
+export interface Template {
+  name: string
+  media_file_id: string
+  unit_id: string
+  deleted_at: boolean
+  id: string
+  media_file: MediaFile
+  unit: Unit
+  created_at: string
+  updated_at: string
+}
+
+export interface SignedDocument {
+  name: string
+  media_file_id: string
+  unit_id: string
+  deleted_at: boolean
+  id: string
+  media_file: MediaFile
+  unit: Unit
+  client_id: string;
+  agent_id?: string;
+  client?: User;
+  agent?: User;
+  created_at: string
+  updated_at: string
+}

@@ -210,7 +210,7 @@ export const PopupMenuV1: PopupComponentType = ({
           <View
             style={[
               styles.modalContent,
-              { backgroundColor: colors.card, width: widthPixel(200) },
+              { backgroundColor: colors.card, minWidth: widthPixel(200) },
               rest.modalContainerStyle,
               floatingStyles as ViewStyle
             ]}

@@ -64,8 +64,6 @@ export const TableBody = <T,>(): React.ReactElement => {
     )
 
   const renderPagination = () => {
-    console.log(table.getRowCount(), 'Row count');
-    
     // Implement pagination logic here if needed
     return <View style={[styles.footer, {borderBottomWidth: 0}]}>
       <Pagination table={table} />
@@ -107,11 +105,16 @@ export const TableBody = <T,>(): React.ReactElement => {
         {item.getVisibleCells().map(cell => (
           <View
             key={cell.id}
-            style={[styles.cell, { width: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.width ?? equalWidth), alignItems: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.align ?? 'flex-start') }]}
+            style={[
+              styles.cell,
+              { width: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.width ?? equalWidth),
+                alignItems: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.align ?? 'flex-start')
+              }
+            ]}
           >
-            <Typography style={styles.bodyText}>
+            {!cell.column.columnDef.cell ? <Typography style={styles.bodyText}>
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </Typography>
+            </Typography> : <> {flexRender(cell.column.columnDef.cell, cell.getContext())} </>}
           </View>
         ))}
       </Pressable>
@@ -124,7 +127,7 @@ export const TableBody = <T,>(): React.ReactElement => {
         data={table.getRowModel().rows}
         keyExtractor={(item, index) => `${item.id ?? index}`}
         renderItem={renderItem}
-        stickyHeaderIndices={[0]}
+        stickyHeaderIndices={[0, 1]}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={renderEmpty}
         ListFooterComponent={renderPagination}

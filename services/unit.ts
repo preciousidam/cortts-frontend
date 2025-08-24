@@ -1,6 +1,6 @@
 import { mutationFn, queryFn } from "@/store/query";
 import { IResonse } from "@/types";
-import { Payment, Unit, UnitAgent } from "@/types/models";
+import { Document, Payment, SignedDocument, Template, Unit, UnitAgent } from "@/types/models";
 
 export const getUnits = async () => {
   return queryFn<IResonse<Unit[]>>({
@@ -46,5 +46,27 @@ export const getUnitAgents = async (id: string) => {
 export const getUnitPayments = async (id: string) => {
   return queryFn<IResonse<Payment[]>>({
     queryKey: [`/unit/${id}/payments`,  {id, limit: 100, skip: 0}],
+  });
+};
+
+export const getUnitDocuments = async (id: string) => {
+  return queryFn<IResonse<Document[]>>({
+    queryKey: [`/unit/${id}/documents`,  { limit: 100, skip: 0}],
+  });
+};
+
+export const uploadTemplate = async (data: Partial<Template>) => {
+  return mutationFn<Template>({
+    method: 'post',
+    url: 'document/templates',
+    data,
+  });
+};
+
+export const uploadSignedDocument = async (data: Partial<SignedDocument>) => {
+  return mutationFn<SignedDocument>({
+    method: 'post',
+    url: 'document/signed',
+    data,
   });
 };

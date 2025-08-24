@@ -1,16 +1,16 @@
 import { Unit } from "@/types/models";
 import { handleError } from "@/utilities/error";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateUnitMutation, useUpdateUnitMutation } from "@/store/units/mutation";
+import { useCreateSignedMutation, useCreateTemplateMutation, useCreateUnitMutation, useUpdateUnitMutation } from "@/store/units/mutation";
 import { useGetUnitQuery } from "@/store/units/queries";
 import { FileLike } from "@/services/upload";
-import { useMultipleUploadMutation } from "@/store/uploads/mutation";
+import { useMultipleUploadMutation, useSingleUploadMutation } from "@/store/uploads/mutation";
 
 type Form = {
   name: string;
@@ -25,6 +25,17 @@ type Form = {
   development_status?: Unit['development_status'];
   images?: string[] | null;
 };
+
+type TemplateForm = {
+  name: string;
+  file: FileLike | null;
+}
+
+type SignedDocumentForm = {
+  name: string;
+  file: FileLike | null;
+  client_id: string;
+}
 
 const schema: yup.ObjectSchema<Form> = yup.object({
   name: yup.string().required('Unit name is required'),
@@ -52,12 +63,25 @@ const schema: yup.ObjectSchema<Form> = yup.object({
     })
 }).required();
 
+const templateSchema: yup.ObjectSchema<TemplateForm> = yup.object({
+  name: yup.string().required('Template name is required'),
+  file: yup.mixed<FileLike>().required('Template file is required'),
+}).required();
+
 export const useUnitLogic = () => {
   const { replace } = useRouter();
   const queryClient = useQueryClient();
+  const {unit_id} = useLocalSearchParams<{unit_id: string}>();
+  const [showDocumentUpload, setShowDocumentUpload] = useState(false);
+  const [showSignedDocumentUpload, setShowSignedDocumentUpload] = useState(false);
   const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<Form>({
     defaultValues: {payment_plan: false},
     resolver: yupResolver(schema),
+  });
+
+  const { control: templateControl , setValue: setTemplateValue, handleSubmit: handleTemplateSubmit } = useForm<TemplateForm>({
+    defaultValues: {},
+    resolver: yupResolver(templateSchema),
   });
 
   const { mutate: uploadImages, isPending: isUploading } = useMultipleUploadMutation({
@@ -67,11 +91,18 @@ export const useUnitLogic = () => {
       replace('../', { relativeToDirectory: true });
     },
   });
+
+  const {mutate: upload, isPending: isUploadingTemplate} = useSingleUploadMutation();
+
   const { mutate: createUnitMutation, isPending } = useCreateUnitMutation({
     onError(error, variables, context) {
       Toast.show({text1: 'Error creating unit', text2: handleError(error.response?.data, error.message), type: 'error'})
     }
   });
+
+  const {mutate: createTemplateMutation, isPending: isCreatingTemplate} = useCreateTemplateMutation({});
+  const {mutate: createSignedMutation, isPending: isCreatingSigned} = useCreateSignedMutation({});
+  const [showAssignClientForm, setShowAssignClientForm] = useState(false);
 
   const createUnit = async (unitData: Form) => {
     if (isPending) {
@@ -96,6 +127,37 @@ export const useUnitLogic = () => {
           queryClient.invalidateQueries({ queryKey: ['units'] });
           replace('../', { relativeToDirectory: true });
         }
+      }
+    });
+  };
+
+  const uploadTemplate = async ({name, file}: TemplateForm) => {
+    if (!file) {
+      Toast.show({text1: 'No file selected', type: 'error'});
+      return;
+    }
+
+    if (isCreatingTemplate) {
+      return;
+    }
+    await upload({file, extra: {unit_id}}, {
+      onSuccess: async (uploadData, variables, context) => {
+        await createTemplateMutation({name, media_file_id: uploadData.id, unit_id}, {
+          onSuccess: () => {
+            Toast.show({text1: 'Template uploaded successfully', text2: 'Your template has been uploaded.', type: 'success'});
+            queryClient.invalidateQueries({ queryKey: ['templates'] });
+            setTemplateValue('name', '');
+            setTemplateValue('file', null);
+            setShowDocumentUpload(false);
+            queryClient.invalidateQueries({ queryKey: ['unit', unit_id] });
+          },
+          onError: (error, variables, context) => {
+            Toast.show({text1: 'Error creating template', text2: handleError(error.response?.data, error.message), type: 'error'});
+          }
+        });
+      },
+      onError: (error, variables, context) => {
+        Toast.show({text1: 'Error uploading file', text2: handleError(error.response?.data, error.message), type: 'error'});
       }
     });
   };
@@ -127,11 +189,20 @@ export const useUnitLogic = () => {
   return {
     onSubmit: handleSubmit(createUnit),
     control,
-    isLoading: isPending || isUploading,
+    isLoading: isPending || isUploading || isUploadingTemplate || isCreatingTemplate,
     watch,
     installment_amount,
     total_amount,
     handleImageUpload,
+    templateControl,
+    setTemplateValue,
+    onCreateTemplate: handleTemplateSubmit(uploadTemplate),
+    setShowDocumentUpload,
+    showDocumentUpload,
+    setShowSignedDocumentUpload,
+    showSignedDocumentUpload,
+    setShowAssignClientForm,
+    showAssignClientForm,
   };
 }
 

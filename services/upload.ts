@@ -1,4 +1,5 @@
 import { mutationFn } from "@/store/query";
+import { MediaFile } from "@/types/models";
 import { Platform } from "react-native";
 import * as mime from 'react-native-mime-types';
 
@@ -66,22 +67,21 @@ export const createFormData = async (file: FileLike | FileLike[], additionalData
 }
 
 export const uploadFile = async (file: FileLike, extra?: Record<string, any>) => {
+  console.log(file, extra);
+  
   const formData = await createFormData(file, extra);
 
-  return mutationFn({
+  return mutationFn<MediaFile>({
     url: 'upload/upload-media/',
     method: 'post',
     data: formData,
   });
 };
 
-export const uploadFiles = async (files: FileLike[], extra?: Record<string, any>) => {
-  console.log('Uploading files:', files, extra);
+  export const uploadFiles = async (files: FileLike[], extra?: Record<string, any>) => {
   const formData = await createFormData(files, extra);
 
-  console.log('Uploading files:', formData);
-
-  return mutationFn({
+  return mutationFn<MediaFile[]>({
     url: 'upload/upload-multiple-media/',
     method: 'post',
     data: formData,

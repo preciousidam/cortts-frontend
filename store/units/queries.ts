@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../auth";
-import { Payment, Unit, UnitAgent } from "@/types/models";
+import { Document, Payment, Unit, UnitAgent } from "@/types/models";
 import { IResonse } from "@/types";
-import { getUnit, getUnitAgents, getUnitPayments, getUnits } from "@/services/unit";
+import { getUnit, getUnitAgents, getUnitDocuments, getUnitPayments, getUnits } from "@/services/unit";
 
 export const useGetUnitsQueries = () => {
   const { token } = useAuthStore();
@@ -34,6 +34,18 @@ export const useGetUnitPaymentsQuery = (id: string) => {
 
   return {
     payments: data?.data || [],
+    count: data?.count || 0,
+    ...rest
+  };
+};
+
+export const useGetUnitDocumentsQuery = (id: string) => {
+  const { token } = useAuthStore();
+
+  const { data, ...rest } = useQuery<IResonse<Document[]>>({queryFn: (props) => getUnitDocuments(id) as unknown as Promise<IResonse<Document[]>>, queryKey: ['unit_documents', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
+
+  return {
+    documents: data?.data || [],
     count: data?.count || 0,
     ...rest
   };

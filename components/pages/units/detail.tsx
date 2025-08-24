@@ -5,16 +5,16 @@ import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Bar } from 'react-native-progress';
 import React, { useCallback, useMemo } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Modal } from 'react-native';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
 import { Typography } from '@/components/typography';
 import { ColoredPill, ColorIndicator } from '@/components/Pill';
 import { capitalize } from 'lodash';
 import { ColumnDef } from '@/components/Table/logic';
-import { Payment, PaymentDuration, Unit } from '@/types/models';
+import { Document, Payment, PaymentDuration, Unit } from '@/types/models';
 import { useTableStyles } from '@/components/Table/style';
-import { useGetUnitPaymentsQuery, useGetUnitQuery } from '@/store/units/queries';
+import { useGetUnitDocumentsQuery, useGetUnitPaymentsQuery, useGetUnitQuery } from '@/store/units/queries';
 import { CustomTab } from '@/components/tab';
 import { Route } from 'react-native-tab-view';
 import PopupMenuV1 from '@/components/PopupMenu';
@@ -25,6 +25,11 @@ import { Divider } from '@/components/divider';
 import { Image } from 'expo-image';
 import Table from '@/components/Table';
 import { format } from 'date-fns';
+import { openURL } from 'expo-linking';
+import FilePicker from '@/components/fileUpload/file';
+import { FormTextInput } from '@/components/input';
+import { useUnitLogic } from './logic';
+import { downloadFile } from '@/utilities/download';
 
 const purpose: DropdownOption<string>[] = [
   { label: "Detached", value: "Detached" },
@@ -55,6 +60,19 @@ const UnitDetail: React.FC = () => {
   const {unit, isLoading} = useGetUnitQuery(unit_id);
   const { project} = useGetProjectQuery(unit?.project_id ?? '');
   const { payments, isLoading: isLoadingPayments } = useGetUnitPaymentsQuery(unit_id);
+  const { documents, isLoading: isLoadingDocuments } = useGetUnitDocumentsQuery(unit_id);
+  const {
+    templateControl,
+    setTemplateValue,
+    isLoading: isMutating,
+    onCreateTemplate,
+    showDocumentUpload,
+    setShowDocumentUpload,
+    showSignedDocumentUpload,
+    setShowSignedDocumentUpload,
+    setShowAssignClientForm,
+    showAssignClientForm
+  } = useUnitLogic();
 
   const onViewPaymentReceipt = useCallback((paymentId: string) => {
     push(`./payments/${paymentId}/receipt`, { relativeToDirectory: true });
@@ -111,7 +129,50 @@ const UnitDetail: React.FC = () => {
         );
       }
     }
-  ], [widthPixel])
+  ], [widthPixel]);
+
+  const columnsDocuments: ColumnDef<Document>[] = useMemo(() => [
+    {
+      header: 'Document Name',
+      accessorKey: 'name',
+      meta: { width: widthPixel(250) },
+      cell: (props) => {
+        return <Typography style={bodyText}>{capitalize(props.cell.getValue() as string)}</Typography>;
+      }
+    },
+    {
+      header: 'Document Type',
+      accessorKey: 'kind',
+      meta: { width: widthPixel(250) },
+      cell: (props) => {
+        return <Typography style={bodyText}>{capitalize(props.cell.getValue() as string)}</Typography>;
+      }
+    },
+    {
+      header: 'Link to Document',
+      accessorKey: 'media_file.file_path',
+      meta: { width: widthPixel(250) },
+      cell: (props) => {
+        return <Typography style={[bodyText, {color: colors.primary}]} numberOfLines={1} ellipsizeMode='head' onPress={() => downloadFile(`/upload/media/download/${props.cell.row.original?.media_file?.id}`, props.cell.row?.original?.media_file?.file_name ?? 'document')}>{(props.cell.getValue() as string).split('/').pop() ?? 'N/A'}</Typography>;
+      }
+    },
+    {
+      header: 'Actions',
+      meta: { width: widthPixel(250), align: 'flex-end' },
+      cell: (props) => {
+        return (
+          <PopupMenuV1
+            options={[
+              { label: 'View Document', onPress: () => openURL(props.cell.row.original?.media_file?.file_path ?? '')},
+              { label: 'Download Document', onPress: () => downloadFile(`/upload/media/download/${props.cell.row.original?.media_file?.id}`, props.cell.row?.original?.media_file?.file_name ?? 'document') },
+              { label: 'Delete Document', onPress: () => {}, destructive: true, disabled: true }
+            ]}
+            style={{ alignSelf: 'flex-end' }}
+          />
+        );
+      }
+    }
+  ], [widthPixel]);
 
   const onSelect = (option: 'edit' | 'delete') => {
     if (option == 'edit') {
@@ -136,7 +197,19 @@ const UnitDetail: React.FC = () => {
           />
         );
       case 'documents':
-        return <></>;
+        return (
+          <Table<Document>
+            columns={columnsDocuments}
+            data={documents}
+            filter={{ field: 'kind', options: purpose, multiple: false }}
+            // onRowSelected={(row) => push(`./payments/${row.id}`, { relativeToDirectory: true })}
+            loading={isLoadingDocuments}
+            emptyStateText="No document history available for this unit."
+            loadingComponent={<Typography>Loading document history...</Typography>}
+            style={{ paddingVertical: heightPixel(32) }}
+            rowCount={5}
+          />
+        );
       default:
         return null;
     }
@@ -164,6 +237,8 @@ const UnitDetail: React.FC = () => {
           <Breadcrumb />
           <PopupMenuV1
             options={[
+              { label: 'Upload New Template', onPress: () => setShowDocumentUpload(true) },
+              { label: "Upload Signed Document", onPress: () => setShowSignedDocumentUpload(true) },
               { label: 'Edit unit', onPress: () => onSelect('edit') },
               { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
             ]}
@@ -261,6 +336,84 @@ const UnitDetail: React.FC = () => {
           ]}
           renderScene={renderScene}
         />
+        <Modal
+          visible={showDocumentUpload}
+          onRequestClose={() => setShowDocumentUpload(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={[styles.formArea, styles.uploadContainer]}>
+              <View style={styles.row}>
+                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Upload Template</Typography>
+                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowDocumentUpload(false)} variant='tertiary' size='medium' />
+              </View>
+              <FormTextInput
+                label="Template Name"
+                control={templateControl}
+                name="name"
+                inputProps={{ placeholder: 'Enter template name' }}
+              />
+              <FilePicker onSelect={(file) => setTemplateValue('file', file)} />
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', columnGap: widthPixel(12)}}>
+                <Button title="Cancel" disabled={isMutating} onPress={() => setShowDocumentUpload(false)} variant="outlined" />
+                <Button title="Upload" disabled={isMutating} isLoading={isMutating} onPress={onCreateTemplate} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={showSignedDocumentUpload}
+          onRequestClose={() => setShowSignedDocumentUpload(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={[styles.formArea, styles.uploadContainer]}>
+              <View style={styles.row}>
+                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Upload Signed Document</Typography>
+                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowSignedDocumentUpload(false)} variant='tertiary' size='medium' />
+              </View>
+              <FormTextInput
+                label="Document Name"
+                control={templateControl}
+                name="name"
+                inputProps={{ placeholder: 'Enter document name' }}
+              />
+              <FilePicker onSelect={(file) => setTemplateValue('file', file)} />
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', columnGap: widthPixel(12)}}>
+                <Button title="Cancel" disabled={isMutating} onPress={() => setShowDocumentUpload(false)} variant="outlined" />
+                <Button title="Upload" disabled={isMutating} isLoading={isMutating} onPress={onCreateTemplate} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={showSignedDocumentUpload}
+          onRequestClose={() => setShowSignedDocumentUpload(false)}
+          transparent={true}
+          animationType="fade"
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <View style={[styles.formArea, styles.uploadContainer]}>
+              <View style={styles.row}>
+                <Typography style={styles.cardValue} variant='semiBold' size='subtitle'>Upload Signed Document</Typography>
+                <Button iconOnly icon="Ionicons.close" title="Close" onPress={() => setShowSignedDocumentUpload(false)} variant='tertiary' size='medium' />
+              </View>
+              <FormTextInput
+                label="Document Name"
+                control={templateControl}
+                name="name"
+                inputProps={{ placeholder: 'Enter document name' }}
+              />
+              <FilePicker onSelect={(file) => setTemplateValue('file', file)} />
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', columnGap: widthPixel(12)}}>
+                <Button title="Cancel" disabled={isMutating} onPress={() => setShowDocumentUpload(false)} variant="outlined" />
+                <Button title="Upload" disabled={isMutating} isLoading={isMutating} onPress={onCreateTemplate} />
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -356,6 +509,9 @@ const useStyles = () => {
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: widthPixel(8),
+    },
+    uploadContainer: {
+      width: widthPixel(608),
     }
   });
 };

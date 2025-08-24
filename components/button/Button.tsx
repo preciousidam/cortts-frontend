@@ -136,7 +136,7 @@ export const Button = forwardRef<
       if (!IconComponent) {
         throw new Error(`Icon with name "${name}" not found`);
       }
-      return <IconComponent name={name} size={fontPixel(size === 'small' ? 16 : 14)} color={rest.color ?? textStyle.color} />;
+      return <IconComponent name={name} size={fontPixel(size === 'small' ? 16 : 18)} color={rest.color ?? textStyle.color} />;
     }
 
     const renderRightIcon = () => {
