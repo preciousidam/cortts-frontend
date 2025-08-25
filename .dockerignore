@@ -1,0 +1,12 @@
+# Only ignore the root node_modules (not the exported assets)
+#/node_modules works with Docker's .dockerignore to anchor at root
+/node_modules
+/.expo
+/.git
+/.husky
+/.vscode
+**/*.log
+
+# Keep the web export
+# DO NOT ignore dist or anything under dist, especially:
+# dist/assets/node_modules/** (expo fonts & vector-icons)
