@@ -112,7 +112,7 @@ export const TableBody = <T,>(): React.ReactElement => {
               }
             ]}
           >
-            {!cell.column.columnDef.cell ? <Typography style={styles.bodyText}>
+            {!cell.column.columnDef.cell ? <Typography variant='regular' size="body" style={styles.bodyText}>
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </Typography> : <> {flexRender(cell.column.columnDef.cell, cell.getContext())} </>}
           </View>
