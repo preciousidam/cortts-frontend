@@ -102,21 +102,37 @@ export const TableBody = <T,>(): React.ReactElement => {
         <React.Fragment key={item.id}>{props.renderRow(item)}</React.Fragment>
       ) : (
       <Pressable key={item.id} style={[styles.row]} accessibilityRole="button" accessibilityLabel={`Row ${item.id}`} onPress={() => props.onRowSelected?.(item.original)}>
-        {item.getVisibleCells().map(cell => (
-          <View
-            key={cell.id}
-            style={[
-              styles.cell,
-              { width: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.width ?? equalWidth),
-                alignItems: ((cell.column.columnDef.meta as ExtendedColumnMeta<T>)?.align ?? 'flex-start')
-              }
-            ]}
-          >
-            {!cell.column.columnDef.cell ? <Typography variant='regular' size="body" style={styles.bodyText}>
-              {cell.getValue() as string}
-            </Typography> : <> {flexRender(cell.column.columnDef.cell, cell.getContext())} </>}
-          </View>
-        ))}
+        {item.getVisibleCells().map(cell => {
+          const colMeta = cell.column.columnDef.meta as ExtendedColumnMeta<T> | undefined;
+          const width = colMeta?.width ?? equalWidth;
+          const align = colMeta?.align ?? 'flex-start';
+
+          const hasCustomCell = colMeta?.hasCustomCell ?? false;
+
+          // Default content when there's no custom cell
+          const defaultValue = cell.getValue() as unknown;
+          // console.log(defaultValue);
+          const defaultText =
+            defaultValue === null || defaultValue === undefined
+              ? ''
+              : typeof defaultValue === 'string'
+                ? defaultValue
+                : String(defaultValue);
+
+          return (
+            <View key={cell.id} style={[styles.cell, { width, alignItems: align }]}>
+              {hasCustomCell ? (
+                // Custom cell defined: render it
+                flexRender(cell.column.columnDef.cell, cell.getContext())
+              ) : (
+                // No custom cell: render a Typography-wrapped string
+                <Typography variant="regular" size="body" style={styles.bodyText}>
+                  {defaultText}
+                </Typography>
+              )}
+            </View>
+          );
+        })}
       </Pressable>
     )
   }

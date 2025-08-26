@@ -27,7 +27,7 @@ export type TableProps<T> = {
   style?: ViewStyle;
 };
 
-export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'] };
+export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'], hasCustomCell: boolean };
 
 const includesSome: FilterFn<any> = (row, columnId, filterValue: string[]) => {
   if (filterValue.length == 0) return true
@@ -53,6 +53,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
 
     const extendedColumns = columns.map((column) => {
       const isFilterTarget = column.accessorKey?.toString() === filter.field;
+      console.log(column);
       return {
         ...column,
         accessorKey: column.accessorKey || '', // Ensure accessorKey is defined
@@ -60,6 +61,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
           ...column.meta,
           width: column.meta?.width,
           align: column.meta?.align,
+          hasCustomCell: typeof column.cell !== 'undefined',
         },
         ...(isFilterTarget && filter.multiple ? { filterFn: includesSome } : {}), // Use the actual filter function
       } as ColumnDef<T>; // Explicitly cast to ColumnDef<T>
