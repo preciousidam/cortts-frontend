@@ -53,7 +53,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
 
     const extendedColumns = columns.map((column) => {
       const isFilterTarget = column.accessorKey?.toString() === filter.field;
-      console.log(column);
+
       return {
         ...column,
         accessorKey: column.accessorKey || '', // Ensure accessorKey is defined
