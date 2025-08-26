@@ -10,7 +10,7 @@ RUN corepack enable && yarn install --frozen-lockfile
 COPY . .
 
 # (Optional) ensure base URL is root
-ENV EXPO_PUBLIC_ROUTER_BASE_URL=/
+# ENV EXPO_PUBLIC_ROUTER_BASE_URL=/
 
 # Export static web bundle to /app/dist
 RUN npx expo export --platform web --output-dir dist --clear
