@@ -9,10 +9,10 @@ export const useCreateUnitMutation = (options: UseMutationOptions<Unit, AxiosErr
 }
 
 export const useUpdateUnitMutation = (id: string, options: UseMutationOptions<Unit, AxiosError<IErrorResponse>, Partial<Unit> & {
-    agents?: UnitAgent[];
+    agents?: Partial<UnitAgent>[];
 }, unknown>) => {
   return useMutation<Unit, AxiosError<IErrorResponse>, Partial<Unit> & {
-      agents?: UnitAgent[];
+      agents?: Partial<UnitAgent>[];
   }>({...options, mutationFn: (data) => updateUnit(id, data) })
 }
 
