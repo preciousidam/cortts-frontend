@@ -8,10 +8,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCreateSignedMutation, useCreateTemplateMutation, useCreateUnitMutation, useUpdateUnitMutation } from "@/store/units/mutation";
-import { useGetUnitQuery } from "@/store/units/queries";
 import { FileLike } from "@/services/upload";
 import { useMultipleUploadMutation, useSingleUploadMutation } from "@/store/uploads/mutation";
 import { getUsers } from "@/services/user";
+import { useGetUnitQuery } from "@/store/units/queries";
 
 type Form = {
   name: string;
@@ -268,72 +268,125 @@ export const useUnitLogic = () => {
   };
 }
 
-export const useUpdateProjectLogic = (id: string) => {
+export const useUpdateUnitLogic = () => {
   const { replace } = useRouter();
-  const { unit, isLoading } = useGetUnitQuery(id);
-  const { control, handleSubmit } = useForm<Form>({
-    defaultValues: unit ? {
-      name: unit.name,
-      type: unit.type,
-      amount: unit.amount,
-      expected_initial_payment: unit.expected_initial_payment,
-      discount: unit.discount,
-      installment: unit.installment,
-      payment_plan: unit.payment_plan,
-      warranty_period: unit.warranty_period,
-      project_id: unit.project_id,
-    } : {
-      name: '',
-      type: '',
-      amount: 0,
-      expected_initial_payment: null,
-      discount: null,
-      installment: null,
-      payment_plan: false,
-      warranty_period: 0,
-      project_id: '',
-    },
+  const queryClient = useQueryClient();
+  const {unit_id} = useLocalSearchParams<{unit_id: string}>();
+  const { unit } = useGetUnitQuery(unit_id);
+  const [showDocumentUpload, setShowDocumentUpload] = useState(false);
+  const [showSignedDocumentUpload, setShowSignedDocumentUpload] = useState(false);
+  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<Form>({
+    defaultValues: {payment_plan: false},
     resolver: yupResolver(schema),
   });
-  const queryClient = useQueryClient();
+
+  const { mutate: uploadImages, isPending: isUploading } = useMultipleUploadMutation({
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error uploading images', text2: handleError(error.response?.data, error.message), type: 'error'});
+      // Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+      replace('../', { relativeToDirectory: true });
+    },
+  });
+
+  const { mutate, isPending } = useUpdateUnitMutation(unit_id,{
+    onError(error, variables, context) {
+      Toast.show({text1: 'Error updating unit', text2: handleError(error.response?.data, error.message), type: 'error'})
+    },
+    onSuccess: () => {
+      Toast.show({text1: 'Unit updated successfully', text2: 'Your unit has been updated.', type: 'success'});
+      queryClient.invalidateQueries({ queryKey: ['unit', unit_id] });
+    }
+  });
 
   useEffect(() => {
     if (unit) {
-      control._reset({
-        name: unit.name,
-        type: unit.type,
-        amount: unit.amount,
-        expected_initial_payment: unit.expected_initial_payment,
-        discount: unit.discount,
-        installment: unit.installment,
-        payment_plan: unit.payment_plan,
-        warranty_period: unit.warranty_period,
-        project_id: unit.project_id,
-      });
+      const { images, unit_agents, client, created_at, graph_data, payment_summary, sales_rep, ...data } = unit;
+      control._reset(data);
     }
   }, [unit, control]);
 
-  const { mutate: createUnitMutation, isPending } = useUpdateUnitMutation(id,{
-    onError(error, variables, context) {
-      Toast.show({text1: 'Error updating project', text2: handleError(error.response?.data, error.message), type: 'error'})
-    },
-    onSuccess: () => {
-      Toast.show({text1: 'Project updated successfully', text2: 'Your project has been updated.', type: 'success'});
-      queryClient.invalidateQueries({ queryKey: ['project', id] });
-      replace('../', { relativeToDirectory: true });
-    }
-  });
-
-  const updateProject = async (projectData: Form) => {
+  const updateUnit = async (unitData: Form) => {
     if (isPending) {
       return;
     }
-    const response = await createUnitMutation(projectData as Unit);
+    const {images, ...data} = unitData;
+    console.log(images);
+    // return
+    await mutate(data as Unit, {
+      onSuccess: async (data) => {
+        console.log(images);
+        if (images) {
+          await uploadImages({files: images, extra: {unit_id: data.id}}, {
+            onSuccess: () => {
+              Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+              queryClient.invalidateQueries({ queryKey: ['units'] });
+              replace('../', { relativeToDirectory: true });
+            }
+          });
+        } else {
+          Toast.show({text1: 'Unit created successfully', text2: 'Your unit has been created.', type: 'success'});
+          queryClient.invalidateQueries({ queryKey: ['units'] });
+          replace('../', { relativeToDirectory: true });
+        }
+      }
+    });
   };
 
+
+  const installment_amount = () => {
+    if( !watch('amount') || !watch('installment') || !watch('discount')) {
+      return 0;
+    }
+    const total = watch('amount') - (watch('amount') * (watch('discount') ?? 0) / 100) - (watch('expected_initial_payment') ?? 0)
+    const installments = watch('installment') ?? 1
+    return total / installments;
+  };
+
+  const total_amount = () => {
+    const amount = watch('amount') ?? 0;
+    const discount = watch('discount') ?? 0;
+    setValue('expected_initial_payment', amount - (amount * discount / 100));
+    return amount - (amount * discount / 100);
+  }
+
+  const handleImageUpload = (files: FileLike[] | null) => {
+    if (!files || files.length === 0 || files.some(file => typeof file !== 'string')) {
+      return;
+    }
+    // Handle file upload logic here, e.g., using a mutation to upload files
+    setValue('images', files as string[]);
+  }
+
+  const loadMoreUsers = async (q = '', skip = 0, role?: string) => {
+    const response = await queryClient.fetchQuery({
+      queryKey: ['/users/', { q, limit: 100, skip, role }],
+      queryFn: getUsers
+    });
+
+    const hasMore = response.count > skip + (response.data?.length || 0);
+    const nextSkip = hasMore ? skip + 100 : skip;
+
+    return {
+      items: response.data.map((user: any) => ({ label: user.fullname, value: user.id })),
+      total: response.count,
+      hasMore,
+      nextSkip
+    };
+  };
+
+
   return {
-    onSubmit: handleSubmit(updateProject),
+    onSubmit: handleSubmit(updateUnit),
     control,
-    isLoading: isPending
+    isLoading: isPending || isUploading,
+    watch,
+    installment_amount,
+    total_amount,
+    handleImageUpload,
+    setShowDocumentUpload,
+    showDocumentUpload,
+    setShowSignedDocumentUpload,
+    showSignedDocumentUpload,
+    loadMoreUsers,
   };
 }

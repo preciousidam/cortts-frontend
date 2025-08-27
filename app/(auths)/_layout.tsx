@@ -2,6 +2,11 @@ import { Redirect, Stack } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Platform } from 'react-native';
 
+const unstable_settings = {
+  headerShown: false,
+  initialRouteName: 'login',
+};
+
 export default function AuthLayout() {
   const { isAuthenticated } = useAuth();
 
@@ -13,7 +18,7 @@ export default function AuthLayout() {
     return <Redirect href={'/(app)'} />; // Redirect to role-aware dashboard
   }
 
-  return <Stack screenOptions={{ headerShown: false }}>
+  return <Stack screenOptions={{ headerShown: false }} initialRouteName='login'>
     <Stack.Screen name='login' options={{title: 'Login'}} />
     <Stack.Screen name='register' />
     <Stack.Screen name='forgot-password' options={{ title: '', headerShown: canShowBackButton() }} />

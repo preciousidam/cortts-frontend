@@ -327,8 +327,8 @@ const UnitDetail: React.FC = () => {
                   <Typography variant='medium' size='body'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.installment_amount ?? 0)} / {duration(unit?.payment_duration  ?? PaymentDuration.MONTHLY)} x {unit?.installment ?? 0}</Typography>
                 </View>
                 <View style={[styles.alignLeft, styles.gapBetween]}>
-                  <Typography size='caption' color={colors.neutral}>Total Paid</Typography>
-                  <Typography variant='medium' size='body'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.total_deposit ?? 0)}</Typography>
+                  <Typography size='caption' color={colors.neutral}>Initial Payment</Typography>
+                  <Typography variant='medium' size='body'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.expected_initial_payment ?? 0)}</Typography>
                 </View>
               </View>
               <Divider />

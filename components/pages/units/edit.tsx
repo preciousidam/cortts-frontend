@@ -1,62 +1,158 @@
 import { Button } from '@/components/button';
-import { FormTextInput, TextAreaFormInput } from '@/components/input';
+import { BaseCurrencyInput, FormCurrencyInput, FormTextInput } from '@/components/input';
 import { FormDropdown } from '@/components/input/dropdown/form';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useUpdateProjectLogic } from './logic';
-import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useUpdateUnitLogic } from './logic';
 import { Breadcrumb } from '@/components/breadcrumb';
+import { FormRadioButton } from '@/components/input/radio';
+import { useGetProjectsQueries } from '@/store/projects/queries';
+import ImagePicker from '@/components/fileUpload/image';
 
-const purpose: DropdownOption<string>[] = [
-  {label: "Commercial", value: 'commercial'},
-  {label: "Residential", value: 'residential'},
-  {label: "Mixed Use", value: 'mixed_use'},
-  {label: "Industrial", value: 'industrial'},
-  {label: "Others", value: 'others'},
+const propertyTypes = [
+  { value: 'detached', label: 'Detached' },
+  { value: 'semi_detached', label: 'Semi Detached' },
+  { value: 'terraced', label: 'Terraced' },
+  { value: 'end_of_terrace', label: 'End Of Terrace' },
+  { value: 'bungalow', label: 'Bungalow' },
+  { value: 'maisonette', label: 'Maisonette' },
+  { value: 'flat', label: 'Flat' },
+  { value: 'duplex', label: 'Duplex' },
+  { value: 'triplex', label: 'Triplex' },
+  { value: 'penthouse', label: 'Penthouse' },
+  { value: 'studio', label: 'Studio' },
+  { value: 'cottage', label: 'Cottage' },
+  { value: 'villa', label: 'Villa' },
+  { value: 'townhouse', label: 'Townhouse' },
+  { value: 'chalet', label: 'Chalet' },
 ].sort((a, b) => a.label.localeCompare(b.label))
 
-const EditProject: React.FC = () => {
+const dev_status_list = [
+  { value: 'in_progress', label: 'In Development' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'not_started', label: 'Not Started' },
+].sort((a, b) => a.label.localeCompare(b.label))
+
+const duration = [
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'quarterly', label: 'Quarterly' },
+  { value: 'bi_annually', label: 'Biannually' },
+  { value: 'annually', label: 'Annually' },
+]
+
+const EditUnit: React.FC = () => {
   const styles = useStyles();
-  const { project_id } = useLocalSearchParams<{ project_id: string }>();
   const { back } = useRouter();
-  const {control, onSubmit, isLoading} = useUpdateProjectLogic(project_id);
+  const {control, onSubmit, isLoading, watch, installment_amount, total_amount, handleImageUpload } = useUpdateUnitLogic();
+  const { projects, count, isLoading: isLoadingProjects } = useGetProjectsQueries();
 
   return (
-    <View style={styles.container}>
-      <Breadcrumb />
-      <View>
-        <Typography variant="semiBold" size="subtitle">Edit Project</Typography>
-        <Typography size="body">Update the essential details to edit the project.</Typography>
-      </View>
-      <View style={styles.formArea}>
-        {/* Form components will go here */}
-        <View style={styles.formRow}>
-          <FormTextInput control={control} rules={{ required: true }} style={styles.input} name="name" label="Project Name" inputProps={{ placeholder: "Enter project name" }} />
-          <FormTextInput control={control} rules={{ required: true }} style={styles.input} name="address" label="Address" inputProps={{ placeholder: "Enter project address" }} />
+    <ScrollView>
+      <View style={styles.container}>
+        <Breadcrumb />
+        <View>
+          <Typography variant="semiBold" size="subtitle">Edit Unit</Typography>
+          <Typography size="body">Fill in the essential details to edit the unit.</Typography>
         </View>
-        <TextAreaFormInput
-          name="description"
-          label="Description"
-          inputProps={{ placeholder: "Enter project description" }}
-          control={control}
-          rules={{ required: true }}
-        />
-        <View style={styles.formRow}>
-          <FormDropdown rules={{ required: true }} control={control} style={styles.input} name="purpose" label="Purpose" inputProps={{ options: purpose, icon_position: 'right', isSearchable: false }} />
-          <FormTextInput control={control} rules={{ required: true }} style={styles.input} name="num_units" label="Total Units" inputProps={{ keyboardType: 'numeric', placeholder: "Enter total units" }} />
+        <View style={styles.formArea}>
+          <View style={styles.sectionHeader}>
+            <Typography variant="semiBold" size="body" style={styles.header}>Unit Information</Typography>
+          </View>
+          <View style={styles.padded}>
+            <View style={styles.formRow}>
+              <FormTextInput control={control} rules={{ required: true }} style={styles.input} name="name" label="Unit Name" inputProps={{ placeholder: "Enter unit name" }} />
+              <FormDropdown label='Link to a Project' style={styles.input} inputProps={{ options: projects.map(({ id, name }) => ({ value: id, label: name })), placeholder: "Select project", label: "Link to Project", icon_position: 'right' }} name="project_id" control={control} rules={{ required: true }} />
+            </View>
+            <View style={styles.formRow}>
+              <FormCurrencyInput control={control} rules={{ required: true, }} style={styles.input} name="amount" label="Amount" inputProps={{ placeholder: "Enter amount" }} />
+              <FormTextInput control={control} style={styles.input} name="discount" label="Discount (%)" inputProps={{ placeholder: "Enter discount (e.g. 10)" }} info='This is assumed to be a percentage of the total amount.' />
+            </View>
+            <View style={styles.formRow}>
+              <FormDropdown rules={{ required: true }} control={control} style={styles.input} name="type" label="Type" inputProps={{ options: propertyTypes, icon_position: 'right', isSearchable: false }} />
+              <FormTextInput control={control} rules={{ required: true }} style={styles.input} name="warranty_period" label="Warranty Period (Months)" info="Warranty period in months" inputProps={{ keyboardType: 'numeric', placeholder: "Enter warranty period" }} />
+            </View>
+            <View style={styles.formRow}>
+              <FormDropdown rules={{ required: true }} control={control} style={styles.input} name="development_status" label="Development Status" inputProps={{ options: dev_status_list, icon_position: 'right', isSearchable: false }} />
+              <View style={styles.input}></View>
+            </View>
+            <ImagePicker
+              multiSelect
+              onSelect={handleImageUpload}
+              label="Upload Unit Images"
+            />
+          </View>
+        </View>
+        <View style={styles.formArea}>
+          <View style={styles.sectionHeader}>
+            <Typography variant="bold" size="body" style={styles.header}>Payment Plan</Typography>
+          </View>
+          <View style={styles.padded}>
+            <FormRadioButton
+              control={control}
+              name="payment_plan"
+              options={[
+                { label: 'One-time Payment', value: false },
+                { label: 'Installments', value: true },
+              ]}
+              rules={{ required: true }}
+              label='Choose a Payment Plan'
+            />
+            {!watch('payment_plan') && <View style={styles.amount}>
+              <Typography size='caption'>Amount to pay</Typography>
+              <Typography size='subtitle' variant='bold'>{Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(total_amount() ?? 0)}</Typography>
+            </View>}
+            {
+              watch('payment_plan') && <>
+                <View style={styles.formRow}>
+                  <FormCurrencyInput
+                    control={control}
+                    rules={{ required: true }}
+                    style={styles.input}
+                    name="expected_initial_payment"
+                    label="Initial Payment"
+                    inputProps={{ placeholder: "Enter expected initial payment" }}
+                  />
+                  <FormDropdown
+                    control={control}
+                    rules={{ required: true }}
+                    style={styles.input}
+                    name="payment_duration"
+                    label="Payment Duration (Months)"
+                    inputProps={{ placeholder: "Enter payment duration", options: duration, icon_position: 'right', isSearchable: false }}
+                  />
+                </View>
+                <View style={styles.formRow}>
+                  <FormTextInput
+                    control={control}
+                    rules={{ required: true }}
+                    style={styles.input}
+                    name="installment"
+                    label="Number of Installments"
+                    inputProps={{ placeholder: "Enter number of installments" }}
+                  />
+                  <BaseCurrencyInput
+                    style={styles.input}
+                    label="Installment Amount"
+                    inputProps={{ placeholder: "Enter installment amount", readOnly: true }}
+                    value={installment_amount().toString()}
+                  />
+                </View>
+              </>
+            }
+          </View>
         </View>
         <View style={styles.ctaView}>
           <Button title="Cancel" variant='outlined' onPress={back} style={styles.cancel} />
-          <Button title="Update Project" onPress={onSubmit} isLoading={isLoading} />
+          <Button title="Edit Unit" size='medium' onPress={onSubmit} isLoading={isLoading} style={styles.cancel} />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -70,21 +166,18 @@ const useStyles = () => {
       flex: 1,
       paddingHorizontal: widthPixel(32),
       paddingVertical: heightPixel(32),
-      rowGap: heightPixel(16),
+      rowGap: heightPixel(24),
     },
     formArea: {
       rowGap: heightPixel(24),
       backgroundColor: colors.card,
-      paddingHorizontal: widthPixel(16),
-      paddingBottom: heightPixel(56),
-      paddingTop: heightPixel(32),
       ...m,
       borderColor: generateColorScale(colors.neutral).lightHover,
       ...shadow(heightPixel(2), widthPixel(8))
     },
     formRow: {
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'space-between',
       columnGap: widthPixel(16),
     },
@@ -98,8 +191,29 @@ const useStyles = () => {
     },
     cancel: {
       width: widthPixel(151)
+    },
+    padded: {
+      paddingHorizontal: widthPixel(16),
+      paddingVertical: heightPixel(24),
+      rowGap: heightPixel(24),
+    },
+    sectionHeader: {
+      borderBottomColor: '#E4E7EC',
+      paddingVertical: heightPixel(16),
+      paddingHorizontal: widthPixel(16),
+      borderBottomWidth: heightPixel(1),
+      rowGap: heightPixel(8),
+    },
+    header: {
+      fontSize: fontPixel(16),
+    },
+    amount: {
+      ...m,
+      borderColor: generateColorScale(colors.neutral).lightActive,
+      paddingHorizontal: widthPixel(24),
+      paddingVertical: heightPixel(24)
     }
   });
-};
+}
 
-export default EditProject;
+export default EditUnit;
