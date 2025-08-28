@@ -38,7 +38,7 @@ const useVariantStyle = (variant: Variant) => {
     case 'secondary':
       return {
         backgroundColor: colors.card,
-        borderColor: generateColorScale(colors.neutral).lightActive
+        borderColor: generateColorScale(colors.neutral).normalBase
       } as ViewStyle;
     case 'tertiary':
       return {
