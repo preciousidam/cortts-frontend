@@ -4,7 +4,7 @@ import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
 import { useGetProjectQuery } from '@/store/projects/queries';
@@ -106,63 +106,65 @@ const Project: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <Breadcrumb />
-        <PopupMenuV1
-          options={[
-            { label: 'Edit Project', onPress: () => onSelect('edit') },
-            { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
-          ]}
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.row}>
+          <Breadcrumb />
+          <PopupMenuV1
+            options={[
+              { label: 'Edit Project', onPress: () => onSelect('edit') },
+              { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
+            ]}
+          />
+        </View>
+        <View style={styles.formArea}>
+          <View style={styles.row}>
+            <Image
+              placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(88) })}
+              style={styles.image}
+              source={{ uri: project?.artwork_url ?? '' }}
+            />
+            <View style={styles.header}>
+              <View style={styles.ctaView}>
+                <Typography size="subtitle" variant='bold' >{project?.name}</Typography>
+                <ColoredPill title={project?.status ?? ''} color={project?.status ==  'completed' ? 'green' : project?.status == 'archived' ? 'gray' : 'yellow'} />
+              </View>
+              <Typography color={colors.textWeak}>{project?.description}</Typography>
+              <View style={styles.smallGap}>
+                <Typography color={colors.primary}>{capitalize(project?.purpose)}</Typography>
+                <ColorIndicator color='gray' />
+                <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
+              </View>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.card}>
+              <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Revenue Generated</Typography>
+              <Typography  variant='semiBold' size='subtitle' style={styles.cardValue}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(project?.total_revenue ?? 0)}</Typography>
+            </View>
+            <View style={styles.card}>
+              <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Units</Typography>
+              <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.num_units ?? 0}</Typography>
+            </View>
+            <View style={styles.card}>
+              <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Sold Units</Typography>
+              <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.sold_units ?? 0}</Typography>
+            </View>
+            <View style={styles.card}>
+              <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Assigned Agents</Typography>
+              <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>1</Typography>
+            </View>
+          </View>
+        </View>
+        <Table<Unit>
+          columns={columns}
+          data={project?.units ?? []}
+          filter={{ field: 'type', options: purpose }}
+          loading={isLoading}
+          onRowSelected={unit => push(`/(app)/(admin)/Units/${unit.id}`)}
         />
       </View>
-      <View style={styles.formArea}>
-        <View style={styles.row}>
-          <Image
-            placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(88) })}
-            style={styles.image}
-            source={{ uri: project?.artwork_url ?? '' }}
-          />
-          <View style={styles.header}>
-            <View style={styles.ctaView}>
-              <Typography size="subtitle" variant='bold' >{project?.name}</Typography>
-              <ColoredPill title={project?.status ?? ''} color={project?.status ==  'completed' ? 'green' : project?.status == 'archived' ? 'gray' : 'yellow'} />
-            </View>
-            <Typography color={colors.textWeak}>{project?.description}</Typography>
-            <View style={styles.smallGap}>
-              <Typography color={colors.primary}>{capitalize(project?.purpose)}</Typography>
-              <ColorIndicator color='gray' />
-              <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
-            </View>
-          </View>
-        </View>
-        <View style={styles.row}>
-          <View style={styles.card}>
-            <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Revenue Generated</Typography>
-            <Typography  variant='semiBold' size='subtitle' style={styles.cardValue}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(project?.total_revenue ?? 0)}</Typography>
-          </View>
-          <View style={styles.card}>
-            <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Units</Typography>
-            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.num_units ?? 0}</Typography>
-          </View>
-          <View style={styles.card}>
-            <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Sold Units</Typography>
-            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.sold_units ?? 0}</Typography>
-          </View>
-          <View style={styles.card}>
-            <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Assigned Agents</Typography>
-            <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>1</Typography>
-          </View>
-        </View>
-      </View>
-      <Table<Unit>
-        columns={columns}
-        data={project?.units ?? []}
-        filter={{ field: 'type', options: purpose }}
-        loading={isLoading}
-        onRowSelected={unit => push(`/(app)/(admin)/Units/${unit.id}`)}
-      />
-    </View>
+    </ScrollView>
   );
 };
 
