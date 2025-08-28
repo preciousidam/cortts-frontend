@@ -11,6 +11,7 @@ import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useResponsive } from '@/hooks/useResponsive';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { CustomHeader } from '@/components/navigation/header';
+import { PaymentSVG, UsersSVG } from '@/components/pages/dashboard/svg';
 
 export const unstable_settings = {
   // Ensure any route can link back to `/`
@@ -47,6 +48,10 @@ const Layout: React.FC = () => {
               return <MaterialCommunityIcons name="home-city-outline" {...props} />;
             } else if (route.name === 'Units') {
               return <AntDesign name='home' {...props} />;
+            } else if (route.name === 'Users') {
+              return <UsersSVG {...props} width={widthPixel(24)} height={heightPixel(24)} />;
+            } else if (route.name === 'Payments') {
+              return <PaymentSVG {...props} width={widthPixel(24)} height={heightPixel(24)} />;
             }
             return <TabBarIcon name="bars" {...props} />;
           },

@@ -10,6 +10,7 @@ export interface User {
   company_id: string;
   company: Company;
   id: string;
+  role: "ADMIN" | "CLIENT" | "AGENT";
   is_verified: boolean;
   created_at: string;
   updated_at: string;

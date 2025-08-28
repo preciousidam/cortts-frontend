@@ -1,6 +1,6 @@
 import { FlatList, ListRenderItem, Pressable, View } from "react-native"
 import { BaseDropdown } from "../input/dropdown/dropdown"
-import React from "react"
+import React, { useState } from "react"
 import { useTableStyles } from "./style"
 import { useTableContext } from "./provider"
 import { BaseTextInput } from "../input"
@@ -46,6 +46,7 @@ export const TableControl: React.FC = () => {
 
 export const TableBody = <T,>(): React.ReactElement => {
   const styles = useTableStyles();
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const { widthPixel, heightPixel } = useResponsive();
   const { setWidth, table, equalWidth, pagination, ...props } = useTableContext<T>();
   const emptyImage = useImage(require('@/assets/images/empty.png'), {maxWidth: widthPixel(293), maxHeight: widthPixel(109)});
@@ -95,13 +96,14 @@ export const TableBody = <T,>(): React.ReactElement => {
   )
 
   const renderItem: ListRenderItem<Row<T>> = ({ item, index }) => {
+    const isHovered = hoveredRow === item.id;
     if (props.loading){
       return <View style={[styles.row, { minHeight: heightPixel(72)}]} key={index}> {props.loadingComponent ?? 'loading...'} </View>
     }
     return props.renderRow ? (
         <React.Fragment key={item.id}>{props.renderRow(item)}</React.Fragment>
       ) : (
-      <Pressable key={item.id} style={[styles.row]} accessibilityRole="button" accessibilityLabel={`Row ${item.id}`} onPress={() => props.onRowSelected?.(item.original)}>
+      <Pressable key={item.id} style={[styles.row, isHovered && styles.hover]} accessibilityRole="button" accessibilityLabel={`Row ${item.id}`} onPress={() => props.onRowSelected?.(item.original)} onPointerEnter={() => setHoveredRow(item.id)} onPointerLeave={() => setHoveredRow(null)}>
         {item.getVisibleCells().map(cell => {
           const colMeta = cell.column.columnDef.meta as ExtendedColumnMeta<T> | undefined;
           const width = colMeta?.width ?? equalWidth;
