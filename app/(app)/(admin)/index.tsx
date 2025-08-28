@@ -11,7 +11,7 @@ import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function Dashboard() {
   const styles = useStyles();
@@ -35,71 +35,73 @@ export default function Dashboard() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ rowGap: heightPixel(4) }}>
-          <Typography variant='semiBold' size='subtitle'>
-            Dashboard
-          </Typography>
-          <Typography size='body' color={colors.textWeak}>Welcome to Cortts project, here is your progress summary</Typography>
-        </View>
-        <PopupMenuV1
-          anchor={
-            ({ref, onPress}) => <Button
-              ref={ref}
-              onPress={onPress}
-              title={duration(selectedPeriod)}
-              variant='secondary'
-              rightIcon="Ionicons.chevron-down"
-            />
-          }
-          options={[
-            {onPress: () => setSelectedPeriod('last_7_days'), label: 'Last 7 Days'},
-            {onPress: () => setSelectedPeriod('last_30_days'), label: 'Last 30 Days'},
-            {onPress: () => setSelectedPeriod('last_90_days'), label: 'Last 90 Days'},
-            {onPress: () => setSelectedPeriod('last_12_months'), label: 'Last 12 Months'},
-          ]}
-        />
-      </View>
-      <View style={styles.revenue}>
-        <View style={[styles.revenueCard, { backgroundColor: '#414141'}]}>
-          <Typography color="#FFFFFF" variant='semiBold' size='caption'>Total Revenue</Typography>
-          <Typography color="#FFFFFF" variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_revenue ?? 0)}</Typography>
-          <Typography color="#FFFFFF" variant='regular' size='caption'>Number of payments across all units.</Typography>
-        </View>
-        <View style={styles.revenueCard}>
-          <Typography variant='semiBold' size='caption'>Total Outstanding</Typography>
-          <Typography variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_outstanding ?? 0)}</Typography>
-          <Typography variant='regular' size='caption'>Number of outstanding payments across all units.</Typography>
-        </View>
-      </View>
-      <View style={styles.stats}>
-        <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<ProjectSvg width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
-        <StatCard title='Total Units' value={data?.total_units ?? 0} icon={<AntDesign name='home' size={fontPixel(21)} />} backgroundColor={generateColorScale(colors.secondary).lightActive} iconBgColor='#74FFE9' />
-        <StatCard title='Total Clients' value={data?.total_users ?? 0} icon={<UsersSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.notification).lightActive} iconBgColor='#FFBBA9' />
-        <StatCard title='Payment Logged' value={data?.total_payments ?? 0} icon={<PaymentSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.warning).lightActive} iconBgColor='#FCFC98' />
-      </View>
-      <View style={styles.graphArea}>
-        <Typography variant='semiBold' size='caption'>Overall Activities</Typography>
-        <Chart
-          data={data?.monthly_revenue ?? []}
-          xKey="month"
-          yKeys={["amount"]}
-          variant="bar"
-          yFormat={(value: number) => {
-            const val = value / 1000000;
-            if (val < 1000) {
-              return `${val}Mil`;
-            } else if (val >= 1000) {
-              return `${val}Bil`;
-            } else if (val < 1) {
-              return `${val}K`;
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={{ rowGap: heightPixel(4) }}>
+            <Typography variant='semiBold' size='subtitle'>
+              Dashboard
+            </Typography>
+            <Typography size='body' color={colors.textWeak}>Welcome to Cortts project, here is your progress summary</Typography>
+          </View>
+          <PopupMenuV1
+            anchor={
+              ({ref, onPress}) => <Button
+                ref={ref}
+                onPress={onPress}
+                title={duration(selectedPeriod)}
+                variant='secondary'
+                rightIcon="Ionicons.chevron-down"
+              />
             }
-            return value.toString();
-          }}
-        />
+            options={[
+              {onPress: () => setSelectedPeriod('last_7_days'), label: 'Last 7 Days'},
+              {onPress: () => setSelectedPeriod('last_30_days'), label: 'Last 30 Days'},
+              {onPress: () => setSelectedPeriod('last_90_days'), label: 'Last 90 Days'},
+              {onPress: () => setSelectedPeriod('last_12_months'), label: 'Last 12 Months'},
+            ]}
+          />
+        </View>
+        <View style={styles.revenue}>
+          <View style={[styles.revenueCard, { backgroundColor: '#414141'}]}>
+            <Typography color="#FFFFFF" variant='semiBold' size='caption'>Total Revenue</Typography>
+            <Typography color="#FFFFFF" variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_revenue ?? 0)}</Typography>
+            <Typography color="#FFFFFF" variant='regular' size='caption'>Number of payments across all units.</Typography>
+          </View>
+          <View style={styles.revenueCard}>
+            <Typography variant='semiBold' size='caption'>Total Outstanding</Typography>
+            <Typography variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_outstanding ?? 0)}</Typography>
+            <Typography variant='regular' size='caption'>Number of outstanding payments across all units.</Typography>
+          </View>
+        </View>
+        <View style={styles.stats}>
+          <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<ProjectSvg width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
+          <StatCard title='Total Units' value={data?.total_units ?? 0} icon={<AntDesign name='home' size={fontPixel(21)} />} backgroundColor={generateColorScale(colors.secondary).lightActive} iconBgColor='#74FFE9' />
+          <StatCard title='Total Clients' value={data?.total_users ?? 0} icon={<UsersSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.notification).lightActive} iconBgColor='#FFBBA9' />
+          <StatCard title='Payment Logged' value={data?.total_payments ?? 0} icon={<PaymentSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.warning).lightActive} iconBgColor='#FCFC98' />
+        </View>
+        <View style={styles.graphArea}>
+          <Typography variant='semiBold' size='caption'>Overall Activities</Typography>
+          <Chart
+            data={data?.monthly_revenue ?? []}
+            xKey="month"
+            yKeys={["amount"]}
+            variant="bar"
+            yFormat={(value: number) => {
+              const val = value / 1000000;
+              if (val < 1000) {
+                return `${val}Mil`;
+              } else if (val >= 1000) {
+                return `${val}Bil`;
+              } else if (val < 1) {
+                return `${val}K`;
+              }
+              return value.toString();
+            }}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

@@ -14,7 +14,7 @@ export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line
   const { colors, fonts } = useTheme();
 
   return (
-    <View style={{ height: height ?? heightPixel(300) }}>
+    <View>
       <VictoryChart
         height={height ?? heightPixel(300)}
         width={width ?? widthPixel(1061)}
