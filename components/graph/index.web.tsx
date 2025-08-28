@@ -1,69 +1,60 @@
 // components/graph/index.tsx
 import { useResponsive } from '@/hooks/useResponsive';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { View } from 'react-native';
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryGroup, VictoryLegend, VictoryLine, VictoryTooltip } from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from 'victory';
+import { ChartProps } from './type';
 
-type Datum = Record<string, any>;
-
-export interface ChartProps {
-  data: Datum[];
-  xKey: string;
-  yKeys: string[];            // e.g. ['revenue'] or ['seriesA', 'seriesB']
-  variant?: 'line' | 'bar';
-  height?: number;
-}
-
-export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line', height = 300 }) => {
+export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line', height = 300, width, yFormat }) => {
   const series = yKeys.map((y, i) => ({
     key: y,
     points: data.map(d => ({ x: d[xKey], y: d[y] })),
   }));
-  const { heightPixel } = useResponsive();
+  const { heightPixel, widthPixel, fontPixel } = useResponsive();
+  const { colors, fonts } = useTheme();
 
   return (
     <View style={{ height: height ?? heightPixel(300) }}>
       <VictoryChart
         height={height ?? heightPixel(300)}
-        // theme={VictoryTheme.material}
-        domainPadding={{ x: 20, y: 16 }}
+        width={width ?? widthPixel(1061)}
+        theme={VictoryTheme.material}
       >
-        <VictoryAxis />
-        <VictoryAxis dependentAxis />
-
-        {variant === 'line' ? (
-          <>
-            {series.map(s => (
-              <VictoryLine
-                key={s.key}
-                data={s.points}
-                interpolation="monotoneX"
-                labels={({ datum }: any) => `${s.key}: ${datum.y}`}
-                labelComponent={<VictoryTooltip />}
-              />
-            ))}
-          </>
-        ) : (
-          <VictoryGroup offset={12}>
-            {series.map(s => (
-              <VictoryBar
-                key={s.key}
-                data={s.points}
-                labels={({ datum }: any) => `${s.key}: ${datum.y}`}
-                labelComponent={<VictoryTooltip />}
-              />
-            ))}
-          </VictoryGroup>
-        )}
-
-        {yKeys.length > 1 && (
-          <VictoryLegend
-            x={12}
-            y={8}
-            orientation="horizontal"
-            gutter={12}
-            data={yKeys.map(k => ({ name: k }))}
-          />
-        )}
+        <VictoryAxis
+          // tickValues={_.range(
+          //   2010,
+          //   2024,
+          //   2,
+          // )}
+          style={{
+            tickLabels: {
+              fontSize: fontPixel(12),
+              ...fonts.regular,
+            },
+            ticks: {
+              stroke: "#757575",
+              size: 5,
+            },
+          }}
+        />
+        <VictoryAxis
+          dependentAxis
+          tickFormat={yFormat}
+          style={{
+            tickLabels: {
+              fontSize: fontPixel(12),
+              ...fonts.regular,
+            },
+            ticks: {
+              stroke: "#757575",
+              size: 5,
+            },
+          }}
+        />
+        <VictoryBar
+          data={data.map(d => ({ x: d[xKey], y: d[yKeys[0]] }))}
+          style={{data: { fill: colors.primary }}}
+        />
       </VictoryChart>
     </View>
   );

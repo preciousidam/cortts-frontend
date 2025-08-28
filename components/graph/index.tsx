@@ -1,14 +1,7 @@
 import { View } from "react-native";
 import { Bar, CartesianChart, Line, PointsArray, } from "victory-native";
 import { useResponsive } from "@/hooks/useResponsive";
-
-export interface ChartProps {
-  data: Array<Record<string, any>>;
-  xKey: string;
-  yKeys: string[];
-  variant?: 'line' | 'bar' | 'pie';
-  height?: number;
-}
+import { ChartProps } from "./type";
 
 export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant, height }) => {
   const { isMobile, fontPixel, heightPixel } = useResponsive();

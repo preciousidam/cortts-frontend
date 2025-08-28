@@ -1,4 +1,5 @@
 import { Button } from '@/components/button';
+import { Chart } from '@/components/graph';
 import { StatCard } from '@/components/pages/dashboard/coloredCard';
 import ProjectSvg, { PaymentSVG, UsersSVG } from '@/components/pages/dashboard/svg';
 import PopupMenuV1 from '@/components/PopupMenu';
@@ -80,12 +81,23 @@ export default function Dashboard() {
       </View>
       <View style={styles.graphArea}>
         <Typography variant='semiBold' size='caption'>Overall Activities</Typography>
-        {/* <Chart
-          data={[{x: 1000, completedPayments: 5}]}
-          xKey="x"
-          yKeys={["completedPayments"]}
+        <Chart
+          data={data?.monthly_revenue ?? []}
+          xKey="month"
+          yKeys={["amount"]}
           variant="bar"
-        /> */}
+          yFormat={(value: number) => {
+            const val = value / 1000000;
+            if (val < 1000) {
+              return `${val}Mil`;
+            } else if (val >= 1000) {
+              return `${val}Bil`;
+            } else if (val < 1) {
+              return `${val}K`;
+            }
+            return value.toString();
+          }}
+        />
       </View>
     </View>
   );
