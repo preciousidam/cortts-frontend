@@ -50,7 +50,7 @@ const useStyles = () => {
     },
     card: {
       width: widthPixel(258),
-      height: heightPixel(116),
+      // height: heightPixel(116),
       paddingHorizontal: widthPixel(12),
       paddingVertical: heightPixel(12),
       rowGap: heightPixel(21),
