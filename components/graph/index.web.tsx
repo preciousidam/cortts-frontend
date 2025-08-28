@@ -2,7 +2,7 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { View } from 'react-native';
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme } from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryTheme, VictoryTooltip } from 'victory';
 import { ChartProps } from './type';
 
 export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line', height = 300, width, yFormat }) => {
@@ -52,7 +52,8 @@ export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line
           }}
         />
         <VictoryBar
-          data={data.map(d => ({ x: d[xKey], y: d[yKeys[0]] }))}
+          labelComponent={<VictoryTooltip />}
+          data={data.map(d => ({ x: d[xKey], y: d[yKeys[0]], label: d[yKeys[0]] }))}
           style={{data: { fill: colors.primary }}}
         />
       </VictoryChart>
