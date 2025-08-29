@@ -22,11 +22,12 @@ ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 FROM nginx:alpine
 
 # Nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy exported site
-COPY --from=build /app/dist /usr/share/nginx/html
+# COPY --from=build /app/dist /usr/share/nginx/html
+# RUN npx expo start --web
 
 # Extra MIME types already included, but we'll keep gzip nice to have
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8081
+CMD ["npx", "expo", "start", "--web"]
