@@ -16,7 +16,7 @@ ARG EXPO_PUBLIC_API_URL
 ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 
 # Export static web bundle to /app/dist
-RUN npx expo export --platform web
+# RUN npx expo export --platform web
 
 # -------- Runtime: Nginx to serve static files --------
 FROM nginx:alpine
