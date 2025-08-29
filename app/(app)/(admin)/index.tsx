@@ -75,10 +75,10 @@ export default function Dashboard() {
           </View>
         </View>
         <View style={styles.stats}>
-          <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<ProjectSvg width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
+          <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<ProjectSvg width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
           <StatCard title='Total Units' value={data?.total_units ?? 0} icon={<AntDesign name='home' size={fontPixel(21)} />} backgroundColor={generateColorScale(colors.secondary).lightActive} iconBgColor='#74FFE9' />
-          <StatCard title='Total Clients' value={data?.total_users ?? 0} icon={<UsersSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.notification).lightActive} iconBgColor='#FFBBA9' />
-          <StatCard title='Payment Logged' value={data?.total_payments ?? 0} icon={<PaymentSVG width={widthPixel(21)} height={widthPixel(21)} />} backgroundColor={generateColorScale(colors.warning).lightActive} iconBgColor='#FCFC98' />
+          <StatCard title='Total Clients' value={data?.total_users ?? 0} icon={<UsersSVG width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.notification).lightActive} iconBgColor='#FFBBA9' />
+          <StatCard title='Payment Logged' value={data?.total_payments ?? 0} icon={<PaymentSVG width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.warning).lightActive} iconBgColor='#FCFC98' />
         </View>
         <View style={styles.graphArea}>
           <Typography variant='semiBold' size='caption'>Overall Activities</Typography>

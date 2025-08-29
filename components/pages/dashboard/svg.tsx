@@ -1,10 +1,11 @@
 import Svg, { SvgProps, Path } from "react-native-svg";
-export const ProjectSvg = (props: SvgProps) => (
+type ExtendedSvgProps = SvgProps & { size?: number };
+export const ProjectSvg = (props: ExtendedSvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={21}
-    height={21}
-    fill="none"
+    width={props.width ?? props.size ?? 21}
+    height={props.height ?? props.size ?? 21}
+    fill='none'
     {...props}
   >
     <Path
