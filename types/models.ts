@@ -14,6 +14,7 @@ export interface User {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+  unit?: Unit;
 }
 
 export interface Company {
@@ -133,6 +134,7 @@ export interface Payment {
   due_date: string
   status: string
   unit_id: string
+  unit: { name: string; id: string; }
   id: string
   deleted: boolean
   reason_for_delete: string
@@ -141,6 +143,7 @@ export interface Payment {
   reason_for_payment: string;
   payment_date: string;
   installment: number;
+  media_id?: string;
 }
 
 export enum DocumentKind {

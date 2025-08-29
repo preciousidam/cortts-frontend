@@ -44,7 +44,7 @@ export const UsersSVG = (props: SvgProps) => (
     {...props}
   >
     <Path
-      stroke="#292929"
+      stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1.111}
@@ -62,7 +62,7 @@ export const PaymentSVG = (props: SvgProps) => (
     {...props}
   >
     <Path
-      stroke="#292929"
+      stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
@@ -70,7 +70,7 @@ export const PaymentSVG = (props: SvgProps) => (
       d="M14.405 6.212v3.815c0 2.282-1.304 3.26-3.26 3.26h-6.51c-.334 0-.653-.03-.949-.097a2.883 2.883 0 0 1-.526-.14c-1.11-.415-1.785-1.378-1.785-3.023V6.212c0-2.281 1.304-3.259 3.26-3.259h6.51c1.66 0 2.852.704 3.17 2.311.053.297.09.6.09.948Z"
     />
     <Path
-      stroke="#292929"
+      stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
@@ -78,7 +78,7 @@ export const PaymentSVG = (props: SvgProps) => (
       d="M16.628 8.432v3.815c0 2.281-1.303 3.26-3.259 3.26H6.858c-.548 0-1.045-.075-1.474-.238-.882-.326-1.482-1-1.697-2.081.297.066.615.096.949.096h6.51c1.956 0 3.26-.978 3.26-3.26V6.21c0-.348-.03-.66-.089-.948 1.408.296 2.311 1.289 2.311 3.17Z"
     />
     <Path
-      stroke="#292929"
+      stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}

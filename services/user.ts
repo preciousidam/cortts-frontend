@@ -22,3 +22,9 @@ export const getUsers: QueryFunction<IResponse<User[]>, readonly unknown[], neve
    queryKey: ['/users/', options?.queryKey[1] || {}],
   });
 };
+
+export const getUser: QueryFunction<User, readonly unknown[], never> = async (options) => {
+  return queryFn<User>({
+    queryKey: [options.queryKey[0] as string],
+  });
+};

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "../auth";
 import { User } from "@/types/models";
-import { getProfile, getUsers } from "@/services/user";
+import { getProfile, getUser, getUsers } from "@/services/user";
 import { IResponse } from "@/types";
 
 export const useProfileQueries = () => {
@@ -21,6 +21,17 @@ export const useGetUsersQuery = (skip: number = 0) => {
   return {
     users: data?.data || [],
     count: data?.count || 0,
+    ...rest
+  };
+};
+
+export const useGetUser = (id: string) => {
+  const { token } = useAuthStore();
+
+  const { data, ...rest } = useQuery<User>({queryFn: getUser, queryKey: ['/users/'+id], enabled: !!token?.access_token});
+
+  return {
+    user: data,
     ...rest
   };
 };

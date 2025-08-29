@@ -206,7 +206,7 @@ export const PopupMenuV1: PopupComponentType = ({
         {renderAnchor()}
       </View>
       <FloatingPortal>
-        {visible && (
+        {(options.length > 0 || children) && visible && (
           <View
             style={[
               styles.modalContent,

@@ -109,17 +109,7 @@ export const TableBody = <T,>(): React.ReactElement => {
           const width = colMeta?.width ?? equalWidth;
           const align = colMeta?.align ?? 'flex-start';
 
-          const hasCustomCell = colMeta?.hasCustomCell ?? false;
-
-          // Default content when there's no custom cell
-          const defaultValue = cell.getValue() as unknown;
-          // console.log(defaultValue);
-          const defaultText =
-            defaultValue === null || defaultValue === undefined
-              ? ''
-              : typeof defaultValue === 'string'
-                ? defaultValue
-                : String(defaultValue);
+          const hasCustomCell = colMeta?.hasCustomCell;
 
           return (
             <View key={cell.id} style={[styles.cell, { width, alignItems: align }]}>
@@ -129,7 +119,7 @@ export const TableBody = <T,>(): React.ReactElement => {
               ) : (
                 // No custom cell: render a Typography-wrapped string
                 <Typography variant="regular" size="body" style={styles.bodyText}>
-                  {defaultText}
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Typography>
               )}
             </View>
