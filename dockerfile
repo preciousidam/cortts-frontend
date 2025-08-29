@@ -26,8 +26,8 @@ FROM nginx:alpine
 
 # Copy exported site
 # COPY --from=build /app/dist /usr/share/nginx/html
-# RUN npx expo start --web
+RUN npx expo start --web
 
 # Extra MIME types already included, but we'll keep gzip nice to have
 EXPOSE 8081
-CMD ["npx", "expo", "start", "--web"]
+CMD ["nginx", "-g", "daemon off;"]
