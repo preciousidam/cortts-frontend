@@ -16,18 +16,17 @@ ARG EXPO_PUBLIC_API_URL
 ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 
 # Export static web bundle to /app/dist
-# RUN npx expo export --platform web
+RUN npx expo export --platform web
 
 # -------- Runtime: Nginx to serve static files --------
 FROM nginx:alpine
 
 # Nginx config
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy exported site
-# COPY --from=build /app/dist /usr/share/nginx/html
-RUN npx expo start --web
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Extra MIME types already included, but we'll keep gzip nice to have
-EXPOSE 8081
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
