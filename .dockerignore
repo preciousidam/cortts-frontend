@@ -1,6 +1,6 @@
 # Only ignore the root node_modules (not the exported assets)
 #/node_modules works with Docker's .dockerignore to anchor at root
-./node_modules
+/node_modules
 /.expo
 /.git
 /.husky
