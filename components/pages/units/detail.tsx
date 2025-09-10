@@ -281,8 +281,8 @@ const UnitDetail: React.FC = () => {
             ]}
           />}
         </View>
-        <View style={{flexDirection: isMobile ? 'column' : 'row', columnGap: widthPixel(24), rowGap: heightPixel(24) }}>
-          <View style={{ width: isMobile ? '100%' : widthPixel(551), rowGap: heightPixel(16) }}>
+        <View style={[{flexDirection: 'row', columnGap: widthPixel(24), rowGap: heightPixel(24) }, isMobile && { flexDirection: 'column-reverse' }]}>
+          <View style={[{ width: isMobile ? '100%' : widthPixel(551), rowGap: heightPixel(16) }, isMobile && { paddingHorizontal: widthPixel(16) }]}>
             {/* details */}
             <View style={[styles.formArea, styles.row, {alignItems: 'flex-start'}]}>
               <View style={{ rowGap: heightPixel(12) }}>
@@ -365,7 +365,7 @@ const UnitDetail: React.FC = () => {
             {/* image */}
             <Image source={{ uri: unit?.images?.[0] }} style={styles.largeImage} contentFit='cover' placeholderContentFit='cover' placeholder="https://placehold.co/529x437.85" />
             <View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', columnGap: widthPixel(8) }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[{ flexDirection: 'row', columnGap: widthPixel(8) }, isMobile && { paddingHorizontal: widthPixel(16) }]}>
                 {unit?.images?.slice(1, 5).map((image, index) => (
                   <Image key={index} source={{ uri: image }} style={styles.image} contentFit='cover' placeholderContentFit='cover' placeholder="https://placehold.co/126.25x105" />
                 ))}
@@ -373,7 +373,7 @@ const UnitDetail: React.FC = () => {
             </View>
           </View>
         </View>
-        <View style={{flex: 1}}>
+        <View style={[{flex: 1}, isMobile && { paddingHorizontal: widthPixel(16) }]}>
           <CustomTab
             initialIndex={0}
             routes={[
@@ -535,9 +535,9 @@ const useStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: widthPixel(isMobile ? 16 :32),
-      paddingVertical: heightPixel(isMobile ? 16 : 32),
-      rowGap: heightPixel(24),
+      paddingHorizontal: widthPixel(isMobile ? 0 :32),
+      paddingVertical: heightPixel(isMobile ? 0 : 32),
+      rowGap: heightPixel(isMobile ? 0 : 24),
     },
     formArea: {
       rowGap: heightPixel(32),
@@ -592,7 +592,7 @@ const useStyles = () => {
       color: colors.text,
     },
     largeImage: {
-      width: isMobile ? width - widthPixel(32) : widthPixel(529),
+      width: isMobile ? width : widthPixel(529),
       height: widthPixel(437.85),
       ...m
     },
