@@ -1,9 +1,10 @@
-'use client';
+'use client';;
 import { View, ScrollView } from 'react-native';
 import { useTableStyles } from './style';
 import { TableProps } from './logic';
 import { TableProvider, useTableContext } from './provider';
 import { TableBody, TableControl } from './components';
+import { useResponsive } from '@/hooks/useResponsive';
 
 const ViewportSizer = () => {
   const { setWidth } = useTableContext<any>();
@@ -17,7 +18,7 @@ const ViewportSizer = () => {
 };
 
 const WidthBoundWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { width, extendedColumns, equalWidth } = useTableContext<any>();
+  const { width, extendedColumns, equalWidth, renderRow } = useTableContext<any>();
   const fixed = extendedColumns.reduce(
     (sum: number, col: any) => sum + (col.meta?.width ?? 0),
     0
@@ -29,18 +30,19 @@ const WidthBoundWrapper: React.FC<{ children: React.ReactNode }> = ({ children }
     fixed + (dynamicCount > 0 ? dynamicCount * (equalWidth || 0) : 0)
   );
 
-  return <View style={{ width: computedTableWidth }}>{children}</View>;
+  return <View style={{ width: renderRow ? width : computedTableWidth }}>{children}</View>;
 };
 
 
 const Table = <T,>(props: TableProps<T>) => {
   const styles = useTableStyles();
+  const { isMobile } = useResponsive();
 
   return (
     <TableProvider {...props}>
       <View style={[ props.style]}>
         <ViewportSizer />
-        <ScrollView horizontal>
+        <ScrollView horizontal showsHorizontalScrollIndicator={!isMobile}>
           <WidthBoundWrapper>
             <View style={styles.tableWrapper}>
               <TableControl />

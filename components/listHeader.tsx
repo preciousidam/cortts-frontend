@@ -3,6 +3,7 @@ import { Typography } from "./typography";
 import { Button } from "./button";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
+import PopupMenuV1 from "./PopupMenu";
 
 type ListHeaderProps = {
   title: string;
@@ -13,14 +14,15 @@ type ListHeaderProps = {
 
 export const ListHeader: React.FC<ListHeaderProps> = ({ title, description, secondaryAction, primaryAction }) => {
   const styles = useStyles();
+  const { isMobile } = useResponsive();
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={{flex: 1}}>
         <Typography size='subtitle' variant='semiBold' style={styles.title}>{title}</Typography>
         {description && <Typography size='body' variant='regular' style={styles.description}>{description}</Typography>}
       </View>
-      <View style={styles.cta}>
+      {!isMobile && <View style={styles.cta}>
         {secondaryAction && (
           <Button variant='secondary' size="large" onPress={secondaryAction.onPress}>
             {secondaryAction.title}
@@ -31,7 +33,21 @@ export const ListHeader: React.FC<ListHeaderProps> = ({ title, description, seco
             {primaryAction.title}
           </Button>
         )}
-      </View>
+      </View>}
+      {isMobile && (
+        <View style={styles.cta}>
+          <PopupMenuV1 anchor={props => <Button variant="secondary" {...props} icon="Ionicons.ellipsis-vertical" iconOnly />} options={[
+            primaryAction && {
+              label: primaryAction.title,
+              onPress: primaryAction.onPress
+            },
+            secondaryAction && {
+              label: secondaryAction.title,
+              onPress: secondaryAction.onPress
+            }
+          ]} />
+        </View>
+      )}
     </View>
   );
 };

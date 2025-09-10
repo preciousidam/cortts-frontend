@@ -17,6 +17,7 @@ export const Breadcrumb: React.FC = () => {
   const segments = useSegments();
   const { replace, back } = useRouter();
   const {colors} = useTheme();
+  const { isMobile } = useResponsive();
 
   const paths = removeGroupsFromPath(segments.filter(Boolean));
   const handlePress = (index: number) => {
@@ -24,6 +25,9 @@ export const Breadcrumb: React.FC = () => {
     replace(newPath as ExternalPathString);
   };
 
+  if (isMobile || paths.length <= 1) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>

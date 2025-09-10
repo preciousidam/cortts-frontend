@@ -16,6 +16,7 @@ import Ionicons from '@expo/vector-icons/build/Ionicons';
 import { Button } from '@/components/button';
 import { AxiosError } from 'axios';
 import Toast from 'react-native-toast-message';
+import { useResponsive } from '@/hooks/useResponsive';
 
 
 // AuthProvider wraps the app and provides context
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { setToken, token } = useAuthStore();
   const interceptorRef = useRef<number | null>(null);
   const [form, setForm] = useState<FormData>();
+  const {isMobile} = useResponsive();
 
   const { mutateLogin, isError, isPending, isSuccess, error } = useLoginMutation<FormData, LoginRes>({
     onSuccess(data, variables, context) {
@@ -133,10 +135,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         async (error) => {
           if (error.response?.status === 401) {
             console.warn('Unauthorized. Logging out...');
-            setToken(null);
-            await secureStorage.removeItem('auth_token');
             // optionally: redirect to login
             replace('/(auths)/login')
+            setToken(null);
+            await secureStorage.removeItem('auth_token');
           }
           return Promise.reject(error);
         }
@@ -253,7 +255,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     >
       <View style={{ flex: 1 }}>
         {children}
-        <Button onPress={() => push('/storybook')} iconOnly icon={<Ionicons name="menu" size={24} color="#fff" />} style={{ position: 'absolute', right: 32, bottom: 32 }} />
+        {Platform.OS === 'web' && !isMobile && <Button onPress={() => push('/storybook')} iconOnly icon={<Ionicons name="menu" size={24} color="#fff" />} style={{ position: 'absolute', right: 32, bottom: 32 }} />}
       </View>
     </AuthContext.Provider>
   );

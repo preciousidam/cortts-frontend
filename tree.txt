@@ -1,4 +1,6 @@
 .
+├── .dockerignore
+├── .env
 ├── .env.local
 ├── .gitignore
 ├── .nvmrc
@@ -15,14 +17,27 @@
 │   │   ├── (admin)
 │   │   │   ├── _layout.tsx
 │   │   │   ├── index.tsx
+│   │   │   ├── Payments
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   └── index.tsx
 │   │   │   ├── Projects
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── [project_id]
+│   │   │   │   │   ├── edit.tsx
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── index.tsx
 │   │   │   │   └── new.tsx
-│   │   │   └── Units
+│   │   │   ├── Units
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── [unit_id]
+│   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── new.tsx
+│   │   │   └── Users
 │   │   │       ├── _layout.tsx
+│   │   │       ├── [user_id]
+│   │   │       │   └── index.tsx
 │   │   │       └── index.tsx
 │   │   ├── (agent)
 │   │   │   ├── _layout.tsx
@@ -56,10 +71,12 @@
 │   ├── fonts
 │   │   └── SpaceMono-Regular.ttf
 │   └── images
+│       ├── 1601.png
 │       ├── adaptive-icon.png
 │       ├── auth_image.png
 │       ├── empty.png
 │       ├── favicon.png
+│       ├── Frame.png
 │       ├── icon.png
 │       ├── login_mobile.png
 │       ├── login_web.png
@@ -78,6 +95,14 @@
 │   │   ├── Button.stories.tsx
 │   │   ├── Button.tsx
 │   │   └── index.tsx
+│   ├── divider.tsx
+│   ├── fileUpload
+│   │   ├── file.tsx
+│   │   └── image.tsx
+│   ├── graph
+│   │   ├── index.tsx
+│   │   ├── index.web.tsx
+│   │   └── type.ts
 │   ├── input
 │   │   ├── checkbox.stories.tsx
 │   │   ├── checkbox.tsx
@@ -89,6 +114,8 @@
 │   │   │   └── form.tsx
 │   │   ├── index.tsx
 │   │   ├── otpInput.tsx
+│   │   ├── radio.stories.tsx
+│   │   ├── radio.tsx
 │   │   ├── textInput.stories.tsx
 │   │   └── textInput.tsx
 │   ├── listHeader.tsx
@@ -96,25 +123,44 @@
 │   │   ├── drawer.tsx
 │   │   └── header.tsx
 │   ├── pages
+│   │   ├── dashboard
+│   │   │   ├── coloredCard.tsx
+│   │   │   └── svg.tsx
 │   │   ├── projects
 │   │   │   ├── detail.tsx
+│   │   │   ├── edit.tsx
 │   │   │   ├── list.tsx
 │   │   │   ├── logic.tsx
 │   │   │   └── new.tsx
-│   │   └── units
-│   │       └── list.tsx
+│   │   ├── units
+│   │   │   ├── detail.tsx
+│   │   │   ├── edit.tsx
+│   │   │   ├── list.tsx
+│   │   │   ├── logic.tsx
+│   │   │   └── new.tsx
+│   │   └── users
+│   │       ├── detail.tsx
+│   │       └── index.tsx
 │   ├── picker
 │   │   ├── FloatingPicker.stories.tsx
 │   │   └── FloatingPicker.tsx
 │   ├── Pill
 │   │   ├── index.stories.tsx
 │   │   └── index.tsx
+│   ├── PopupMenu
+│   │   ├── index.native.tsx
+│   │   ├── index.tsx
+│   │   ├── style.ts
+│   │   └── types.ts
+│   ├── tab
+│   │   └── index.tsx
 │   ├── Table
+│   │   ├── components.tsx
 │   │   ├── index.stories.tsx
 │   │   ├── index.tsx
-│   │   ├── index.web.tsx
 │   │   ├── logic.ts
 │   │   ├── pagination.tsx
+│   │   ├── provider.tsx
 │   │   └── style.ts
 │   ├── toast
 │   │   ├── index.tsx
@@ -129,10 +175,10 @@
 │   ├── _expo
 │   │   └── static
 │   │       ├── css
-│   │       │   └── web-69f0c94f5d2d19442899800d7404b090.css
+│   │       │   └── web-a9a3b5ac144b59f905123d16c1d03694.css
 │   │       └── js
 │   │           └── web
-│   │               └── entry-b565041183c3819bb717813357af263a.js
+│   │               └── entry-bc8abf0e27676c7f69f469c0b927e126.js
 │   ├── assets
 │   │   └── assets
 │   │       ├── fonts
@@ -146,6 +192,7 @@
 │   ├── favicon.ico
 │   ├── index.html
 │   └── metadata.json
+├── dockerfile
 ├── eas.json
 ├── eslint.config.js
 ├── expo-env.d.ts
@@ -158,27 +205,41 @@
 │   └── useResponsive.ts
 ├── libs
 │   ├── api.ts
+│   ├── route.tsx
 │   ├── secureStorage.ts
 │   └── secureStorage.web.ts
 ├── metro.config.js
 ├── nativewind-env.d.ts
+├── nginx.conf
 ├── package.json
 ├── providers
 │   └── AuthProvider.tsx
 ├── services
 │   ├── auth.ts
+│   ├── dashboard.ts
 │   ├── document.ts
+│   ├── payment.ts
 │   ├── project.ts
 │   ├── unit.ts
+│   ├── upload.ts
 │   └── user.ts
 ├── store
 │   ├── auth
 │   │   ├── index.ts
 │   │   └── mutations.ts
+│   ├── dashboard
+│   │   └── queries.ts
+│   ├── payment
+│   │   └── queries.ts
 │   ├── projects
 │   │   ├── mutation.ts
 │   │   └── queries.ts
 │   ├── query.ts
+│   ├── units
+│   │   ├── mutation.ts
+│   │   └── queries.ts
+│   ├── uploads
+│   │   └── mutation.ts
 │   └── users
 │       └── queries.ts
 ├── styleguide
@@ -197,8 +258,10 @@
 │   ├── index.ts
 │   └── models.ts
 ├── utilities
+│   ├── download.ts
+│   ├── download.web.ts
 │   ├── error.ts
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-58 directories, 144 files
+72 directories, 193 files

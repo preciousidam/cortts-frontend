@@ -19,9 +19,15 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
   const { colors } = useTheme();
   const { logout } = useAuth();
   const { fullname, email } = useProfileQueries();
+  const navigation = props.navigation;
+  
+
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/images/logo1.png')} style={styles.logo} contentFit="contain" />
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Image source={require('../../assets/images/logo1.png')} style={styles.logo} contentFit="contain" />
+        {/* <Button iconOnly variant="tertiary" size="small" onPress={() => navigation.toggleDrawer()} icon="Ionicons.close" color={colors.text} /> */}
+      </View>
       <DrawerContentScrollView {...props} contentContainerStyle={styles.scroll}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>

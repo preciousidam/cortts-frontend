@@ -65,7 +65,7 @@ export const CustomTab: React.FC<CustomTabProps> = ({
       <TabBar
         {...props}
         indicatorStyle={{ backgroundColor: colors.primary }} // Customize the indicator style
-        style={{ alignSelf: 'flex-start', width: 'auto', backgroundColor: colors.background }} // Customize the tab bar style
+        style={{ alignSelf: 'flex-start', width: 'auto', backgroundColor: colors.background, height: heightPixel(48) }} // Customize the tab bar style
         activeColor={colors.primary} // Customize the active tab color
         inactiveColor={colors.text} // Customize the inactive tab color
         tabStyle={{ width: 'auto', paddingHorizontal: widthPixel(16), }} // Customize the tab style
@@ -83,6 +83,4 @@ export const CustomTab: React.FC<CustomTabProps> = ({
       renderTabBar={renderTabbar}
     />
   );
-}
-
-// const MyTabBarItem: 
+};

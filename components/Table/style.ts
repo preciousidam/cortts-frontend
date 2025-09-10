@@ -10,9 +10,8 @@ export const useTableStyles = () => {
   const { colors } = useTheme();
   return StyleSheet.create({
     tableWrapper: {
-      // width: widthPixel(1104),
       rowGap: heightPixel(8),
-      // minWidth: '100%'
+      width: '100%'
     },
     tableContent: {
       ...roundness.m,
@@ -53,7 +52,8 @@ export const useTableStyles = () => {
     headerAction: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center'
+      alignItems: 'center',
+      width: '100%'
     },
     search: {
       width: widthPixel(404)
@@ -62,7 +62,7 @@ export const useTableStyles = () => {
       width: widthPixel(200)
     },
     emptyView: {
-      width: widthPixel(1104),
+      width: '100%',
       height: heightPixel(764),
       justifyContent: 'center',
       alignItems: 'center',

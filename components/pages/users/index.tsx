@@ -24,7 +24,7 @@ const Users: React.FC = () => {
   const styles = useStyles();
   const {bodyText} = useTableStyles();
   const { users, count, isLoading } = useGetUsersQuery();
-  const { widthPixel } = useResponsive();
+  const { widthPixel, isMobile } = useResponsive();
   const { push } = useRouter();
 
   const columnHelper = createColumnHelper<User>();
@@ -78,12 +78,11 @@ const Users: React.FC = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <ListHeader
+        {!isMobile && <ListHeader
           title="User Management"
           description="Manage users and their permissions."
           primaryAction={{ title: 'Create New User', onPress: createNewUser }}
-        //   secondaryAction={{ title: 'Import Users', onPress: () => console.log('Import Users Pressed') }}
-        />
+        />}
         <Table<User>
           columns={columns}
           data={users}

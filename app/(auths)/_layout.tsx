@@ -2,8 +2,7 @@ import { Redirect, Stack } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Platform } from 'react-native';
 
-const unstable_settings = {
-  headerShown: false,
+export const unstable_settings = {
   initialRouteName: 'login',
 };
 

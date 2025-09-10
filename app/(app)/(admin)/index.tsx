@@ -1,7 +1,7 @@
 import { Button } from '@/components/button';
 import { Chart } from '@/components/graph';
 import { StatCard } from '@/components/pages/dashboard/coloredCard';
-import ProjectSvg, { PaymentSVG, UsersSVG } from '@/components/pages/dashboard/svg';
+import { PaymentSVG, UnitSVG, UsersSVG } from '@/components/pages/dashboard/svg';
 import PopupMenuV1 from '@/components/PopupMenu';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -10,7 +10,8 @@ import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { AntDesign } from '@expo/vector-icons';
-import { useMemo, useState } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function Dashboard() {
@@ -19,6 +20,35 @@ export default function Dashboard() {
   const { isMobile, widthPixel, heightPixel, fontPixel } = useResponsive();
   const [selectedPeriod, setSelectedPeriod] = useState<string>('last_12_months');
   const { data, isLoading, error } = useGetAdminDashboardData();
+  const { navigate } = useRouter();
+  const { setOptions } = useNavigation();
+  // const { openDrawer, closeDrawer } = useNavigation();
+
+  useEffect(() => {
+    setOptions({
+      title: 'Dashboard',
+      headerShown: isMobile,
+      headerRight: () => <PopupMenuV1
+        anchor={
+          ({ref, onPress}) => <Button
+            ref={ref}
+            onPress={onPress}
+            title={duration(selectedPeriod)}
+            variant='tertiary'
+            icon="Ionicons.calendar-outline"
+            iconOnly
+          />
+        }
+        options={[
+          {onPress: () => setSelectedPeriod('last_7_days'), label: 'Last 7 Days'},
+          {onPress: () => setSelectedPeriod('last_30_days'), label: 'Last 30 Days'},
+          {onPress: () => setSelectedPeriod('last_90_days'), label: 'Last 90 Days'},
+          {onPress: () => setSelectedPeriod('last_12_months'), label: 'Last 12 Months'},
+        ]}
+      />
+    });
+  }, [isMobile]);
+
   const duration = (duration: string) => {
     switch (duration) {
       case 'last_7_days':
@@ -37,8 +67,8 @@ export default function Dashboard() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={{ rowGap: heightPixel(4) }}>
+        {!isMobile && <View style={styles.header}>
+          <View style={{ rowGap: heightPixel(4), flex: 1 }}>
             <Typography variant='semiBold' size='subtitle'>
               Dashboard
             </Typography>
@@ -61,28 +91,28 @@ export default function Dashboard() {
               {onPress: () => setSelectedPeriod('last_12_months'), label: 'Last 12 Months'},
             ]}
           />
-        </View>
+        </View>}
         <View style={styles.revenue}>
-          <View style={[styles.revenueCard, { backgroundColor: '#414141'}]}>
+          <View style={[styles.revenueCard, { backgroundColor: '#414141'}, isMobile && {width: '100%'}]}>
             <Typography color="#FFFFFF" variant='semiBold' size='caption'>Total Revenue</Typography>
-            <Typography color="#FFFFFF" variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_revenue ?? 0)}</Typography>
+            <Typography color="#FFFFFF" variant='bold' size={isMobile ? 'subtitle' : 'h2'}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_revenue ?? 0)}</Typography>
             <Typography color="#FFFFFF" variant='regular' size='caption'>Number of payments across all units.</Typography>
           </View>
-          <View style={styles.revenueCard}>
+          <View style={[styles.revenueCard, isMobile && {width: '100%'}]}>
             <Typography variant='semiBold' size='caption'>Total Outstanding</Typography>
-            <Typography variant='bold' size='h2'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_outstanding ?? 0)}</Typography>
+            <Typography variant='bold' size={isMobile ? 'subtitle' : 'h2'} color={colors.notification}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(data?.total_outstanding ?? 0)}</Typography>
             <Typography variant='regular' size='caption'>Number of outstanding payments across all units.</Typography>
           </View>
         </View>
         <View style={styles.stats}>
-          <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<ProjectSvg width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
+          <StatCard title='Total Projects' value={data?.total_projects ?? 0} icon={<UnitSVG width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.primary).lightActive} iconBgColor='#C5E8FF' />
           <StatCard title='Total Units' value={data?.total_units ?? 0} icon={<AntDesign name='home' size={fontPixel(21)} />} backgroundColor={generateColorScale(colors.secondary).lightActive} iconBgColor='#74FFE9' />
           <StatCard title='Total Clients' value={data?.total_users ?? 0} icon={<UsersSVG width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.notification).lightActive} iconBgColor='#FFBBA9' />
           <StatCard title='Payment Logged' value={data?.total_payments ?? 0} icon={<PaymentSVG width={widthPixel(21)} height={heightPixel(21)} />} backgroundColor={generateColorScale(colors.warning).lightActive} iconBgColor='#FCFC98' />
         </View>
         <View style={styles.graphArea}>
           <Typography variant='semiBold' size='caption'>Overall Activities</Typography>
-          <Chart
+          {(data?.monthly_revenue?.length ?? 0) > 0 && <Chart
             data={data?.monthly_revenue ?? []}
             xKey="month"
             yKeys={["amount"]}
@@ -98,14 +128,14 @@ export default function Dashboard() {
               }
               return value.toString();
             }}
-          />
+          />}
         </View>
       </View>
     </ScrollView>
   );
 }
 
-const useStyles = () => {
+export const useStyles = () => {
   const { isMobile, widthPixel, heightPixel, fontPixel } = useResponsive();
   const roundness = useRoundness();
   const { colors, shadow } = useTheme();
@@ -114,7 +144,7 @@ const useStyles = () => {
     container: {
       flex: 1,
       paddingVertical: heightPixel(32),
-      paddingHorizontal: widthPixel(32),
+      paddingHorizontal: widthPixel(isMobile ? 16 : 32),
       rowGap: heightPixel(24),
     },
     header: {
@@ -127,12 +157,15 @@ const useStyles = () => {
       justifyContent: 'space-between',
       alignItems: 'center',
       rowGap: heightPixel(24),
+      flexWrap: 'wrap',
+      // columnGap: widthPixel(24),
     },
     revenue: {
-      flexDirection: 'row',
+      flexDirection: isMobile ? 'column' : 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
+      alignItems: isMobile ? 'flex-start' : 'center',
       columnGap: heightPixel(24),
+      rowGap: heightPixel(16),
     },
     revenueCard: {
       flex: 1,
@@ -140,7 +173,7 @@ const useStyles = () => {
       ...roundness.m,
       borderColor: '#E5E5E5',
       rowGap: heightPixel(24),
-      ...shadow(heightPixel(2), widthPixel(8)),
+      ...shadow(heightPixel(0), widthPixel(1)),
       backgroundColor: colors.card,
     },
     graphArea: {
@@ -149,7 +182,9 @@ const useStyles = () => {
       ...roundness.m,
       rowGap: heightPixel(24),
       backgroundColor: colors.card,
-      ...shadow(heightPixel(2), widthPixel(8))
+      ...shadow(heightPixel(0), widthPixel(1)),
+      borderColor: '#E5E5E5',
+      position: 'relative'
     },
   }), [widthPixel, heightPixel, fontPixel, isMobile]);
 }

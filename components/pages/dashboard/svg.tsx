@@ -36,29 +36,237 @@ export const ProjectSvg = (props: ExtendedSvgProps) => (
 );
 export default ProjectSvg
 
-export const UsersSVG = (props: SvgProps) => (
+export const UsersSVG = (props: ExtendedSvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={22}
-    height={22}
+    width={props.width ?? props.size ?? 20}
+    height={props?.height ?? props.size ?? 21}
     fill="none"
     {...props}
   >
     <Path
-      stroke={props.color || "#292929"}
+      stroke={props.color ?? "#676767"}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={1.111}
-      d="M8.476 10.228a1.614 1.614 0 0 0-.294 0A3.929 3.929 0 0 1 4.387 6.29a3.943 3.943 0 0 1 3.946-3.946 3.943 3.943 0 0 1 .142 7.884ZM14.92 4.125a3.109 3.109 0 0 1 3.111 3.111 3.115 3.115 0 0 1-2.995 3.111 1.003 1.003 0 0 0-.231 0M4.031 13.51c-2.15 1.44-2.15 3.786 0 5.217 2.445 1.635 6.454 1.635 8.898 0 2.151-1.44 2.151-3.787 0-5.218-2.436-1.627-6.444-1.627-8.898 0ZM16.637 18.345a4.3 4.3 0 0 0 1.742-.773c1.387-1.04 1.387-2.756 0-3.796-.489-.373-1.085-.622-1.716-.764"
+      strokeWidth={1.5}
+      d="M7.633 9.11a1.514 1.514 0 0 0-.275 0A3.683 3.683 0 0 1 3.8 5.42c0-2.042 1.65-3.7 3.7-3.7a3.696 3.696 0 0 1 .133 7.392Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M7.633 9.11a1.514 1.514 0 0 0-.275 0A3.683 3.683 0 0 1 3.8 5.42c0-2.042 1.65-3.7 3.7-3.7a3.696 3.696 0 0 1 .133 7.392Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M7.633 9.11a1.514 1.514 0 0 0-.275 0A3.683 3.683 0 0 1 3.8 5.42c0-2.042 1.65-3.7 3.7-3.7a3.696 3.696 0 0 1 .133 7.392Z"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M13.675 3.383a2.915 2.915 0 0 1 2.916 2.916 2.92 2.92 0 0 1-2.808 2.917.94.94 0 0 0-.217 0"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M13.675 3.383a2.915 2.915 0 0 1 2.916 2.916 2.92 2.92 0 0 1-2.808 2.917.94.94 0 0 0-.217 0"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M13.675 3.383a2.915 2.915 0 0 1 2.916 2.916 2.92 2.92 0 0 1-2.808 2.917.94.94 0 0 0-.217 0"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M3.467 12.183c-2.017 1.35-2.017 3.55 0 4.892 2.291 1.533 6.05 1.533 8.341 0 2.017-1.35 2.017-3.55 0-4.892-2.283-1.525-6.041-1.525-8.341 0Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M3.467 12.183c-2.017 1.35-2.017 3.55 0 4.892 2.291 1.533 6.05 1.533 8.341 0 2.017-1.35 2.017-3.55 0-4.892-2.283-1.525-6.041-1.525-8.341 0Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M3.467 12.183c-2.017 1.35-2.017 3.55 0 4.892 2.291 1.533 6.05 1.533 8.341 0 2.017-1.35 2.017-3.55 0-4.892-2.283-1.525-6.041-1.525-8.341 0Z"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      d="M15.283 16.719a4.03 4.03 0 0 0 1.633-.725c1.3-.975 1.3-2.584 0-3.559-.458-.35-1.016-.583-1.608-.716"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M15.283 16.719a4.03 4.03 0 0 0 1.633-.725c1.3-.975 1.3-2.584 0-3.559-.458-.35-1.016-.583-1.608-.716"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M15.283 16.719a4.03 4.03 0 0 0 1.633-.725c1.3-.975 1.3-2.584 0-3.559-.458-.35-1.016-.583-1.608-.716"
     />
   </Svg>
 );
 
-export const PaymentSVG = (props: SvgProps) => (
+export const PaymentSVG = (props: ExtendedSvgProps) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={18}
-    height={19}
+    width={20}
+    height={21}
+    fill="none"
+    {...props}
+  >
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeWidth={1.5}
+      d="M16.083 6.651v4.292c0 2.566-1.466 3.666-3.666 3.666H5.09c-.375 0-.733-.033-1.066-.108a3.235 3.235 0 0 1-.592-.158c-1.25-.467-2.008-1.55-2.008-3.4V6.65c0-2.567 1.466-3.667 3.666-3.667h7.325c1.867 0 3.209.792 3.567 2.6.058.334.1.675.1 1.067Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M16.083 6.651v4.292c0 2.566-1.466 3.666-3.666 3.666H5.09c-.375 0-.733-.033-1.066-.108a3.235 3.235 0 0 1-.592-.158c-1.25-.467-2.008-1.55-2.008-3.4V6.65c0-2.567 1.466-3.667 3.666-3.667h7.325c1.867 0 3.209.792 3.567 2.6.058.334.1.675.1 1.067Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M16.083 6.651v4.292c0 2.566-1.466 3.666-3.666 3.666H5.09c-.375 0-.733-.033-1.066-.108a3.235 3.235 0 0 1-.592-.158c-1.25-.467-2.008-1.55-2.008-3.4V6.65c0-2.567 1.466-3.667 3.666-3.667h7.325c1.867 0 3.209.792 3.567 2.6.058.334.1.675.1 1.067Z"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeWidth={1.5}
+      d="M18.584 9.153v4.291c0 2.567-1.467 3.667-3.667 3.667H7.592c-.617 0-1.175-.083-1.658-.267-.992-.366-1.667-1.125-1.909-2.341.334.075.692.108 1.067.108h7.325c2.2 0 3.667-1.1 3.667-3.667V6.653c0-.392-.034-.742-.1-1.067 1.583.333 2.6 1.45 2.6 3.567Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M18.584 9.153v4.291c0 2.567-1.467 3.667-3.667 3.667H7.592c-.617 0-1.175-.083-1.658-.267-.992-.366-1.667-1.125-1.909-2.341.334.075.692.108 1.067.108h7.325c2.2 0 3.667-1.1 3.667-3.667V6.653c0-.392-.034-.742-.1-1.067 1.583.333 2.6 1.45 2.6 3.567Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M18.584 9.153v4.291c0 2.567-1.467 3.667-3.667 3.667H7.592c-.617 0-1.175-.083-1.658-.267-.992-.366-1.667-1.125-1.909-2.341.334.075.692.108 1.067.108h7.325c2.2 0 3.667-1.1 3.667-3.667V6.653c0-.392-.034-.742-.1-1.067 1.583.333 2.6 1.45 2.6 3.567Z"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeWidth={1.5}
+      d="M8.749 11.002a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M8.749 11.002a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M8.749 11.002a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeWidth={1.5}
+      d="M3.983 6.969v3.666"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M3.983 6.969v3.666M3.983 6.969v3.666"
+    />
+    <Path
+      stroke={props.color ?? "#676767"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeWidth={1.5}
+      d="M13.518 6.969v3.666"
+    />
+    <Path
+      stroke={props.color ?? "#000"}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeMiterlimit={10}
+      strokeOpacity={0.2}
+      strokeWidth={1.5}
+      d="M13.518 6.969v3.666M13.518 6.969v3.666"
+    />
+  </Svg>
+);
+
+export const UnitSVG = (props: ExtendedSvgProps) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={props.width ?? props.size ?? 20}
+    height={props.height ?? props.size ?? 21}
     fill="none"
     {...props}
   >
@@ -67,24 +275,24 @@ export const PaymentSVG = (props: SvgProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
-      strokeWidth={0.8}
-      d="M14.405 6.212v3.815c0 2.282-1.304 3.26-3.26 3.26h-6.51c-.334 0-.653-.03-.949-.097a2.883 2.883 0 0 1-.526-.14c-1.11-.415-1.785-1.378-1.785-3.023V6.212c0-2.281 1.304-3.259 3.26-3.259h6.51c1.66 0 2.852.704 3.17 2.311.053.297.09.6.09.948Z"
+      strokeWidth={1.5}
+      d="M5.584 15.052H3.459c-1.192 0-1.792-.6-1.792-1.792V3.51c0-1.191.6-1.791 1.792-1.791h3.583c1.192 0 1.792.6 1.792 1.791v1.542"
     />
     <Path
       stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
-      strokeWidth={0.8}
-      d="M16.628 8.432v3.815c0 2.281-1.303 3.26-3.259 3.26H6.858c-.548 0-1.045-.075-1.474-.238-.882-.326-1.482-1-1.697-2.081.297.066.615.096.949.096h6.51c1.956 0 3.26-.978 3.26-3.26V6.21c0-.348-.03-.66-.089-.948 1.408.296 2.311 1.289 2.311 3.17Z"
+      strokeWidth={1.5}
+      d="M14.475 7.067v9.3c0 1.342-.667 2.017-2.009 2.017H7.6c-1.342 0-2.017-.675-2.017-2.017v-9.3c0-1.341.675-2.016 2.017-2.016h4.866c1.342 0 2.009.675 2.009 2.016Z"
     />
     <Path
       stroke={props.color || "#292929"}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
-      strokeWidth={0.8}
-      d="M7.885 10.08a1.956 1.956 0 1 0 0-3.912 1.956 1.956 0 0 0 0 3.911ZM3.652 6.492v3.26M12.125 6.492v3.26"
+      strokeWidth={1.5}
+      d="M11.167 5.052V3.51c0-1.191.6-1.791 1.792-1.791h3.583c1.192 0 1.792.6 1.792 1.791v9.75c0 1.192-.6 1.792-1.792 1.792h-2.067M8.333 9.219h3.333M8.333 11.719h3.333M10 18.383v-2.5"
     />
   </Svg>
-);
+)

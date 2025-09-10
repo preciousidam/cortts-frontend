@@ -1,4 +1,4 @@
-import { useResponsive } from "@/hooks/useResponsive";
+import { baseScreen, baseScreenTab, useResponsive } from "@/hooks/useResponsive";
 import { ColumnDef as TanstackColumnDef, ColumnMeta, FilterFn, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, TableOptions, useReactTable } from "@tanstack/react-table";
 import { ReactNode, useMemo, useState } from "react";
 import { ViewStyle } from "react-native";
@@ -11,7 +11,7 @@ export type ColumnDef<TData> = TanstackColumnDef<TData, unknown> & {
 export type TableProps<T> = {
   columns: ColumnDef<T>[];
   data: T[];
-  renderRow?: (row: ReturnType<ReturnType<typeof useReactTable<T>>['getRowModel']>['rows'][number]) => React.ReactNode;
+  renderRow?: (row: T) => React.ReactNode;
   emptyStateText?: string;
   onSearch?: (text: string) => void;
   loading?: boolean;
@@ -25,6 +25,7 @@ export type TableProps<T> = {
     multiple?: boolean
   };
   style?: ViewStyle;
+  tableContainerStyle?: ViewStyle;
 };
 
 export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'], hasCustomCell: boolean, type: 'string' | 'number' | 'boolean' | 'date' | 'custom' };
@@ -46,7 +47,7 @@ const stringOrElement = (f: () => ReactNode | string) => {
 
 export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, options = {} as TableOptions<T>, filter = defaultFilter, ...rest }: TableProps<T>) => {
   const [width, setWidth] = useState<number>();
-  const { widthPixel } = useResponsive();
+  const { widthPixel, isMobile } = useResponsive();
   const [search, setSearch] = useState('');
     const [globalFilter, setGlobalFilter] = useState('');
     const [selectedFilter, setSelectedFilter] = useState<string[] | string>([]);
@@ -57,9 +58,6 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
 
     const extendedColumns = columns.map((column) => {
       const isFilterTarget = column.accessorKey?.toString() === filter.field;
-
-      console.log(column.cell && column.meta?.type === 'custom');
-      
 
       return {
         ...column,
@@ -94,7 +92,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
   });
 
   const computeEqualWidth = () => {
-    const totalWidth = width || widthPixel(1440);
+    const totalWidth = width || widthPixel(isMobile ? baseScreen.WIDTH : baseScreenTab.WIDTH);
 
     const fixedWidthSum = columns.reduce((sum, col) => {
       const colWidth = (col.meta as ExtendedColumnMeta<T>)?.width;

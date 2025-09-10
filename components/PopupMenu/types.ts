@@ -5,7 +5,7 @@ export type PopupmenuTrigger = 'hover' | 'click';
 
 export type PopupmenuComponentProps = {
   children?: React.ReactNode;
-  options?: Array<PopupmenuItemProps>;
+  options?: Array<PopupmenuItemProps | void>;
   anchor?: PopupmenuAnchorComponentProps;
   trigger?: PopupmenuTrigger;
   visible?: boolean;

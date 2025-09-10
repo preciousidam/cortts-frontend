@@ -2,8 +2,8 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import React, { useEffect, useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
@@ -20,6 +20,8 @@ import generateAvatarImage from '@/utilities/generateAvatarImage';
 import { useTableStyles } from '@/components/Table/style';
 import { format } from 'date-fns';
 import PopupMenuV1 from '@/components/PopupMenu';
+import { MobileRow } from '../units/list';
+import { Button } from '@/components/button';
 
 const purpose: DropdownOption<string>[] = [
   { label: "Detached", value: "Detached" },
@@ -43,11 +45,25 @@ const Project: React.FC = () => {
   const {project_id} = useLocalSearchParams<{project_id: string}>();
   const styles = useStyles();
   const { bodyText } = useTableStyles();
-  const { widthPixel } = useResponsive();
+  const { widthPixel, heightPixel } = useResponsive();
   const { colors } = useTheme();
-  const {fontPixel} = useResponsive();
+  const {fontPixel, isMobile} = useResponsive();
   const { back, push } = useRouter();
   const {project, isLoading} = useGetProjectQuery(project_id);
+  const { setOptions } = useNavigation();
+  useEffect(() => {
+    setOptions({
+      headerShown: isMobile,
+      title: isMobile ? project?.name : '',
+      headerRight: () => <PopupMenuV1
+      anchor={props => <Button iconOnly icon="Ionicons.ellipsis-vertical" {...props} variant='tertiary' size='medium' />}
+        options={[
+          { label: 'Edit Project', onPress: () => onSelect('edit') },
+          { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
+        ]}
+      />
+    });
+  }, [isMobile, project]);
 
   const columns: ColumnDef<Unit>[] =  useMemo(() => [
     {
@@ -108,7 +124,7 @@ const Project: React.FC = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.row}>
+        {!isMobile && <View style={styles.row}>
           <Breadcrumb />
           <PopupMenuV1
             options={[
@@ -116,12 +132,12 @@ const Project: React.FC = () => {
               { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
             ]}
           />
-        </View>
-        <View style={styles.formArea}>
-          <View style={styles.row}>
+        </View>}
+        <View style={[styles.formArea, isMobile && { flexDirection: 'column', rowGap: heightPixel(16), paddingHorizontal: widthPixel(16) }]}>
+          <View style={[styles.row, isMobile && {  alignItems: 'flex-start' }]}>
             <Image
-              placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(88) })}
-              style={styles.image}
+              placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(isMobile ? 32 : 88) })}
+              style={[styles.image, isMobile && styles.mobileImage]}
               source={{ uri: project?.artwork_url ?? '' }}
             />
             <View style={styles.header}>
@@ -137,20 +153,20 @@ const Project: React.FC = () => {
               </View>
             </View>
           </View>
-          <View style={styles.row}>
-            <View style={styles.card}>
+          <View style={[styles.row, isMobile && { flexWrap: 'wrap', flexDirection: 'column', rowGap: heightPixel(16) }]}>
+            <View style={[styles.card, isMobile && { flex: 1, width: '100%' }]}>
               <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Revenue Generated</Typography>
               <Typography  variant='semiBold' size='subtitle' style={styles.cardValue}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(project?.total_revenue ?? 0)}</Typography>
             </View>
-            <View style={styles.card}>
+            <View style={[styles.card, isMobile && { flex: 1, width: '100%' }]}>
               <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Units</Typography>
               <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.num_units ?? 0}</Typography>
             </View>
-            <View style={styles.card}>
+            <View style={[styles.card, isMobile && { flex: 1, width: '100%' }]}>
               <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Sold Units</Typography>
               <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>{project?.sold_units ?? 0}</Typography>
             </View>
-            <View style={styles.card}>
+            <View style={[styles.card, isMobile && { flex: 1, width: '100%' }]}>
               <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Assigned Agents</Typography>
               <Typography variant='semiBold' size='subtitle' style={styles.cardValue}>1</Typography>
             </View>
@@ -161,7 +177,9 @@ const Project: React.FC = () => {
           data={project?.units ?? []}
           filter={{ field: 'type', options: purpose }}
           loading={isLoading}
-          onRowSelected={unit => push(`/(app)/(admin)/Units/${unit.id}`)}
+          onRowSelected={unit => push(`/Units/${unit.id}`, { relativeToDirectory: true })}
+          renderRow={row => <MobileRow row={row} onPress={() => push(`/Units/${row.id}`)} />}
+          tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
         />
       </View>
     </ScrollView>
@@ -169,14 +187,14 @@ const Project: React.FC = () => {
 };
 
 const useStyles = () => {
-  const { fontPixel, widthPixel, heightPixel } = useResponsive();
+  const { fontPixel, widthPixel, heightPixel, isMobile } = useResponsive();
   const { colors, shadow } = useTheme();
   const { m, large, circle } = useRoundness();
 
   return StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: widthPixel(32),
+      paddingHorizontal: widthPixel(isMobile ? 16 : 32),
       paddingVertical: heightPixel(32),
       rowGap: heightPixel(40),
     },
@@ -202,7 +220,8 @@ const useStyles = () => {
     ctaView: {
       columnGap: widthPixel(24),
       flexDirection: 'row',
-      alignItems: 'center'
+      alignItems: 'center',
+      flexWrap: 'wrap'
     },
     smallGap: {
       columnGap: widthPixel(12),
@@ -235,6 +254,11 @@ const useStyles = () => {
     image: {
       width: widthPixel(88),
       height: widthPixel(88),
+      ...circle
+    },
+    mobileImage: {
+      width: widthPixel(32),
+      height: widthPixel(32),
       ...circle
     }
   });

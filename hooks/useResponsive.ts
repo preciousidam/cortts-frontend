@@ -1,5 +1,6 @@
 
 import { getBreakpoint, isGte, isLt } from '@/styleguide/breakpoints';
+import { useMemo } from 'react';
 import { PixelRatio, ScaledSize, useWindowDimensions } from 'react-native';
 
 export enum BASE {
@@ -28,6 +29,7 @@ export const useResponsive = () => {
   const isPortrait = height >= width;
   const isLandscape = width > height;
   const isMobile = isLt(breakpoint, 'md');
+
 
   // Base scales
   const widthBaseScale = width / baseScreen.WIDTH;
@@ -64,7 +66,7 @@ export const useResponsive = () => {
   const fontPixel = (size: number) => widthPixel(size);
   const lineHeight = (size: number) => heightPixel(size);
 
-  return {
+  return useMemo(() => ({
     width,
     height,
     isPortrait,
@@ -79,5 +81,5 @@ export const useResponsive = () => {
     scale: widthPixel,
     verticalScale: heightPixel,
     isMobile
-  };
+  }), [width, height, breakpoint]);
 };

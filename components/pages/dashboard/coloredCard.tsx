@@ -38,28 +38,24 @@ const useStyles = () => {
   const { colors, shadow } = useTheme();
 
   return useMemo(() => StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingVertical: heightPixel(32),
-      paddingHorizontal: widthPixel(32)
-    },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
     },
     card: {
-      width: widthPixel(258),
+      width: isMobile ? '100%' : widthPixel(258),
       // height: heightPixel(116),
       paddingHorizontal: widthPixel(12),
       paddingVertical: heightPixel(12),
       rowGap: heightPixel(21),
       ...roundness.m,
       borderColor: '#E5E5E5',
-      ...shadow(heightPixel(2), widthPixel(8))
+      ...shadow(heightPixel(0), widthPixel(1)),
+      // flex: 1,
     },
     icon: {
-      width: widthPixel(34),
+      width: heightPixel(34),
       height: heightPixel(34),
       justifyContent: 'center',
       alignItems: 'center',

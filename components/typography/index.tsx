@@ -59,7 +59,7 @@ export const LinkTypography: React.FC<AppTextProps & LinkProps> = (Props) => {
 };
 
 const useStyles = () => {
-  const { fontPixel } = useResponsive();
+  const { fontPixel, isMobile } = useResponsive();
   const { colors } = useTheme();
   return StyleSheet.create({
     base: {
@@ -91,7 +91,7 @@ const useStyles = () => {
       fontSize: fontPixel(12),
     },
     subtitle: {
-      fontSize: fontPixel(32),
+      fontSize: fontPixel(isMobile ? 24 : 32),
     },
     link: {
       color: colors.primary,

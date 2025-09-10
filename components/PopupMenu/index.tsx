@@ -35,7 +35,7 @@ export const PopupMenuV1: PopupComponentType = ({
   const { refs, floatingStyles, update, context } = useFloating({
     placement: 'bottom-end',
     whileElementsMounted: autoUpdate,
-    middleware: [offset(heightPixel(8)), flip()],
+    middleware: [offset(heightPixel(8)), flip({})],
     open: visible,
     onOpenChange(nextOpen, event, reason) {
       setVisible(nextOpen);
@@ -131,7 +131,7 @@ export const PopupMenuV1: PopupComponentType = ({
       });
     }) ?? []),
     ...options.map((option, index) => (
-      <Pressable
+      option ? <Pressable
         {...option}
         key={index}
         style={[styles.option, rest.optionsStyle, option.style, index === hoveredId && hoverBg(option.destructive)]}
@@ -154,7 +154,7 @@ export const PopupMenuV1: PopupComponentType = ({
           {option.label}
         </Typography>
         {option.icon && option.iconPosition === 'right' && option.icon}
-      </Pressable>
+      </Pressable> : null
     ))
   ];
 
