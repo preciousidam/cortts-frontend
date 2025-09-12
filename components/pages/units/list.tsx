@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Image } from 'expo-image';
+import PopupMenuV1 from '@/components/PopupMenu';
 
 const all_types: DropdownOption<string>[] = [
   { label: "Detached", value: "Detached" },
@@ -46,6 +47,13 @@ const Units: React.FC = () => {
     setOptions({
       headerShown: isMobile,
       title: isMobile ? 'Units' : '',
+      headerRight: () => <View><PopupMenuV1
+        anchorVariant='tertiary'
+        options={[
+          { label: 'Create New Unit', onPress: createNewUnit },
+          { label: 'Import Units', onPress: () => console.log('Import Units Pressed') }
+        ]}
+      /></View>
     });
   }, [isMobile]);
 

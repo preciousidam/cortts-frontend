@@ -17,9 +17,9 @@ import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import * as Icon from '@expo/vector-icons';
 
-type Variant = 'primary' | 'secondary' | 'outlined' | 'tertiary';
+export type Variant = 'primary' | 'secondary' | 'outlined' | 'tertiary';
 
-type Size = 'large' | 'medium' | 'small';
+export type Size = 'large' | 'medium' | 'small';
 
 
 const useVariantStyle = (variant: Variant) => {

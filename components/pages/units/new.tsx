@@ -6,8 +6,8 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { useRouter } from 'expo-router';
-import React from 'react';
+import { useNavigation, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useUnitLogic } from './logic';
 import { Breadcrumb } from '@/components/breadcrumb';
@@ -49,8 +49,13 @@ const duration = [
 const NewUnit: React.FC = () => {
   const styles = useStyles();
   const { back } = useRouter();
+  const { setOptions } = useNavigation();
   const {control, onSubmit, isLoading, watch, installment_amount, total_amount, handleImageUpload } = useUnitLogic();
   const { projects, count, isLoading: isLoadingProjects } = useGetProjectsQueries();
+
+  useEffect(() => {
+    setOptions({ title: 'Add Unit' });
+  }, [setOptions]);
 
   return (
     <ScrollView>
@@ -157,44 +162,48 @@ const NewUnit: React.FC = () => {
 };
 
 const useStyles = () => {
-  const { fontPixel, widthPixel, heightPixel } = useResponsive();
+  const { fontPixel, widthPixel, heightPixel, isMobile } = useResponsive();
   const { colors, shadow } = useTheme();
   const { m } = useRoundness()
 
   return StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: widthPixel(32),
-      paddingVertical: heightPixel(32),
+      paddingHorizontal: widthPixel(isMobile ? 16 : 32),
+      paddingVertical: heightPixel(isMobile ? 16 : 32),
       rowGap: heightPixel(24),
+      backgroundColor: isMobile ? colors.card : colors.background,
     },
     formArea: {
       rowGap: heightPixel(24),
       backgroundColor: colors.card,
       ...m,
-      borderColor: generateColorScale(colors.neutral).lightHover,
-      ...shadow(heightPixel(2), widthPixel(8))
+      borderColor: '#F2F2F2',
+      ...shadow(heightPixel(0), widthPixel(0)),
+
     },
     formRow: {
-      flexDirection: 'row',
+      flexDirection: isMobile ? 'column' : 'row',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
       columnGap: widthPixel(16),
+      rowGap: heightPixel(16),
     },
     ctaView: {
-      alignSelf: 'flex-end',
+      alignSelf: isMobile ? 'center' : 'flex-end',
       columnGap: widthPixel(16),
       flexDirection: 'row',
     },
     input: {
       flex: 1,
+      width: isMobile ? '100%' : undefined
     },
     cancel: {
       width: widthPixel(151)
     },
     padded: {
       paddingHorizontal: widthPixel(16),
-      paddingVertical: heightPixel(24),
+      paddingVertical: heightPixel(isMobile ? 16 : 24),
       rowGap: heightPixel(24),
     },
     sectionHeader: {

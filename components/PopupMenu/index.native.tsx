@@ -15,6 +15,7 @@ export const PopupMenuV1: PopupComponentType = ({
   style,
   trigger = 'click',
   options = [],
+  anchorVariant = 'secondary',
   ...rest
 }) => {
   const { colors } = useTheme();
@@ -135,7 +136,7 @@ export const PopupMenuV1: PopupComponentType = ({
 
     return (
       <Button
-        variant='secondary'
+        variant={anchorVariant}
         iconOnly
         icon="Ionicons.ellipsis-vertical"
         ref={(ref) => refs.setReference(ref as any)}
@@ -166,19 +167,19 @@ export const PopupMenuV1: PopupComponentType = ({
       <View>
         {renderAnchor()}
       </View>
-        {(options.length > 0 || children) && visible && (
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: colors.card, minWidth: widthPixel(200), zIndex: 234567890 },
-              rest.modalContainerStyle,
-              floatingStyles as ViewStyle
-            ]}
-            ref={(node) => refs.setFloating?.(node as any | null)}
-          >
-            {renderOptions()}
-          </View>
-        )}
+      {(options.length > 0 || children) && visible && (
+        <View
+          style={[
+            styles.modalContent,
+            { backgroundColor: colors.card, minWidth: widthPixel(200), zIndex: 234567890 },
+            rest.modalContainerStyle,
+            floatingStyles as ViewStyle
+          ]}
+          ref={(node) => refs.setFloating?.(node as any | null)}
+        >
+          {renderOptions()}
+        </View>
+      )}
     </View>
   );
 };

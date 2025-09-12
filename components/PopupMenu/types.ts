@@ -1,5 +1,6 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
+import { Variant } from '../button';
 
 export type PopupmenuTrigger = 'hover' | 'click';
 
@@ -16,6 +17,7 @@ export type PopupmenuComponentProps = {
   modalContainerStyle?: ViewStyle;
   optionsStyle?: ViewStyle;
   triggerStyle?: ViewStyle;
+  anchorVariant?: Variant;
 };
 
 export type PopupmenuItemProps = {

@@ -68,7 +68,7 @@ const UnitDetail: React.FC = () => {
       setOptions({
         headerShown: isMobile,
         title: isMobile ? unit?.name : '',
-        headerRight: () => <PopupMenuV1
+        headerRight: () => <View><PopupMenuV1
           anchor={props => <Button iconOnly icon="Ionicons.ellipsis-vertical" {...props} variant='tertiary' size='medium' />}
             options={[
               { label: 'Upload New Template', onPress: () => setShowDocumentUpload(true) },
@@ -76,7 +76,7 @@ const UnitDetail: React.FC = () => {
               { label: 'Edit unit', onPress: () => onSelect('edit') },
               { label: 'Delete', onPress: () => onSelect('delete'), destructive: true }
             ]}
-          />
+          /></View>
       });
     }, [isMobile, unit]);
   const {
@@ -100,6 +100,7 @@ const UnitDetail: React.FC = () => {
     setShowAssignAgentForm,
     assignAgent
   } = useUnitLogic();
+  const placeHolder = "eUIW_,0gxURjobyGxBM|W.ae20$eNaWpn%WCX9xZf7oJOEoNt7s.ay"
 
   const onViewPaymentReceipt = useCallback((paymentId: string) => {
     push(`./payments/${paymentId}/receipt`, { relativeToDirectory: true });
@@ -363,11 +364,11 @@ const UnitDetail: React.FC = () => {
           </View>
           <View style={{ rowGap: heightPixel(12)}}>
             {/* image */}
-            <Image source={{ uri: unit?.images?.[0] }} style={styles.largeImage} contentFit='cover' placeholderContentFit='cover' placeholder="https://placehold.co/529x437.85" />
+            <Image source={unit?.images?.[0]} style={styles.largeImage} contentFit='cover' placeholderContentFit='cover' placeholder={{blurhash: placeHolder}} />
             <View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[{ flexDirection: 'row', columnGap: widthPixel(8) }, isMobile && { paddingHorizontal: widthPixel(16) }]}>
                 {unit?.images?.slice(1, 5).map((image, index) => (
-                  <Image key={index} source={{ uri: image }} style={styles.image} contentFit='cover' placeholderContentFit='cover' placeholder="https://placehold.co/126.25x105" />
+                  <Image key={index} source={{ uri: image }} style={styles.image} contentFit='cover' placeholderContentFit='cover' placeholder={{blurhash: placeHolder}} />
                 ))}
               </ScrollView>
             </View>
