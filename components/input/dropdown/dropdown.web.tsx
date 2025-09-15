@@ -205,6 +205,8 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   }
 
   const renderItem = ({ item }: { item: DropdownOption<T> }) => {
+    console.log(selectedValue, item.value);
+    
     const isSelected = multiSelect ? Array.isArray(selectedValue) && selectedValue.includes(item.value) : selectedValue === item.value;
     const isHovered = item.value == hoveredId
     return (

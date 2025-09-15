@@ -69,6 +69,7 @@ const UnitDetail: React.FC = () => {
         headerShown: isMobile,
         title: isMobile ? unit?.name : '',
         headerRight: () => <View><PopupMenuV1
+          inHeader
           anchor={props => <Button iconOnly icon="Ionicons.ellipsis-vertical" {...props} variant='tertiary' size='medium' />}
             options={[
               { label: 'Upload New Template', onPress: () => setShowDocumentUpload(true) },

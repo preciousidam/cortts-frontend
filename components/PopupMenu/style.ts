@@ -14,22 +14,20 @@ export const useStyles = () => {
       StyleSheet.create({
         container: {
           width: 'auto',
-          alignSelf: 'flex-start',
           zIndex: 10000,
           rowGap: heightPixel(8)
         },
         button: {
           width: widthPixel(32),
           height: widthPixel(32),
-          justifyContent: 'center',
-          alignItems: 'center'
         },
         modalContent: {
           ...roundness.m,
           borderColor: colors.textWeaker,
           paddingHorizontal: widthPixel(1),
           paddingVertical: heightPixel(1),
-          ...shadow(heightPixel(2), widthPixel(8))
+          ...shadow(heightPixel(2), widthPixel(8)),
+          maxHeight: heightPixel(400),
         },
         option: {
           paddingVertical: heightPixel(16),

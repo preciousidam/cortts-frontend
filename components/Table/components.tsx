@@ -12,24 +12,46 @@ import { ExtendedColumnMeta } from "./logic"
 import { useResponsive } from "@/hooks/useResponsive"
 import { Button } from "../button"
 import PopupMenuV1 from "../PopupMenu"
+import { ColoredPill } from "../Pill"
+import { Ionicons } from "@expo/vector-icons"
+import { useTheme } from "@/styleguide/theme/ThemeContext"
 
 export const TableControl: React.FC = () => {
   const styles = useTableStyles();
   const { handleFilter, handleSearch, search, selectedFilter, filter } = useTableContext();
-  const { isMobile, widthPixel } = useResponsive();
+  const { isMobile, widthPixel, heightPixel } = useResponsive();
+  const { colors } = useTheme();
+
   if (isMobile) {
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: widthPixel(8) }}>
-        <BaseTextInput
-          leftIcon="Ionicons.search"
-          value={search}
-          style={{ ...styles.search, width: widthPixel(326) }}
-          onChangeText={(text: string) => handleSearch(text)}
-        />
-        <PopupMenuV1
-          anchor={props => <Button iconOnly icon="Ionicons.filter" {...props} variant="secondary" />}
-          options={filter.options.map(option => ({ label: option.label, onPress: () => handleFilter(option.value) }))}
-        />
+      <View style={{ gap: widthPixel(8) }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: heightPixel(8) }}>
+          <BaseTextInput
+            leftIcon="Ionicons.search"
+            value={search}
+            style={{ ...styles.search, width: widthPixel(326) }}
+            onChangeText={(text: string) => handleSearch(text)}
+          />
+          <PopupMenuV1
+            anchor={props => <Button iconOnly icon="Ionicons.filter" {...props} variant="secondary" />}
+            options={filter.options.map(option => ({ label: option.label, onPress: () => handleFilter(option.value) }))}
+          />
+        </View>
+        {typeof selectedFilter == "string" && <ColoredPill
+          title={selectedFilter}
+          color="blue"
+          style={{alignSelf: 'flex-start'}}
+          rightIcon={<Ionicons name="close" size={16} color={colors.primary} onPress={() => handleFilter()} />}
+        />}
+        {Array.isArray(selectedFilter) && selectedFilter.length > 0 && <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: widthPixel(8)}}>
+          {selectedFilter.map((filter) => <ColoredPill
+            key={filter}
+            title={filter}
+            color="blue"
+            style={{alignSelf: 'flex-start'}}
+            rightIcon={<Ionicons name="close" size={16} color={colors.primary} onPress={() => handleFilter()} />}
+          />)}
+        </View>}
       </View>
     )
   }
@@ -67,8 +89,11 @@ export const TableBody = <T,>(): React.ReactElement => {
   const styles = useTableStyles();
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const { widthPixel, heightPixel, isMobile } = useResponsive();
-  const { setWidth, table, equalWidth, pagination, ...props } = useTableContext<T>();
+  const { setWidth, table, equalWidth, pagination, scrollEnabled, ...props } = useTableContext<T>();
   const emptyImage = useImage(require('@/assets/images/empty.png'), {maxWidth: widthPixel(293), maxHeight: widthPixel(109)});
+  const showHeader = !isMobile || scrollEnabled;
+  const showFooter = !isMobile || scrollEnabled;
+  const stickyIndices = scrollEnabled ? [0, 1] : undefined;
 
   const renderEmpty = () => (
       <View style={styles.emptyView}>
@@ -154,19 +179,20 @@ export const TableBody = <T,>(): React.ReactElement => {
         data={table.getRowModel().rows}
         keyExtractor={(item, index) => `${item.id ?? index}`}
         renderItem={renderItem}
-        stickyHeaderIndices={[0, 1]}
+        stickyHeaderIndices={stickyIndices}
         stickyHeaderHiddenOnScroll={true}
         ListEmptyComponent={renderEmpty}
-        ListFooterComponent={!isMobile ? renderPagination : null}
-        ListHeaderComponent={!isMobile ? renderHeader : null}
+        ListFooterComponent={showFooter ? renderPagination : null}
+        ListHeaderComponent={showHeader ? renderHeader : null}
         contentContainerStyle={styles.body}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         onEndReachedThreshold={0.5}
-        nestedScrollEnabled
-        onEndReached={isMobile ? () => {
+        nestedScrollEnabled={!scrollEnabled ? false : true}
+        scrollEnabled={scrollEnabled}
+        onEndReached={scrollEnabled ? () => {
           if (table.getCanNextPage()) {
-            // table.nextPage();
+            table.nextPage?.();
           }
         } : undefined}
         initialNumToRender={pagination.pageSize}

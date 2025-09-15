@@ -75,7 +75,9 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   }
 
   const renderItem = ({ item }: { item: DropdownOption<T> }) => {
-    const isSelected = Array.isArray(selectedValue) && selectedValue.includes(item.value);
+    console.log(selectedValue, item.value);
+    
+    const isSelected = multiSelect ? Array.isArray(selectedValue) && selectedValue.includes(item.value) : selectedValue === item.value;
     return (
       <Pressable
         style={[styles.option, isSelected && styles.selected]}

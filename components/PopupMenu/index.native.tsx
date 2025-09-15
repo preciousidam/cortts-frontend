@@ -1,9 +1,9 @@
 
 import { PopupComponentType } from './types';
 import React, { useEffect, useState } from 'react';
-import { Pressable, View, ViewStyle } from 'react-native';
+import { Modal, Pressable, ScrollView, TouchableWithoutFeedback, View, ViewStyle } from 'react-native';
 import { Typography } from '../typography';
-import { flip, offset, useFloating } from '@floating-ui/react-native';
+import { offset, useFloating } from '@floating-ui/react-native';
 import { useStyles } from './style';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -16,6 +16,9 @@ export const PopupMenuV1: PopupComponentType = ({
   trigger = 'click',
   options = [],
   anchorVariant = 'secondary',
+  inHeader = false,
+  headerOffset = 56,
+  placement,
   ...rest
 }) => {
   const { colors } = useTheme();
@@ -25,8 +28,8 @@ export const PopupMenuV1: PopupComponentType = ({
   const [hoveredId, setIsHovered] = useState<number | null>(null);
 
   const { refs, floatingStyles, update } = useFloating({
-    placement: 'bottom-end',
-    middleware: [offset(heightPixel(8)), flip()],
+    placement: placement ?? 'bottom-end',
+    middleware: [offset(heightPixel(8))],
   });
 
   // helper to compose handlers and close the menu
@@ -162,23 +165,46 @@ export const PopupMenuV1: PopupComponentType = ({
     );
   };
 
+  const MenuContent = (
+    <View
+      style={[
+        styles.modalContent,
+        { backgroundColor: colors.card, width: widthPixel(250), zIndex: 234567890 },
+        rest.modalContainerStyle,
+        !inHeader ? (floatingStyles as ViewStyle) : null,
+      ]}
+      ref={(node) => refs.setFloating?.(node as any | null)}
+    >
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {renderOptions()}
+      </ScrollView>
+    </View>
+  );
+
+
+
   return (
     <View style={[styles.container, style]} {...rest}>
       <View>
         {renderAnchor()}
       </View>
-      {(options.length > 0 || children) && visible && (
-        <View
-          style={[
-            styles.modalContent,
-            { backgroundColor: colors.card, minWidth: widthPixel(200), zIndex: 234567890 },
-            rest.modalContainerStyle,
-            floatingStyles as ViewStyle
-          ]}
-          ref={(node) => refs.setFloating?.(node as any | null)}
-        >
-          {renderOptions()}
-        </View>
+      {(options.length > 0 || children) && visible && !inHeader && MenuContent}
+      {(options.length > 0 || children) && visible && inHeader && (
+        <Modal transparent animationType="fade" visible onRequestClose={() => setVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => setVisible(false)}>
+            <View style={{ flex: 1, backgroundColor: 'transparent' }} />
+          </TouchableWithoutFeedback>
+          <View
+            // Align to top-right under the native header
+            style={{
+              position: 'absolute',
+              top: headerOffset,
+              right: widthPixel(16),
+            }}
+          >
+            {MenuContent}
+          </View>
+        </Modal>
       )}
     </View>
   );

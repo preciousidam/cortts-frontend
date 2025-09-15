@@ -25,6 +25,7 @@ export const PopupMenuV1: PopupComponentType = ({
   trigger = 'click',
   options = [],
   anchorVariant = 'secondary',
+  placement,
   ...rest
 }) => {
   const { colors } = useTheme();
@@ -34,7 +35,7 @@ export const PopupMenuV1: PopupComponentType = ({
   const [hoveredId, setIsHovered] = useState<number | null>(null);
 
   const { refs, floatingStyles, update, context } = useFloating({
-    placement: 'bottom-end',
+    placement: placement ?? 'bottom-end',
     whileElementsMounted: autoUpdate,
     middleware: [offset(heightPixel(8)), flip({})],
     open: visible,

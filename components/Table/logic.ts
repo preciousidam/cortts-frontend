@@ -26,6 +26,7 @@ export type TableProps<T> = {
   };
   style?: ViewStyle;
   tableContainerStyle?: ViewStyle;
+  scrollEnabled?: boolean;
 };
 
 export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'], hasCustomCell: boolean, type: 'string' | 'number' | 'boolean' | 'date' | 'custom' };
@@ -50,7 +51,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
   const { widthPixel, isMobile } = useResponsive();
   const [search, setSearch] = useState('');
     const [globalFilter, setGlobalFilter] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState<string[] | string>([]);
+    const [selectedFilter, setSelectedFilter] = useState<string[] | string>();
     const [pagination, setPagination] = useState({
       pageIndex: 0, //initial page index
       pageSize: rowCount, //initial page size
@@ -121,7 +122,7 @@ export const useTableLogic = <T,>({ columns, data, onSearch, rowCount = 10, opti
     onSearch?.(text);
   }
 
-  const handleFilter = (selected: string[] | string) => {
+  const handleFilter = (selected?: string[] | string) => {
     const column = table.getColumn(filter.field as string);
     if (!column) {
       console.warn(`Column ${filter.field as string} not found in table columns.`);

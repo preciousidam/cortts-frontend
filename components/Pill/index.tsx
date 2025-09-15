@@ -12,14 +12,16 @@ type Props = {
   style?: ViewStyle;
   color: 'green' | 'yellow' | 'blue' | 'red' | 'gray';
   showIndicator?: boolean;
+  rightIcon?: React.ReactNode;
 }
 
-export const ColoredPill: React.FC<Props> = ({ title, style, color = 'gray', showIndicator = true }) => {
+export const ColoredPill: React.FC<Props> = ({ title, style, color = 'gray', showIndicator = true, rightIcon }) => {
   const styles = useStyles(color);
   return (
     <View style={[styles.pill, style]}>
       {showIndicator && <ColorIndicator color={color} />}
       <Typography style={styles.text}>{capitalize(title)}</Typography>
+      {rightIcon}
     </View>
   );
 }
@@ -62,8 +64,8 @@ const useStyles = (variantColor: Props['color']) => {
       alignItems: 'center',
       justifyContent: 'center',
       columnGap: widthPixel(8),
-      paddingVertical: heightPixel(4),
-      paddingHorizontal: widthPixel(8)
+      paddingVertical: heightPixel(8),
+      paddingHorizontal: widthPixel(8),
     },
     indicator : {
       backgroundColor: color,

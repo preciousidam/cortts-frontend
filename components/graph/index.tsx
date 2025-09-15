@@ -9,8 +9,6 @@ export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant, height
   // const font = useFont(Inter_400Regular, fontPixel(14));
 
   const renderVariant = (props: CartesianChartRenderArg<Datum, string>) => {
-    console.log(props,'point');
-    
     if (variant === 'line') {
       return <Line points={data.map(d => d[yKeys[0]])} color="red" strokeWidth={3} />;
     }
@@ -19,8 +17,6 @@ export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant, height
     }
     return null;
   };
-  console.log(data, xKey, yKeys);
-  
 
   return (
     <View style={{ height: height ?? heightPixel(300), width: '100%' }}>

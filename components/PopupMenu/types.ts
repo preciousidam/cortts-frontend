@@ -1,6 +1,7 @@
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import { Variant } from '../button';
+import { Placement } from '@floating-ui/react';
 
 export type PopupmenuTrigger = 'hover' | 'click';
 
@@ -18,6 +19,9 @@ export type PopupmenuComponentProps = {
   optionsStyle?: ViewStyle;
   triggerStyle?: ViewStyle;
   anchorVariant?: Variant;
+  inHeader?: boolean;
+  headerOffset?: number;
+  placement?: Placement
 };
 
 export type PopupmenuItemProps = {

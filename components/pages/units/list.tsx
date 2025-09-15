@@ -36,7 +36,7 @@ const all_types: DropdownOption<string>[] = [
   { label: "Chalet", value: "Chalet" }
 ].sort((a, b) => a.label.localeCompare(b.label))
 
-const Units: React.FC = () => {
+const Units: React.FC<{}> = () => {
   const styles = useStyles();
   const {bodyText} = useTableStyles();
   const { units, count, isLoading } = useGetUnitsQueries();
@@ -47,13 +47,18 @@ const Units: React.FC = () => {
     setOptions({
       headerShown: isMobile,
       title: isMobile ? 'Units' : '',
-      headerRight: () => <View><PopupMenuV1
-        anchorVariant='tertiary'
-        options={[
-          { label: 'Create New Unit', onPress: createNewUnit },
-          { label: 'Import Units', onPress: () => console.log('Import Units Pressed') }
-        ]}
-      /></View>
+      headerRight: () => <View>
+        <PopupMenuV1
+          inHeader
+          headerOffset={56}
+          anchorVariant='tertiary'
+          placement='bottom-end'
+          options={[
+            { label: 'Create New Unit', onPress: createNewUnit },
+            { label: 'Import Units', onPress: () => console.log('Import Units Pressed') }
+          ]}
+        />
+      </View>
     });
   }, [isMobile]);
 
@@ -139,6 +144,7 @@ const Units: React.FC = () => {
           loading={isLoading}
           renderRow={isMobile ? row => <MobileRow row={row} onPress={() => push(`./${row.id}`, { relativeToDirectory: true })} /> : undefined}
           tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
+          scrollEnabled={isMobile ? false : true}
         />
       </View>
     </ScrollView>
