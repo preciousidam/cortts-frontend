@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItem, Pressable, View } from "react-native"
+import { FlatList, ListRenderItem, Platform, Pressable, View } from "react-native"
 import { BaseDropdown } from "../input/dropdown/dropdown"
 import React, { useState } from "react"
 import { useTableStyles } from "./style"
@@ -188,8 +188,8 @@ export const TableBody = <T,>(): React.ReactElement => {
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         onEndReachedThreshold={0.5}
-        nestedScrollEnabled={!scrollEnabled ? false : true}
-        scrollEnabled={scrollEnabled}
+        nestedScrollEnabled={Platform.OS == 'web' ? true : !scrollEnabled ? false : true}
+        scrollEnabled={Platform.OS == 'web' ? true : scrollEnabled}
         onEndReached={scrollEnabled ? () => {
           if (table.getCanNextPage()) {
             table.nextPage?.();

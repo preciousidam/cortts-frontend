@@ -142,7 +142,7 @@ const Units: React.FC<{}> = () => {
           filter={{ field: 'type', options: all_types, multiple: false }}
           onRowSelected={(row) => push(`./${row.id}`, { relativeToDirectory: true })}
           loading={isLoading}
-          renderRow={isMobile ? row => <MobileRow row={row} onPress={() => push(`./${row.id}`, { relativeToDirectory: true })} /> : undefined}
+          renderRow={isMobile ? row => <MobileRow row={row} onPress={() => push(`./${row.id}`)} /> : undefined}
           tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
           scrollEnabled={isMobile ? false : true}
         />

@@ -30,7 +30,7 @@ export const mutationFn = async <T = any>({ method = 'post', url, data, headers 
     url,
     data,
     headers: isFormData
-      ? { ...headers }
+      ? { ...headers, 'Content-Type': 'multipart/form-data' }
       : { 'Content-Type': 'application/json', Accept: 'application/json', ...headers },
   });
 
