@@ -16,10 +16,10 @@ export const useGetProjectsQueries = () => {
   };
 };
 
-export const useGetProjectQuery = (id: string) => {
+export const useGetProjectQuery = (id: string, enabled: boolean = true) => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<Project>({queryFn: (props) => getProject(id) as unknown as Promise<Project>, queryKey: ['project', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
+  const { data, ...rest } = useQuery<Project>({queryFn: (props) => getProject(id) as unknown as Promise<Project>, queryKey: ['project', id], enabled: !!token?.access_token && enabled, refetchOnMount: true, refetchOnWindowFocus: true, retry: true, retryDelay: 2000});
 
   return {
     project: data || null,

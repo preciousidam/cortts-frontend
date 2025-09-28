@@ -16,10 +16,10 @@ export const useGetUnitsQueries = () => {
   };
 };
 
-export const useGetUnitQuery = (id: string) => {
+export const useGetUnitQuery = (id: string, enabled: boolean = true ) => {
   const { token } = useAuthStore();
 
-  const { data, ...rest } = useQuery<Unit>({queryFn: (props) => getUnit(id) as unknown as Promise<Unit>, queryKey: ['unit', id], enabled: !!token?.access_token, refetchOnMount: true, refetchOnWindowFocus: true, });
+  const { data, ...rest } = useQuery<Unit>({queryFn: (props) => getUnit(id) as unknown as Promise<Unit>, queryKey: ['unit', id], enabled: !!token?.access_token && enabled, refetchOnMount: true, refetchOnWindowFocus: true, });
 
   return {
     unit: data || null,

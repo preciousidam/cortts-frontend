@@ -4,7 +4,7 @@ import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useEffect, useMemo } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
 import { useGetProjectQuery } from '@/store/projects/queries';
@@ -121,6 +121,23 @@ const Project: React.FC = () => {
     }
   }
 
+  if (!project && !isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Typography variant='bold' size='subtitle'>Project not found</Typography>
+        <Button style={{ marginTop: heightPixel(16) }} onPress={() => back()} title="Go Back" />
+      </View>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -177,8 +194,8 @@ const Project: React.FC = () => {
           data={project?.units ?? []}
           filter={{ field: 'type', options: purpose }}
           loading={isLoading}
-          onRowSelected={unit => push(`/Units/${unit.id}`, { relativeToDirectory: true })}
-          renderRow={row => <MobileRow row={row} onPress={() => push(`/Units/${row.id}`)} />}
+          onRowSelected={unit => push(`./Units/${unit.id}`, { relativeToDirectory: true })}
+          renderRow={isMobile ? (row => <MobileRow row={row} onPress={() => push(`./Units/${row.id}`)} />): undefined}
           tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
         />
       </View>

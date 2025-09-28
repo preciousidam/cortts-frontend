@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { useSegments, useRouter, ExternalPathString } from 'expo-router';
+import { useSegments, useRouter, ExternalPathString, useLocalSearchParams } from 'expo-router';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Button } from '../button';
+import { useGetProjectQuery } from '@/store/projects/queries';
+import { useGetUnitQuery } from '@/store/units/queries';
 
 const removeGroupsFromPath = (paths: string[]) => {
   return paths.filter(segment => !segment.startsWith('(') && !segment.endsWith(')'));
@@ -18,6 +20,9 @@ export const Breadcrumb: React.FC = () => {
   const { replace, back } = useRouter();
   const {colors} = useTheme();
   const { isMobile } = useResponsive();
+  const { project_id, unit_id } = useLocalSearchParams();
+  const { project } = useGetProjectQuery(project_id as string, !!project_id);
+  const { unit } = useGetUnitQuery(unit_id as string, !!unit_id);
 
   const paths = removeGroupsFromPath(segments.filter(Boolean));
   const handlePress = (index: number) => {
@@ -41,7 +46,7 @@ export const Breadcrumb: React.FC = () => {
         <View style={styles.item} key={index}>
           <Pressable onPress={() => handlePress(index)}>
             <Typography variant='medium' style={[styles.text, index === paths.length - 1 ? { color: colors.primary } : {}]}>
-              {segment.replace(/-/g, ' ')}
+              {segment.replace(/-/g, ' ').replace('[project_id]', project?.name || 'Project').replace('[unit_id]', unit?.name || 'Unit')}
             </Typography>
           </Pressable>
           {index < paths.length - 1 && <Typography style={styles.separator}>/</Typography>}
