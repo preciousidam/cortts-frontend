@@ -66,7 +66,6 @@ const UnitDetail: React.FC = () => {
   const { setOptions } = useNavigation();
     useEffect(() => {
       setOptions({
-        headerShown: isMobile,
         title: isMobile ? unit?.name : '',
         headerRight: () => <View><PopupMenuV1
           inHeader
