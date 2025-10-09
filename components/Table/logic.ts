@@ -29,7 +29,7 @@ export type TableProps<T> = {
   scrollEnabled?: boolean;
 };
 
-export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'], hasCustomCell: boolean, type: 'string' | 'number' | 'boolean' | 'date' | 'custom' };
+export type ExtendedColumnMeta<T> = ColumnMeta<T, unknown> & { width?: number, align?: ViewStyle['alignItems'], hasCustomCell?: boolean, type?: 'string' | 'number' | 'boolean' | 'date' | 'custom' };
 
 const includesSome: FilterFn<any> = (row, columnId, filterValue: string[]) => {
   if (filterValue.length == 0) return true

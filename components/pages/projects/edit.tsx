@@ -6,9 +6,9 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useUpdateProjectLogic } from './logic';
 import { DropdownOption } from '@/components/input/dropdown/dropdownStyles';
 import { Breadcrumb } from '@/components/breadcrumb';
@@ -25,7 +25,42 @@ const EditProject: React.FC = () => {
   const styles = useStyles();
   const { project_id } = useLocalSearchParams<{ project_id: string }>();
   const { back } = useRouter();
+  const { setOptions } = useNavigation();
   const {control, onSubmit, isLoading} = useUpdateProjectLogic(project_id);
+  const { isMobile } = useResponsive();
+
+  useEffect(() => {
+    setOptions({ title: 'Edit Project' });
+  }, [setOptions]);
+
+  if (isMobile) {
+    // Mobile specific logic
+    return (
+      <ScrollView>
+        <View style={styles.mobileContainer}>
+          <View style={{ rowGap: 4 }}>
+            <Typography variant="semiBold" size="subtitle">Edit Project</Typography>
+            <Typography size="body">Update the essential details to edit the project.</Typography>
+          </View>
+          <FormTextInput control={control} rules={{ required: true }} name="name" label="Project Name" inputProps={{ placeholder: "Enter project name" }} />
+          <FormTextInput control={control} rules={{ required: true }} name="address" label="Address" inputProps={{ placeholder: "Enter project address" }} />
+          <TextAreaFormInput
+            name="description"
+            label="Description"
+            inputProps={{ placeholder: "Enter project description" }}
+            control={control}
+            rules={{ required: true }}
+          />
+          <FormDropdown rules={{ required: true }} control={control}  name="purpose" label="Purpose" inputProps={{ options: purpose, icon_position: 'right', isSearchable: false }} />
+          <FormTextInput control={control} rules={{ required: true }}  name="num_units" label="Total Units" inputProps={{ keyboardType: 'numeric', placeholder: "Enter total units" }} />
+          <View style={styles.ctaView}>
+            <Button title="Cancel" variant='outlined' onPress={back} style={{ width: '48%' }} />
+            <Button title="Create Project" onPress={onSubmit} isLoading={isLoading} style={{ width: '48%' }} />
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -71,6 +106,13 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(32),
       paddingVertical: heightPixel(32),
       rowGap: heightPixel(16),
+    },
+    mobileContainer: {
+      flex: 1,
+      paddingHorizontal: widthPixel(16),
+      paddingVertical: heightPixel(16),
+      rowGap: heightPixel(16),
+      backgroundColor: colors.card,
     },
     formArea: {
       rowGap: heightPixel(24),

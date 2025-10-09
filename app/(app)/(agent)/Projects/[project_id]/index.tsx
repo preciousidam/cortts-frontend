@@ -1,1 +1,1 @@
-export default () => <></>
+export { default } from '@/components/pages/projects/detail';

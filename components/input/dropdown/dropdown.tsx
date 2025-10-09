@@ -75,8 +75,6 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   }
 
   const renderItem = ({ item }: { item: DropdownOption<T> }) => {
-    console.log(selectedValue, item.value);
-    
     const isSelected = multiSelect ? Array.isArray(selectedValue) && selectedValue.includes(item.value) : selectedValue === item.value;
     return (
       <Pressable
@@ -102,7 +100,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
   const isPlaceholder = renderValue === placeholder;
 
   return (
-    <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
+    <View style={[{ width: '100%', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
       {label && <View style={[styles.sb ]}>
         {Boolean(required) && <Typography variant='medium' size='body' style={styles.required}>*</Typography>}
         <Typography variant='semiBold' size='caption' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>

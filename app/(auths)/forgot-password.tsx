@@ -9,7 +9,7 @@ import { Typography } from '@/components/typography';
 import { FormTextInput, OTPFormInput, PasswordFormInput } from '@/components/input';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/button';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Image, ImageBackground, useImage } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ResetPasswordReq } from '@/types';
@@ -142,6 +142,10 @@ const ForgotPassword: React.FC = () => {
         return renderDone();
     }
   }, [step, isMobile, getValues, colors.primary, isLoading]);
+
+  if (!email && !step) {
+    return <Redirect href='/(auths)/login' />
+  }
 
   if (step === 'done') {
     return (

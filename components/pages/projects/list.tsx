@@ -1,5 +1,6 @@
 import { ListHeader } from '@/components/listHeader';
 import { ColoredPill } from '@/components/Pill';
+import PopupMenuV1 from '@/components/PopupMenu';
 import { CustomTab } from '@/components/tab';
 import Table from '@/components/Table';
 import { useTableStyles } from '@/components/Table/style';
@@ -9,7 +10,7 @@ import { useGetProjectsQueries } from '@/store/projects/queries';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Project } from '@/types/models';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef } from '@/components/Table/logic';
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -31,8 +32,21 @@ const Projects: React.FC = () => {
     setOptions({
       headerShown: isMobile,
       title: isMobile ? 'Projects' : '',
+      headerRight: () => <View>
+        <PopupMenuV1
+          inHeader
+          headerOffset={56}
+          anchorVariant='tertiary'
+          placement='bottom-end'
+          options={[
+            { label: 'Create New Project', onPress: createNewProject },
+            { label: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }
+          ]}
+        />
+      </View>
     });
   }, [isMobile]);
+
   const columns: ColumnDef<Project>[] =  useMemo(() => [
     {
       header: 'Project Name',

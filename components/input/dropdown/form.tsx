@@ -22,6 +22,7 @@ export const FormDropdown = <T,>(props: FormDropdownProps<T>) => {
     console.warn("FormDropdown requires a control prop from react-hook-form");
     return <BaseDropdown
       {...inputProps}
+      options={[]}
       label={label}
       style={style}
       labelStyle={labelStyle}

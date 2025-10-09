@@ -56,6 +56,7 @@ const Project: React.FC = () => {
       headerShown: isMobile,
       title: isMobile ? project?.name : '',
       headerRight: () => <PopupMenuV1
+      inHeader
       anchor={props => <Button iconOnly icon="Ionicons.ellipsis-vertical" {...props} variant='tertiary' size='medium' />}
         options={[
           { label: 'Edit Project', onPress: () => onSelect('edit') },
@@ -151,7 +152,7 @@ const Project: React.FC = () => {
           />
         </View>}
         <View style={[styles.formArea, isMobile && { flexDirection: 'column', rowGap: heightPixel(16), paddingHorizontal: widthPixel(16) }]}>
-          <View style={[styles.row, isMobile && {  alignItems: 'flex-start' }]}>
+          {!isMobile && <View style={[styles.row, isMobile && {  alignItems: 'flex-start' }]}>
             <Image
               placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(isMobile ? 32 : 88) })}
               style={[styles.image, isMobile && styles.mobileImage]}
@@ -169,7 +170,24 @@ const Project: React.FC = () => {
                 <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
               </View>
             </View>
-          </View>
+          </View>}
+          {isMobile && <View style={[styles.card, isMobile && { flex: 1, width: '100%', rowGap: heightPixel(12) }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', columnGap: widthPixel(12) }}>
+              <Image
+                placeholder={generateAvatarImage({ name: project?.name ?? '', size: widthPixel(isMobile ? 32 : 88) })}
+                style={[styles.image, isMobile && styles.mobileImage]}
+                source={{ uri: project?.artwork_url ?? '' }}
+              />
+              <Typography size="subtitle" variant='bold' >{project?.name}</Typography>
+            </View>
+            <Typography color={colors.textWeak}>{project?.description}</Typography>
+            <View style={styles.smallGap}>
+              <Typography color={colors.primary}>{capitalize(project?.purpose)}</Typography>
+              <ColorIndicator color='gray' />
+              <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
+            </View>
+            <ColoredPill title={project?.status ?? ''} color={project?.status ==  'completed' ? 'green' : project?.status == 'archived' ? 'gray' : 'yellow'} style={{ alignSelf: 'flex-start' }} />
+          </View>}
           <View style={[styles.row, isMobile && { flexWrap: 'wrap', flexDirection: 'column', rowGap: heightPixel(16) }]}>
             <View style={[styles.card, isMobile && { flex: 1, width: '100%' }]}>
               <Typography variant='regular' size='caption' color={generateColorScale(colors.neutral).normalHover}>Total Revenue Generated</Typography>
@@ -189,15 +207,17 @@ const Project: React.FC = () => {
             </View>
           </View>
         </View>
-        <Table<Unit>
-          columns={columns}
-          data={project?.units ?? []}
-          filter={{ field: 'type', options: purpose }}
-          loading={isLoading}
-          onRowSelected={unit => push(`./Units/${unit.id}`, { relativeToDirectory: true })}
-          renderRow={isMobile ? (row => <MobileRow row={row} onPress={() => push(`./Units/${row.id}`, { relativeToDirectory: true })} />): undefined}
-          tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
-        />
+        <View style={styles.tableView}>
+          <Table<Unit>
+            columns={columns}
+            data={project?.units ?? []}
+            filter={{ field: 'type', options: purpose }}
+            loading={isLoading}
+            onRowSelected={unit => push(`./Units/${unit.id}`, { relativeToDirectory: true })}
+            renderRow={isMobile ? (row => <MobileRow row={row} onPress={() => push(`./Units/${row.id}`, { relativeToDirectory: true })} />): undefined}
+            tableContainerStyle={isMobile ? { borderColor: 'transparent', backgroundColor: 'transparent'} : undefined}
+          />
+        </View>
       </View>
     </ScrollView>
   );
@@ -211,17 +231,17 @@ const useStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: widthPixel(isMobile ? 16 : 32),
-      paddingVertical: heightPixel(32),
+      paddingHorizontal: widthPixel(isMobile ? 0 : 32),
+      paddingVertical: heightPixel(isMobile ? 0 : 32),
       rowGap: heightPixel(40),
     },
     formArea: {
       rowGap: heightPixel(24),
-      backgroundColor: colors.card,
+      backgroundColor: isMobile ? 'transparent' : colors.card,
       paddingHorizontal: widthPixel(24),
       paddingVertical: heightPixel(24),
       ...large,
-      borderColor: generateColorScale(colors.neutral).lightHover,
+      borderColor: isMobile ? 'transparent' : generateColorScale(colors.neutral).lightHover,
       ...shadow(heightPixel(2), widthPixel(8))
     },
     row: {
@@ -277,6 +297,9 @@ const useStyles = () => {
       width: widthPixel(32),
       height: widthPixel(32),
       ...circle
+    },
+    tableView: {
+      paddingHorizontal: widthPixel(isMobile ? 16 : 0)
     }
   });
 };
