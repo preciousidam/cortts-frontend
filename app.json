@@ -14,14 +14,19 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cortts",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.cortts"
     },
     "web": {
       "bundler": "metro",
@@ -46,9 +51,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "14832353-899c-4d22-b36d-16088a794e8c"
+        "projectId": "77d13340-9090-11e9-a3fc-3fc00c9edfe3"
       }
     },
-    "owner": "preciousidam"
+    "owner": "precioustone"
   }
 }

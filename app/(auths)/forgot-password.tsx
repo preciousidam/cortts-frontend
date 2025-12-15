@@ -139,7 +139,7 @@ const ForgotPassword: React.FC = () => {
       case 'done':
         return renderDone();
       default:
-        return renderDone();
+        return renderVerificationForm();
     }
   }, [step, isMobile, getValues, colors.primary, isLoading]);
 

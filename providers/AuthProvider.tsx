@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (error.response?.status === 401) {
             console.warn('Unauthorized. Logging out...');
             // optionally: redirect to login
-            replace('/(auths)/login')
+            // replace('/(auths)/login')
             setToken(null);
             await secureStorage.removeItem('auth_token');
           }
@@ -232,7 +232,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutateResetPassword(data);
   };
 
-  if (!token) {
+  if (isFetching) {
     return <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} /> ;
   }
 
