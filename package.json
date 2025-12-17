@@ -89,6 +89,7 @@
     "use-debounce": "^10.0.5",
     "victory": "^37.3.6",
     "victory-native": "^41.19.3",
+    "yarn": "^1.22.22",
     "yup": "^1.6.1",
     "zustand": "^5.0.5"
   },
