@@ -1,5 +1,4 @@
 import { useResponsive } from "@/hooks/useResponsive";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { BaseToast, InfoToast, ErrorToast, ToastProps, SuccessToast } from "react-native-toast-message";
 
@@ -10,37 +9,37 @@ export const toastConfig = () => {
     success: (props: ToastProps) => (
       <SuccessToast
         {...props}
-        style={{ borderLeftColor: colors.success }}
+        style={{ borderLeftColor: colors.successful.normal }}
         contentContainerStyle={styles.toastContainer}
-        text1Style={[styles.toastText1, { color: generateColorScale(colors.success).darkHover }]}
-        text2Style={[styles.toastText2, { color: colors.success }]}
+        text1Style={[styles.toastText1, { color: colors.successful.darkHover }]}
+        text2Style={[styles.toastText2, { color: colors.successful.normal }]}
       />
     ),
     error: (props: ToastProps) => (
       <ErrorToast
         {...props}
-        style={{ borderLeftColor: colors.notification }}
+        style={{ borderLeftColor: colors.error.normal }}
         contentContainerStyle={styles.toastContainer}
-        text1Style={[styles.toastText1, { color: generateColorScale(colors.notification).darkHover }]}
-        text2Style={[styles.toastText2, { color: colors.notification }]}
+        text1Style={[styles.toastText1, { color: colors.error.darkHover }]}
+        text2Style={[styles.toastText2, { color: colors.error.normal }]}
       />
     ),
     info: (props: ToastProps) => (
       <InfoToast
         {...props}
-        style={{ borderLeftColor: colors.primary }}
+        style={{ borderLeftColor: colors.brand.blue }}
         contentContainerStyle={styles.toastContainer}
-        text1Style={[styles.toastText1, { color: generateColorScale(colors.primary).darkHover }]}
-        text2Style={[styles.toastText2, { color: colors.primary }]}
+        text1Style={[styles.toastText1, { color: colors.primaryBlue.darkHover }]}
+        text2Style={[styles.toastText2, { color: colors.brand.blue }]}
       />
     ),
     warning: (props: ToastProps) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: colors.warning }}
+        style={{ borderLeftColor: colors.warning.normal }}
         contentContainerStyle={styles.toastContainer}
-        text1Style={[styles.toastText1, { color: generateColorScale(colors.warning).darkHover }]}
-        text2Style={[styles.toastText2, { color: colors.warning }]}
+        text1Style={[styles.toastText1, { color: colors.warning.darkHover }]}
+        text2Style={[styles.toastText2, { color: colors.warning.normal }]}
       />
     ),
     default: (props: ToastProps) => (

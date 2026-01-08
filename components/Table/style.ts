@@ -1,6 +1,5 @@
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoundness } from "@/styleguide/theme/Border";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { StyleSheet } from "react-native";
 
@@ -15,7 +14,7 @@ export const useTableStyles = () => {
     },
     tableContent: {
       ...roundness.m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
+      borderColor: colors.neutral.lightActive,
       backgroundColor: colors.card,
       // minWidth: '100%',
     },
@@ -32,7 +31,7 @@ export const useTableStyles = () => {
       // width: '100%',
       // zIndex: -1,
       borderBottomWidth: 1,
-      borderBottomColor: generateColorScale(colors.neutral).lightActive
+      borderBottomColor: colors.neutral.lightActive
     },
     cell: {
       paddingHorizontal: widthPixel(24),
@@ -40,11 +39,11 @@ export const useTableStyles = () => {
       flex: 1
     },
     headerText: {
-      color: colors.textWeak,
+      color: colors.text.weak,
       fontSize: fontPixel(14),
     },
     bodyText: {
-      color: colors.text,
+      color: colors.text.default,
       fontSize: fontPixel(13),
     },
     body: {
@@ -67,7 +66,7 @@ export const useTableStyles = () => {
       justifyContent: 'center',
       alignItems: 'center',
       ...roundness.m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
+      borderColor: colors.neutral.lightActive,
       backgroundColor: colors.card,
       rowGap: heightPixel(22)
     },

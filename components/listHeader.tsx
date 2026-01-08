@@ -66,7 +66,7 @@ const useStyles = () => {
     },
     description: {
       fontSize: fontPixel(14),
-      color: colors.textWeak
+      color: colors.text.weak
     },
     cta: {
       flexDirection: 'row',

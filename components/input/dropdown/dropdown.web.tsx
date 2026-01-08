@@ -15,7 +15,6 @@ import {
   useClick,
 } from '@floating-ui/react';
 import { BaseDropdownProps, DropdownOption, useDropdownStyles } from './dropdownStyles';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 
 
 export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
@@ -216,8 +215,8 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
         onPointerEnter={() => setIsHovered(item.value)}
         onPointerLeave={() => setIsHovered(null)}
       >
-        <Typography style={[styles.optionText, { color: !isSelected ? colors.text : colors.textWeak }]}>{item.label}</Typography>
-        {isSelected && <Ionicons name="checkmark" size={scale(18)} color={colors.primary} />}
+        <Typography style={[styles.optionText, { color: !isSelected ? colors.text.default : colors.text.weak }]}>{item.label}</Typography>
+        {isSelected && <Ionicons name="checkmark" size={scale(18)} color={colors.brand.blue} />}
       </Pressable>
     );
   };
@@ -240,18 +239,18 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
     <View style={[{ width: 'auto', alignSelf: 'flex-start', zIndex: 10000, rowGap: heightPixel(8) }, style]} onLayout={({nativeEvent: {layout}}) => setDropdownWidth(layout.width)}>
       {label && <View style={[styles.sb ]}>
         {Boolean(required) && <Typography variant='medium' size='body' style={styles.required}>*</Typography>}
-        <Typography variant='semiBold' size='caption' style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
+        <Typography variant='semiBold' size='caption' style={[styles.label, { color: colors.text.default }, labelStyle]}>{label}</Typography>
       </View>}
       {!anchor ? (
         <Pressable
           onPress={showModal}
-          style={[styles.selector, icon_position === 'left' ? styles.paddingRight : styles.paddingLeft, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]}
+          style={[styles.selector, icon_position === 'left' ? styles.paddingRight : styles.paddingLeft, { borderColor: error ? colors.error.normal : colors.neutral.normal }]}
           ref={(node) => refs.setReference(node as any)}
           collapsable={false}
           {...getReferenceProps()}
         >
         {icon_position == 'left' && <View style={styles.leftIconView}>{renderIcon()}</View>}
-        <Typography style={{ color: isPlaceholder ? colors.textWeaker : colors.text, flex: 1 }}>
+        <Typography style={{ color: isPlaceholder ? colors.text.weaker : colors.text.default, flex: 1 }}>
           {renderValue}
         </Typography>
         {icon_position == 'right' && <View style={styles.rightIconView}>{renderIcon()}</View>}
@@ -289,9 +288,9 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
                       }}
                       style={[
                         styles.searchInput,
-                        { color: colors.text, borderColor: colors.neutral }
+                        { color: colors.text.default, borderColor: colors.neutral.normal }
                       ]}
-                      placeholderTextColor={colors.textWeaker}
+                      placeholderTextColor={colors.text.weaker}
                     />
                   </View>
                 ) : null
@@ -300,7 +299,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
                 <View
                   style={{
                     padding: heightPixel(12),
-                    borderColor: generateColorScale(colors.primary).lightActive+"33",
+                    borderColor: colors.primaryBlue.lightActive+"33",
                     borderTopWidth: heightPixel(1),
                     alignItems: 'center'
                   }}
@@ -311,7 +310,7 @@ export const BaseDropdown = <T,>(props: BaseDropdownProps<T>) => {
                     }
                     variant="semiBold"
                     size="body"
-                    style={{ color: colors.primary, textAlign: 'center' }}
+                    style={{ color: colors.brand.blue, textAlign: 'center' }}
                   >
                     {isLoading
                       ? 'Loading...'

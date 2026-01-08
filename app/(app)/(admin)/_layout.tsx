@@ -2,7 +2,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-import Colors, { generateColorScale } from '@/styleguide/theme/Colors';
+import Colors from '@/styleguide/theme/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useClientOnlyValue } from '@/hooks/useClientOnlyValue';
 import Drawer from 'expo-router/drawer';
@@ -91,7 +91,7 @@ const Layout: React.FC = () => {
     <Drawer
       defaultStatus={drawerInitial}
       screenOptions={({ route }) => ({
-        drawerActiveTintColor: generateColorScale(colors.primary).normalBase,
+        drawerActiveTintColor: colors.brand.blue,
         drawerInactiveTintColor: Colors[colorScheme ?? 'light'].text,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.

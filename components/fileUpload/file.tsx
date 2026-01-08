@@ -8,7 +8,6 @@ import { Typography } from "../typography";
 import { Button } from "../button";
 import { useCallback, useState } from "react";
 import { ValidationRule } from "react-hook-form";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { Accept, useDropzone } from "react-dropzone";
 import { FileLike } from "@/services/upload";
 
@@ -136,7 +135,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
               <View style={{ flex: 1, rowGap: heightPixel(8) }}>
                 <Typography variant="bold" numberOfLines={1} ellipsizeMode="middle">{file.name}</Typography>
                 <View style={styles.sb}>
-                  <Typography size="caption" color={colors.textWeaker}>{byteToSize(file.size ?? 0)} • {((file as File)?.type ?? (file as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
+                  <Typography size="caption" color={colors.text.weaker}>{byteToSize(file.size ?? 0)} • {((file as File)?.type ?? (file as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
                 </View>
               </View>
               <View style={styles.sb}>
@@ -152,7 +151,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
                   iconOnly
                   icon="Ionicons.trash-outline"
                   title="Remove"
-                  color={colors.notification}
+                  color={colors.error.normal}
                   variant='tertiary'
                   size="medium"
                   onPress={() => handleDelete(index)}
@@ -170,7 +169,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
             <View style={{ flex: 1, rowGap: heightPixel(8) }}>
               <Typography variant="bold" numberOfLines={1} ellipsizeMode="middle">{fileList[0].name}</Typography>
               <View style={styles.sb}>
-                <Typography size="caption" color={colors.textWeaker}>{byteToSize(fileList[0].size ?? 0)} • {((fileList[0] as File)?.type ?? (fileList[0] as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
+                <Typography size="caption" color={colors.text.weaker}>{byteToSize(fileList[0].size ?? 0)} • {((fileList[0] as File)?.type ?? (fileList[0] as DocumentPicker.DocumentPickerAsset)?.mimeType).split('/')[1] ?? ''}</Typography>
               </View>
             </View>
             <View style={styles.sb}>
@@ -186,7 +185,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
                 iconOnly
                 icon="Ionicons.trash-outline"
                 title="Remove"
-                color={colors.notification}
+                color={colors.error.normal}
                 variant='tertiary'
                 size="medium"
                 onPress={() => handleDelete(0)}
@@ -199,41 +198,41 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
 
   const renderWebPicker = () => (
     <div {...getRootProps()}>
-      <Pressable style={[styles.container, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]} onPress={open}>
+      <Pressable style={[styles.container, { borderColor: error ? colors.error.normal : colors.neutral.normal }]} onPress={open}>
         {Platform.OS === 'web' && <input {...getInputProps()} style={{ display: 'none' }} />}
         <View style={styles.white_circle}>
           <Ionicons name="cloud-upload-outline" size={24} color="#606B85" />
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center', rowGap: heightPixel(2) }}>
-          {isDragActive && <Typography variant="semiBold" color={colors.primary}>Drop files here</Typography>}
-          {!isDragActive && <Typography variant="semiBold" color={colors.primary}>Click to upload <Typography color={colors.textWeak}>or drag and drop</Typography></Typography>}
-          <Typography color={colors.textWeak} variant="regular" size="caption">{placeholder ?? "Import images, pdf or other files"}</Typography>
+          {isDragActive && <Typography variant="semiBold" color={colors.brand.blue}>Drop files here</Typography>}
+          {!isDragActive && <Typography variant="semiBold" color={colors.brand.blue}>Click to upload <Typography color={colors.text.weak}>or drag and drop</Typography></Typography>}
+          <Typography color={colors.text.weak} variant="regular" size="caption">{placeholder ?? "Import images, pdf or other files"}</Typography>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
           <View style={{ width: '100%', height: heightPixel(1), backgroundColor: '#F0F2F5', position: 'absolute' }} />
-          <Typography color={colors.textWeak} variant="regular" size="caption" style={{ backgroundColor: isDarkMode ? colors.background : '#F7F7F7' }}>OR</Typography>
+          <Typography color={colors.text.weak} variant="regular" size="caption" style={{ backgroundColor: isDarkMode ? colors.background : '#F7F7F7' }}>OR</Typography>
         </View>
-        <Button onPress={open} variant='secondary' title="Browse Files" color={colors.primary} style={{ backgroundColor: '#E6F2FA' }} />
+        <Button onPress={open} variant='secondary' title="Browse Files" color={colors.brand.blue} style={{ backgroundColor: '#E6F2FA' }} />
       </Pressable>
     </div>
   )
 
   const renderNativePicker = () => (
-    <Pressable {...getRootProps()} style={[styles.container, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase}]} onPress={handlePress}>
+    <Pressable {...getRootProps()} style={[styles.container, { borderColor: error ? colors.error.normal : colors.neutral.normal}]} onPress={handlePress}>
       {Platform.OS === 'web' && <input {...getInputProps()} style={{ display: 'none' }} />}
       <View style={styles.white_circle}>
         <Ionicons name="cloud-upload-outline" size={24} color="#606B85" />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center', rowGap: heightPixel(2) }}>
-        {isDragActive && <Typography variant="semiBold" color={colors.primary}>Drop files here</Typography>}
-        {!isDragActive && <Typography variant="semiBold" color={colors.primary}>Click to upload <Typography color={colors.textWeak}>or drag and drop</Typography></Typography>}
-        <Typography color={colors.textWeak} variant="regular" size="caption">JPEG, PNG, GIF, WEBP</Typography>
+        {isDragActive && <Typography variant="semiBold" color={colors.brand.blue}>Drop files here</Typography>}
+        {!isDragActive && <Typography variant="semiBold" color={colors.brand.blue}>Click to upload <Typography color={colors.text.weak}>or drag and drop</Typography></Typography>}
+        <Typography color={colors.text.weak} variant="regular" size="caption">JPEG, PNG, GIF, WEBP</Typography>
       </View>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: '100%', position: 'relative' }}>
         <View style={{ width: '100%', height: heightPixel(1), backgroundColor: '#F0F2F5', position: 'absolute' }} />
-        <Typography color={colors.textWeak} variant="regular" size="caption" style={{ backgroundColor: '#F7F7F7' }}>OR</Typography>
+        <Typography color={colors.text.weak} variant="regular" size="caption" style={{ backgroundColor: '#F7F7F7' }}>OR</Typography>
       </View>
-      <Button onPress={handlePress} variant='secondary' title="Browse Files" color={colors.primary} style={{ backgroundColor: '#E6F2FA' }} />
+      <Button onPress={handlePress} variant='secondary' title="Browse Files" color={colors.brand.blue} style={{ backgroundColor: '#E6F2FA' }} />
     </Pressable>
   );
 
@@ -249,7 +248,7 @@ export const FilePicker: React.FC<FilePickerProps> = ({ onSelect, multiSelect, l
     <View style={[ { width: '100%', rowGap: heightPixel(8) } ]}>
       {label && <View style={styles.sb}>
         {Boolean(required) && <Typography style={styles.required}>*</Typography>}
-        <Typography size="caption" variant='semiBold' style={[ { color: colors.text }, labelStyle]}>{label}</Typography>
+        <Typography size="caption" variant='semiBold' style={[ { color: colors.text.default }, labelStyle]}>{label}</Typography>
       </View>}
       {Boolean(fileList) && (fileList?.length ?? 0) > 0 ? renderSelectedFiles() : renderPicker()}
     </View>
@@ -269,7 +268,7 @@ const useStyles = () => {
       width: '100%',
       ...m,
       borderStyle: 'dashed',
-      borderColor: colors.neutral,
+      borderColor: colors.neutral.normal,
       backgroundColor: isDarkMode ? colors.background : '#F7F7F7',
       paddingVertical: heightPixel(20),
       paddingHorizontal: widthPixel(16),
@@ -290,7 +289,7 @@ const useStyles = () => {
       flexDirection: 'row',
     },
     required: {
-      color: colors.notification,
+      color: colors.error.normal,
       fontSize: fontPixel(12),
     },
     list: {
@@ -303,7 +302,7 @@ const useStyles = () => {
       height: heightPixel(68),
       ...m,
       overflow: 'hidden',
-      borderColor: generateColorScale(colors.neutral).normalHover,
+      borderColor: colors.neutral.normalHover,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',

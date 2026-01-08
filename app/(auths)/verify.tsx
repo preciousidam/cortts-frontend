@@ -80,9 +80,9 @@ const Verify: React.FC = () => {
         />
         <View style={styles.spaceBetween}>
           <Typography size='body' style={{ marginTop: heightPixel(12) }}>
-            Code expires in <Typography style={{color: colors.primary}} variant='regular'>{formatTime(timeLeft)}</Typography>
+            Code expires in <Typography style={{color: colors.brand.blue}} variant='regular'>{formatTime(timeLeft)}</Typography>
           </Typography>
-          <Typography size='body' variant='bold' style={{ alignSelf: 'flex-end', color: colors.primary }}>Resend Code</Typography>
+          <Typography size='body' variant='bold' style={{ alignSelf: 'flex-end', color: colors.brand.blue }}>Resend Code</Typography>
         </View>
       </View>
       <View style={styles.buttonArea}>
@@ -182,7 +182,7 @@ const useStyles = () => {
     },
     otptext: {
       ...Fonts.semiBold,
-      color: colors.text,
+      color: colors.text.default,
       fontSize: fontPixel(32),
     }
   });

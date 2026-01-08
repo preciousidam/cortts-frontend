@@ -17,12 +17,12 @@ import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { AuthProvider } from '@/providers/AuthProvider';
 import { corttsDarkColors, corttsLightColors } from '@/styleguide/theme/Colors';
 import { Fonts } from '@/styleguide/theme/Fonts';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppThemeProvider } from '@/styleguide/theme';
 import { toastConfig } from '@/components/toast';
+import { AuthProvider } from '@/providers/AuthProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -31,7 +31,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'index'
+  initialRouteName: '(app)'
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -82,13 +82,13 @@ function RootLayoutNav() {
         <ThemeProvider value={colorScheme === 'dark' ? {...DarkTheme,  colors: {
           ...DefaultTheme.colors, ...corttsDarkColors}, fonts: Fonts} : {...DefaultTheme,  colors: {
           ...DefaultTheme.colors, ...corttsLightColors}, fonts: Fonts}}>
-          {/* <AuthProvider> */}
-            <Stack initialRouteName='(app)'>
+          <AuthProvider>
+            <Stack initialRouteName={'(app)'}>
+              <Stack.Screen name="index" options={{headerShown: false}} />
               <Stack.Screen name="(app)" options={{ headerShown: false }} />
               <Stack.Screen name="(auths)" options={{ headerShown: false }} />
-              <Stack.Screen name="index" options={{headerShown: false}} />
             </Stack>
-          {/* </AuthProvider> */}
+          </AuthProvider>
           <Toast
             position='top'
             bottomOffset={20}

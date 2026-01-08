@@ -1,6 +1,5 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
@@ -23,7 +22,7 @@ export const useStyles = () => {
         },
         modalContent: {
           ...roundness.m,
-          borderColor: colors.textWeaker,
+          borderColor: colors.text.weaker,
           paddingHorizontal: widthPixel(1),
           paddingVertical: heightPixel(1),
           ...shadow(heightPixel(2), widthPixel(8)),
@@ -38,21 +37,21 @@ export const useStyles = () => {
           width: '100%'
         },
         destroy: {
-          backgroundColor: generateColorScale(colors.notification).lightHover+'12',
+          backgroundColor: colors.error.lightHover+'12',
         },
         hover: {
           backgroundColor: '#F5FBFF',
         },
         optionText: {
           fontSize: fontPixel(14),
-          color: colors.textWeak,
+          color: colors.text.weak,
           flex: 1
         },
         hoveredText: {
-          color: colors.primary,
+          color: colors.brand.blue,
         },
         destroyText: {
-          color: colors.notification,
+          color: colors.error.normal,
         }
       }),
     [colors, widthPixel, fontPixel]

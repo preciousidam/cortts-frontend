@@ -5,7 +5,6 @@ import { Fonts } from '@/styleguide/theme/Fonts';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { corttsLightColors, generateColorScale } from '@/styleguide/theme/Colors';
 import * as Icon from '@expo/vector-icons';
 import CountryFlag from "react-native-country-flag";
 import { Typography } from '../typography';
@@ -105,9 +104,9 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
     <View style={[styles.container, { rowGap: verticalScale(8) }, style]}>
       {label && <View style={styles.sb}>
           {Boolean(required) && <Text style={styles.required}>*</Text>}
-          <Typography style={[styles.label, { color: colors.text }, labelStyle]}>{label}</Typography>
+          <Typography style={[styles.label, { color: colors.text.default }, labelStyle]}>{label}</Typography>
         </View>}
-      <View style={[styles.inputWrapper, ROUNDNESS.m, { borderColor: error ? colors.notification : generateColorScale(colors.neutral).normalBase }]}>
+      <View style={[styles.inputWrapper, ROUNDNESS.m, { borderColor: error ? colors.error.normal : colors.neutral.normal }]}>
         {leftIcon && <View style={styles.leftIconView}>{renderLeftIcon()}</View>}
         <TextInput
           onChangeText={onChangeText}
@@ -118,12 +117,12 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
             paddingHorizontal: scale(16),
             minHeight: verticalScale(44),
             fontSize: fontPixel(14),
-              color: colors.text,
+              color: colors.text.default,
               flex: 1,
             },
             inputProps.style,
           ]}
-          placeholderTextColor={colors.textWeaker}
+          placeholderTextColor={colors.text.weaker}
         />
         {rightIcon && <View style={styles.rightIconView}>{renderRightIcon()}</View>}
       </View>
@@ -135,6 +134,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
 
 export const PasswordBaseInput: React.FC<BaseTextInputProps> = (props) => {
   const [secure, setSecure] = useState(props.inputProps?.secureTextEntry ?? true);
+  const { colors } = useTheme();
   const onPress = () => {
     setSecure(!secure);
   }
@@ -147,7 +147,7 @@ export const PasswordBaseInput: React.FC<BaseTextInputProps> = (props) => {
           <Icon.Ionicons
             name={secure ? 'eye-off' : 'eye'}
             size={24}
-            color={corttsLightColors.text}
+            color={colors.text.default}
             onPress={() => setSecure(!secure)}
           />
         </Pressable>
@@ -244,6 +244,7 @@ export const BaseCurrencyInput: React.FC<
 };
 
 export const PhoneBaseInput: React.FC<BaseTextInputProps> = (props) => {
+  const { colors } = useTheme();
   // Simple country list. Extend as needed or import from country-data
   const countryList = {
     NG: { code: 'NG', dialCode: '+234' },
@@ -266,7 +267,7 @@ export const PhoneBaseInput: React.FC<BaseTextInputProps> = (props) => {
         <Pressable onPress={() => changeCountry('US')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: scale(4) }}>
             <CountryFlag isoCode={country.code} size={fontPixel(20)} />
-            <Text style={{ fontSize: fontPixel(14), color: corttsLightColors.text }}>
+            <Text style={{ fontSize: fontPixel(14), color: colors.text.default }}>
               {country.dialCode}
             </Text>
           </View>
@@ -458,22 +459,22 @@ const useStyle = () => {
       ...ROUNDNESS.m,
     },
     errorText: {
-      color: colors.notification,
+      color: colors.error.normal,
       fontSize: fontPixel(12),
       ...Fonts.regular,
     },
     infoText: {
-      color: colors.neutral,
+      color: colors.neutral.normal,
       fontSize: fontPixel(12),
     },
     leftIconView: {
       paddingHorizontal: 8,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: generateColorScale(colors.neutral).lightHover,
+      backgroundColor: colors.neutral.lightHover,
       borderTopLeftRadius: verticalScale(8),
       borderBottomLeftRadius: verticalScale(8),
-      borderRightColor: generateColorScale(colors.neutral).normalBase,
+      borderRightColor: colors.neutral.normal,
       borderRightWidth: scale(.7),
       height: heightPixel(44),
     },
@@ -481,24 +482,24 @@ const useStyle = () => {
       paddingHorizontal: 8,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: generateColorScale(colors.neutral).lightHover,
+      backgroundColor: colors.neutral.lightHover,
       borderTopRightRadius: verticalScale(8),
       borderBottomRightRadius: verticalScale(8),
-      borderLeftColor: generateColorScale(colors.neutral).normalBase,
+      borderLeftColor: colors.neutral.normal,
       borderLeftWidth: scale(.7),
       height: heightPixel(43.9),
     },
     iconText: {
       fontSize: fontPixel(14),
       fontFamily: Fonts.semiBold.fontFamily,
-      color: corttsLightColors.text,
+      color: colors.text.default,
     },
     sb: {
       columnGap: scale(4),
       flexDirection: 'row',
     },
     required: {
-      color: colors.notification,
+      color: colors.error.normal,
       fontSize: fontPixel(12),
     },
     textArea: {

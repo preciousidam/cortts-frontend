@@ -5,7 +5,6 @@ import { useResponsive } from '@/hooks/useResponsive';
 import { Typography } from '../typography';
 import { Table } from '@tanstack/react-table';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useRoundness } from '@/styleguide/theme/Border';
 
 export type IPaginationProp = {
@@ -122,7 +121,7 @@ const useStyles = () => {
       alignItems: 'center',
       columnGap: widthPixel(4),
       borderWidth: widthPixel(.75),
-      borderColor: generateColorScale(colors.neutral).lightActive
+      borderColor: colors.neutral.lightActive
     },
     pageNumber: {
       fontSize: heightPixel(14),
@@ -131,16 +130,16 @@ const useStyles = () => {
       ...roundness.m,
       borderTopRightRadius: 0,
       borderBottomRightRadius: 0,
-      borderColor: generateColorScale(colors.neutral).lightActive
+      borderColor: colors.neutral.lightActive
     },
     next: {
       ...roundness.m,
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
-      borderColor: generateColorScale(colors.neutral).lightActive
+      borderColor: colors.neutral.lightActive
     },
     activePage: {
-      backgroundColor: generateColorScale(colors.neutral).lightActive
+      backgroundColor: colors.neutral.lightActive
     }
   });
 }

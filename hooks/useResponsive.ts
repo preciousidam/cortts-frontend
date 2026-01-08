@@ -29,22 +29,24 @@ export const useResponsive = () => {
   const isPortrait = height >= width;
   const isLandscape = width > height;
   const isMobile = isLt(breakpoint, 'md');
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
+// choose a max “design” width you want scaling to stop at
+const MAX_SCALE_WIDTH = 1440;  // or 1600
+const MAX_SCALE_HEIGHT = 1024; // or 900/1080
+
+const effectiveWidth = clamp(width, baseScreen.WIDTH, MAX_SCALE_WIDTH);
+const effectiveHeight = clamp(height, baseScreen.HEIGHT, MAX_SCALE_HEIGHT);
 
 
   // Base scales
-  const widthBaseScale = width / baseScreen.WIDTH;
-  const heightBaseScale = height / baseScreen.HEIGHT;
-  const widthBaseScaleTablet = width / baseScreenTab.WIDTH;
-  const heightBaseScaleTablet = height / baseScreenTab.HEIGHT;
+  const widthBaseScale = effectiveWidth / baseScreen.WIDTH;
+  const heightBaseScale = effectiveHeight / baseScreen.HEIGHT;
+  const widthBaseScaleTablet = effectiveWidth / baseScreenTab.WIDTH;
+  const heightBaseScaleTablet = effectiveHeight / baseScreenTab.HEIGHT;
 
   // Optional: increase scale slightly on md+ screens
-  const scaleUpFactor = isGte(breakpoint, 'xl')
-    ? 1
-    : isGte(breakpoint, 'lg')
-    ? 1
-    : isGte(breakpoint, 'md')
-    ? 1
-    : 1;
+  const scaleUpFactor = isGte(breakpoint, 'md') ? 0.5 : 1;
 
   const calcDevicePx = (px: number, base: BASE = BASE.WIDTH): number => {
     let scale =
@@ -56,7 +58,7 @@ export const useResponsive = () => {
         ? widthBaseScaleTablet
         : widthBaseScale;
 
-    const newSize = px * scale * scaleUpFactor;
+    const newSize = px * scale;
     return Math.round(PixelRatio.roundToNearestPixel(newSize));
   };
 

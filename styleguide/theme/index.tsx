@@ -1,5 +1,5 @@
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { corttsDarkColors, corttsLightColors } from "@/styleguide/theme/Colors";
+import { colors, corttsDarkColors, corttsLightColors, lightTextColors } from "@/styleguide/theme/Colors";
 import { Fonts } from "@/styleguide/theme/Fonts";
 import ThemeContext from "@/styleguide/theme/ThemeContext";
 import React, { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ export const AppThemeProvider: React.FC<{
     fonts: Fonts,
     isDarkMode,
     isLightMode,
-    colors: isLightMode ? corttsLightColors : corttsDarkColors,
+    colors: isLightMode ? {...corttsLightColors, ...colors} : {...corttsDarkColors, ...colors, text: lightTextColors},
     shadow
   }}>{children}</ThemeContext.Provider>);
 }

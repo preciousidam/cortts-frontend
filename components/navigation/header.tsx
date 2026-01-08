@@ -1,5 +1,4 @@
 import { useResponsive } from "@/hooks/useResponsive";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import React from "react";
@@ -49,7 +48,7 @@ const useStyles = () => {
       alignItems: 'center',
       flexDirection: 'row',
       minHeight: heightPixel(68),
-      borderBottomColor: generateColorScale(colors.neutral).lightActive,
+      borderBottomColor: colors.neutral.lightActive,
       borderBottomWidth: heightPixel(1),
       paddingTop: top+heightPixel(12),
     },

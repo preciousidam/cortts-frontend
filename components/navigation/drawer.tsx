@@ -26,13 +26,13 @@ export const CustomDrawer: React.FC<DrawerContentComponentProps> = (props) => {
     <View style={styles.container}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Image source={require('../../assets/images/logo1.png')} style={styles.logo} contentFit="contain" />
-        {/* <Button iconOnly variant="tertiary" size="small" onPress={() => navigation.toggleDrawer()} icon="Ionicons.close" color={colors.text} /> */}
+        {/* <Button iconOnly variant="tertiary" size="small" onPress={() => navigation.toggleDrawer()} icon="Ionicons.close" color={colors.text.default} /> */}
       </View>
       <DrawerContentScrollView {...props} contentContainerStyle={styles.scroll}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
       <View style={styles.bottom}>
-        <DrawerItem {...props} labelStyle={styles.label} label="Settings" onPress={() => push("/Settings")} icon={props => <Ionicons name="settings-outline" {...props} color={colors.text} />} />
+        <DrawerItem {...props} labelStyle={styles.label} label="Settings" onPress={() => push("/Settings")} icon={props => <Ionicons name="settings-outline" {...props} color={colors.text.default} />} />
         <View style={styles.sbs}>
           <Image source={{ uri: generateAvatarImage({ name: fullname ?? '', color: '101928' }) }} style={styles.image} />
           <View style={[{ flex: 1 }, styles.vertSpace]}>
@@ -71,7 +71,7 @@ const useStyles = () => {
     },
     label: {
       fontSize: widthPixel(14),
-      color: colors.text,
+      color: colors.text.default,
     },
     image: {
       width: widthPixel(40),

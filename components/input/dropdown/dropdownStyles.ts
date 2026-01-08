@@ -1,6 +1,5 @@
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoundness } from "@/styleguide/theme/Border";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { ReactNode } from "react";
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
@@ -118,7 +117,7 @@ export const useDropdownStyles = () => {
     selected: {
       backgroundColor: '#F5FBFF',
       borderLeftWidth: scale(4),
-      borderLeftColor: colors.primary
+      borderLeftColor: colors.brand.blue
     },
     hovered: {
       backgroundColor: '#F5FBFF',
@@ -129,10 +128,10 @@ export const useDropdownStyles = () => {
       paddingHorizontal: 8,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      backgroundColor: colors.neutral.lightActive,
       borderTopLeftRadius: verticalScale(8),
       borderBottomLeftRadius: verticalScale(8),
-      borderRightColor: generateColorScale(colors.neutral).normalBase,
+      borderRightColor: colors.neutral.normal,
       borderRightWidth: scale(.7),
       height: '100%',
       zIndex: -1
@@ -141,10 +140,10 @@ export const useDropdownStyles = () => {
       paddingHorizontal: 8,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: generateColorScale(colors.neutral).lightActive,
+      backgroundColor: colors.neutral.lightActive,
       borderTopRightRadius: verticalScale(8),
       borderBottomRightRadius: verticalScale(8),
-      borderLeftColor: generateColorScale(colors.neutral).normalBase,
+      borderLeftColor: colors.neutral.normal,
       borderLeftWidth: scale(.7),
       height: '100%',
       zIndex: -1
@@ -160,16 +159,16 @@ export const useDropdownStyles = () => {
       flexDirection: 'row',
     },
     required: {
-      color: colors.notification,
+      color: colors.error.normal,
       fontSize: fontPixel(12),
     },
     errorText: {
-      color: colors.notification,
+      color: colors.error.normal,
       fontSize: fontPixel(12),
       ...fonts.regular,
     },
     infoText: {
-      color: colors.neutral,
+      color: colors.neutral.normal,
       fontSize: fontPixel(12),
     }
   });

@@ -2,13 +2,13 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import React from "react";
 import {
-  TabView,
-  SceneMap,
-  Route,
-  SceneRendererProps,
-  TabBar,
-  NavigationState,
-  TabDescriptor,
+    TabView,
+    SceneMap,
+    Route,
+    SceneRendererProps,
+    TabBar,
+    NavigationState,
+    TabDescriptor,
 } from 'react-native-tab-view';
 
 type RenderProps = SceneRendererProps & {
@@ -64,10 +64,10 @@ export const CustomTab: React.FC<CustomTabProps> = ({
     return (
       <TabBar
         {...props}
-        indicatorStyle={{ backgroundColor: colors.primary }} // Customize the indicator style
+        indicatorStyle={{ backgroundColor: colors.brand.blue }} // Customize the indicator style
         style={{ alignSelf: 'flex-start', width: 'auto', backgroundColor: colors.background, height: heightPixel(48) }} // Customize the tab bar style
-        activeColor={colors.primary} // Customize the active tab color
-        inactiveColor={colors.text} // Customize the inactive tab color
+        activeColor={colors.brand.blue} // Customize the active tab color
+        inactiveColor={colors.text.default} // Customize the inactive tab color
         tabStyle={{ width: 'auto', paddingHorizontal: widthPixel(16), }} // Customize the tab style
         gap={widthPixel(16)} // Customize the gap between tabs
       />

@@ -99,12 +99,12 @@ const useStyles = () => {
       alignItems: 'center',
       backgroundColor: '#fff',
       ...ROUNDNESS.s,
-      borderColor: colors.primary + 'a2',
+      borderColor: colors.brand.blue + 'a2',
       borderWidth: scale(1),
     },
     checked: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
+      backgroundColor: colors.brand.blue,
+      borderColor: colors.brand.blue,
     },
     disabled: {
       borderColor: '#ccc',
@@ -112,12 +112,12 @@ const useStyles = () => {
     },
     label: {
       fontSize: 16,
-      color: colors.text,
+      color: colors.text.default,
     },
     labelDisabled: {
       fontSize: fontPixel(14),
       ...fonts.medium,
-      color: colors.text,
+      color: colors.text.default,
     },
   });
 };

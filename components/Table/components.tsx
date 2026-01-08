@@ -41,7 +41,7 @@ export const TableControl: React.FC = () => {
           title={selectedFilter}
           color="blue"
           style={{alignSelf: 'flex-start'}}
-          rightIcon={<Ionicons name="close" size={16} color={colors.primary} onPress={() => handleFilter()} />}
+          rightIcon={<Ionicons name="close" size={16} color={colors.brand.blue} onPress={() => handleFilter()} />}
         />}
         {Array.isArray(selectedFilter) && selectedFilter.length > 0 && <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: widthPixel(8)}}>
           {selectedFilter.map((filter) => <ColoredPill
@@ -49,7 +49,7 @@ export const TableControl: React.FC = () => {
             title={filter}
             color="blue"
             style={{alignSelf: 'flex-start'}}
-            rightIcon={<Ionicons name="close" size={16} color={colors.primary} onPress={() => handleFilter()} />}
+            rightIcon={<Ionicons name="close" size={16} color={colors.brand.blue} onPress={() => handleFilter()} />}
           />)}
         </View>}
       </View>
