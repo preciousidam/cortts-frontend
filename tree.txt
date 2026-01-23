@@ -2,6 +2,8 @@
 ├── .dockerignore
 ├── .env
 ├── .env.local
+├── .github
+│   └── workflows
 ├── .gitignore
 ├── .nvmrc
 ├── .prettierrc
@@ -11,52 +13,79 @@
 │   ├── preview.tsx
 │   └── storybook.requires.ts
 ├── app
-│   ├── _layout.tsx
 │   ├── (app)
-│   │   ├── _layout.tsx
 │   │   ├── (admin)
-│   │   │   ├── _layout.tsx
-│   │   │   ├── index.tsx
 │   │   │   ├── Payments
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   └── index.tsx
 │   │   │   ├── Projects
-│   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── [project_id]
+│   │   │   │   │   ├── Units
+│   │   │   │   │   │   ├── [unit_id]
+│   │   │   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   └── new.tsx
 │   │   │   │   │   ├── edit.tsx
 │   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── index.tsx
 │   │   │   │   └── new.tsx
 │   │   │   ├── Units
-│   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── [unit_id]
 │   │   │   │   │   ├── edit.tsx
 │   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
 │   │   │   │   ├── index.tsx
 │   │   │   │   └── new.tsx
-│   │   │   └── Users
-│   │   │       ├── _layout.tsx
-│   │   │       ├── [user_id]
-│   │   │       │   └── index.tsx
-│   │   │       └── index.tsx
+│   │   │   ├── Users
+│   │   │   │   ├── [user_id]
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   └── index.tsx
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
 │   │   ├── (agent)
+│   │   │   ├── Payments
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   └── index.tsx
+│   │   │   ├── Projects
+│   │   │   │   ├── [project_id]
+│   │   │   │   │   ├── Units
+│   │   │   │   │   │   ├── [unit_id]
+│   │   │   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   └── new.tsx
+│   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── new.tsx
+│   │   │   ├── Units
+│   │   │   │   ├── [unit_id]
+│   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── new.tsx
 │   │   │   ├── _layout.tsx
-│   │   │   ├── index.tsx
-│   │   │   └── Projects
-│   │   │       ├── _layout.tsx
-│   │   │       ├── [project_id]
-│   │   │       │   └── index.tsx
-│   │   │       └── index.tsx
+│   │   │   └── index.tsx
 │   │   ├── (client)
+│   │   │   ├── Units
+│   │   │   │   ├── [unit_id]
+│   │   │   │   │   ├── edit.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── new.tsx
 │   │   │   ├── _layout.tsx
-│   │   │   ├── index.tsx
-│   │   │   └── Units
-│   │   │       ├── _layout.tsx
-│   │   │       └── index.tsx
-│   │   ├── index.tsx
-│   │   └── Settings
-│   │       ├── _layout.tsx
-│   │       └── index.tsx
+│   │   │   └── index.tsx
+│   │   ├── Settings
+│   │   │   ├── _layout.tsx
+│   │   │   └── index.tsx
+│   │   ├── _layout.tsx
+│   │   └── index.tsx
 │   ├── (auths)
 │   │   ├── _layout.tsx
 │   │   ├── forgot-password.tsx
@@ -65,18 +94,23 @@
 │   │   └── verify.tsx
 │   ├── +html.tsx
 │   ├── +not-found.tsx
-│   └── storybook.tsx
+│   ├── _layout.tsx
+│   ├── index.tsx
+│   ├── index.web.tsx
+│   ├── storybook.tsx
+│   └── style.css
 ├── app.json
 ├── assets
 │   ├── fonts
 │   │   └── SpaceMono-Regular.ttf
 │   └── images
 │       ├── 1601.png
+│       ├── Frame.png
 │       ├── adaptive-icon.png
 │       ├── auth_image.png
 │       ├── empty.png
-│       ├── favicon.png
-│       ├── Frame.png
+│       ├── favicon.ico
+│       ├── favicon1.png
 │       ├── icon.png
 │       ├── login_mobile.png
 │       ├── login_web.png
@@ -87,6 +121,22 @@
 ├── babel.config.js
 ├── checklist.md
 ├── components
+│   ├── Pill
+│   │   ├── index.stories.tsx
+│   │   └── index.tsx
+│   ├── PopupMenu
+│   │   ├── index.native.tsx
+│   │   ├── index.tsx
+│   │   ├── style.ts
+│   │   └── types.ts
+│   ├── Table
+│   │   ├── components.tsx
+│   │   ├── index.stories.tsx
+│   │   ├── index.tsx
+│   │   ├── logic.ts
+│   │   ├── pagination.tsx
+│   │   ├── provider.tsx
+│   │   └── style.ts
 │   ├── __tests__
 │   │   └── StyledText-test.js
 │   ├── breadcrumb
@@ -126,6 +176,7 @@
 │   │   ├── dashboard
 │   │   │   ├── coloredCard.tsx
 │   │   │   └── svg.tsx
+│   │   ├── pageContent.tsx
 │   │   ├── projects
 │   │   │   ├── detail.tsx
 │   │   │   ├── edit.tsx
@@ -144,24 +195,8 @@
 │   ├── picker
 │   │   ├── FloatingPicker.stories.tsx
 │   │   └── FloatingPicker.tsx
-│   ├── Pill
-│   │   ├── index.stories.tsx
-│   │   └── index.tsx
-│   ├── PopupMenu
-│   │   ├── index.native.tsx
-│   │   ├── index.tsx
-│   │   ├── style.ts
-│   │   └── types.ts
 │   ├── tab
 │   │   └── index.tsx
-│   ├── Table
-│   │   ├── components.tsx
-│   │   ├── index.stories.tsx
-│   │   ├── index.tsx
-│   │   ├── logic.ts
-│   │   ├── pagination.tsx
-│   │   ├── provider.tsx
-│   │   └── style.ts
 │   ├── toast
 │   │   ├── index.tsx
 │   │   └── toast.stories.tsx
@@ -175,10 +210,11 @@
 │   ├── _expo
 │   │   └── static
 │   │       ├── css
-│   │       │   └── web-a9a3b5ac144b59f905123d16c1d03694.css
+│   │       │   ├── modal.module-33361d5c796745334f151cac6c469469.css
+│   │       │   └── web-3bf6459ede9dd9b7234666682f50a2a5.css
 │   │       └── js
 │   │           └── web
-│   │               └── entry-bc8abf0e27676c7f69f469c0b927e126.js
+│   │               └── entry-dfc8e14bd821f49adbf9a8fab0353e59.js
 │   ├── assets
 │   │   └── assets
 │   │       ├── fonts
@@ -211,9 +247,13 @@
 ├── metro.config.js
 ├── nativewind-env.d.ts
 ├── nginx.conf
+├── package-lock.json
 ├── package.json
 ├── providers
 │   └── AuthProvider.tsx
+├── sample
+│   ├── index.html
+│   └── page.css
 ├── services
 │   ├── auth.ts
 │   ├── dashboard.ts
@@ -248,9 +288,9 @@
 │       ├── Border.ts
 │       ├── Colors.ts
 │       ├── Fonts.ts
+│       ├── ThemeContext.ts
 │       ├── index.tsx
-│       ├── shadow.ts
-│       └── ThemeContext.ts
+│       └── shadow.ts
 ├── tailwind.config.js
 ├── tree.txt
 ├── tsconfig.json
@@ -264,4 +304,4 @@
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-72 directories, 193 files
+83 directories, 222 files

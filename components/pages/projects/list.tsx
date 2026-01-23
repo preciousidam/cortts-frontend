@@ -136,7 +136,7 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <ScrollView stickyHeaderIndices={[1]} contentContainerStyle={{ flex: 1 }}>
+    <ScrollView stickyHeaderIndices={[1]} contentContainerStyle={{ flex: 1, }}>
       <PageContent>
         <View style={styles.container}>
           {!isMobile && <ListHeader
@@ -160,6 +160,7 @@ const Projects: React.FC = () => {
 const MobileRow: React.FC<{ row: Project; onPress: () => void }> = ({ row, onPress }) => {
   const styles = useStyles();
   const { colors } = useTheme();
+  const { heightPixel, widthPixel } = useResponsive();
   const placeHolder = "eUIW_,0gxURjobyGxBM|W.ae20$eNaWpn%WCX9xZf7oJOEoNt7s.ay"
 
   return (
@@ -170,9 +171,10 @@ const MobileRow: React.FC<{ row: Project; onPress: () => void }> = ({ row, onPre
         <View style={styles.sb}>
           <Typography color={colors.text.weaker}>{capitalize(row.purpose)}</Typography>
           <Typography  color={colors.text.weaker}>&#x2022;</Typography>
-          <ColoredPill title={capitalize(row.status)} color={row.status === 'ongoing' ? 'yellow' : row.status === 'completed' ? 'green' : 'gray'} />
+          <Typography  color={colors.text.weaker}>{row.address}</Typography>
         </View>
       </View>
+      <ColoredPill title={capitalize(row.status)} color={row.status === 'ongoing' ? 'yellow' : row.status === 'completed' ? 'green' : 'gray'} style={{position: 'absolute', top: heightPixel(8), right: widthPixel(8)}} />
     </Pressable>
   )
 }
@@ -191,7 +193,7 @@ const useStyles = () => {
     },
     image: {
       width: '100%',
-      height: heightPixel(194),
+      height: heightPixel(150),
       borderTopLeftRadius: m.borderRadius,
       borderTopRightRadius: m.borderRadius,
       overflow: 'hidden',

@@ -1,6 +1,7 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
+import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -21,8 +22,8 @@ export const useStyles = () => {
           height: widthPixel(32),
         },
         modalContent: {
-          ...roundness.m,
-          borderColor: colors.text.weaker,
+          ...roundness.large,
+          borderColor: !isLiquidGlassAvailable() ? colors.text.weaker : undefined,
           paddingHorizontal: widthPixel(1),
           paddingVertical: heightPixel(1),
           ...shadow(heightPixel(2), widthPixel(8)),

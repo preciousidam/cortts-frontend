@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, TouchableWithoutFeedback, View, ViewStyle } from 'react-native';
 import { Typography } from '../typography';
 import { offset, useFloating } from '@floating-ui/react-native';
+import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import { useStyles } from './style';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -166,18 +167,19 @@ export const PopupMenuV1: PopupComponentType = ({
   };
 
   const MenuContent = (
-    <View
-      style={[
-        styles.modalContent,
-        { backgroundColor: colors.card, width: widthPixel(250), zIndex: 234567890 },
-        rest.modalContainerStyle,
-        !inHeader ? (floatingStyles as ViewStyle) : null,
-      ]}
-      ref={(node) => refs.setFloating?.(node as any | null)}
-    >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {renderOptions()}
-      </ScrollView>
+    <View ref={(node) => refs.setFloating?.(node as any | null)} style={{ zIndex: 234567890 }}>
+      <GlassView
+        style={[
+          styles.modalContent,
+          { backgroundColor: !isLiquidGlassAvailable() ? colors.card : undefined, width: widthPixel(250), zIndex: 234567890 },
+          rest.modalContainerStyle,
+          !inHeader ? (floatingStyles as ViewStyle) : null,
+        ]}
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {renderOptions()}
+        </ScrollView>
+      </GlassView>
     </View>
   );
 
