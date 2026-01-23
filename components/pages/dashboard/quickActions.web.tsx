@@ -75,7 +75,7 @@ export const QuickActions: React.FC<{ actions: Action[] }> = ({ actions }) => {
           onPress={a.onPress}
         >
           <View style={styles.iconWrap}>
-            <Ionicons name={a.icon} size={fontPixel(18)} color={colors.text.default} />
+            <Ionicons name={a.icon} size={fontPixel(18)} color='#000000' />
           </View>
           <Text style={styles.label}>{a.label}</Text>
         </Pressable>

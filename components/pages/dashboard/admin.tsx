@@ -180,7 +180,7 @@ const AdminDashboard = () => {
             >
               <View style={{ padding: widthPixel(14), rowGap: heightPixel(8) }}>
                 <Text style={styles.kpiLabel}>Total Revenue</Text>
-                <Text style={styles.kpiValue} numberOfLines={1}>&#x20A6; {data?.total_revenue.toLocaleString() ?? 0}</Text>
+                <Text style={styles.kpiValue} numberOfLines={1} adjustsFontSizeToFit>&#x20A6; {data?.total_revenue.toLocaleString() ?? 0}</Text>
                 <Text style={styles.kpiSubtext}>Paid amount</Text>
               </View>
             </ImageBackground>
@@ -216,7 +216,7 @@ const AdminDashboard = () => {
             >
               <View style={{ padding: widthPixel(14), rowGap: heightPixel(8) }}>
                 <Text style={styles.kpiLabel}>Outstanding</Text>
-                <Text style={styles.kpiValue} numberOfLines={1}>&#x20A6; {data?.total_outstanding.toLocaleString() ?? 0}</Text>
+                <Text style={styles.kpiValue} numberOfLines={1} adjustsFontSizeToFit>&#x20A6; {data?.total_outstanding.toLocaleString() ?? 0}</Text>
                 <Text style={styles.kpiSubtext}>Pending payments</Text>
               </View>
             </ImageBackground>
