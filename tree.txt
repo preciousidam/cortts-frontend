@@ -3,6 +3,8 @@
 ├── .env
 ├── .env.local
 ├── .github
+│   ├── appmod
+│   │   └── appcat
 │   └── workflows
 ├── .gitignore
 ├── .nvmrc
@@ -44,6 +46,7 @@
 │   │   │   │   ├── _layout.tsx
 │   │   │   │   └── index.tsx
 │   │   │   ├── _layout.tsx
+│   │   │   ├── index.old.tsx
 │   │   │   └── index.tsx
 │   │   ├── (agent)
 │   │   │   ├── Payments
@@ -108,15 +111,19 @@
 │       ├── Frame.png
 │       ├── adaptive-icon.png
 │       ├── auth_image.png
+│       ├── blue_bg_1.png
 │       ├── empty.png
 │       ├── favicon.ico
 │       ├── favicon1.png
+│       ├── green_bg.png
 │       ├── icon.png
 │       ├── login_mobile.png
 │       ├── login_web.png
 │       ├── logo1.png
 │       ├── nav
 │       │   └── projects.s
+│       ├── purple_bg.png
+│       ├── red_bg.png
 │       └── splash-icon.png
 ├── babel.config.js
 ├── checklist.md
@@ -174,7 +181,13 @@
 │   │   └── header.tsx
 │   ├── pages
 │   │   ├── dashboard
+│   │   │   ├── UnitPreview.tsx
+│   │   │   ├── admin.tsx
+│   │   │   ├── admin.web.tsx
 │   │   │   ├── coloredCard.tsx
+│   │   │   ├── quickActions.tsx
+│   │   │   ├── quickActions.web.tsx
+│   │   │   ├── recentPayments.tsx
 │   │   │   └── svg.tsx
 │   │   ├── pageContent.tsx
 │   │   ├── projects
@@ -210,22 +223,25 @@
 │   ├── _expo
 │   │   └── static
 │   │       ├── css
-│   │       │   ├── modal.module-33361d5c796745334f151cac6c469469.css
-│   │       │   └── web-3bf6459ede9dd9b7234666682f50a2a5.css
+│   │       │   ├── style-5b0dcd487c0df504a85148f06e08be5d.css
+│   │       │   └── web-870f3236a574975fa573f4779c75fce2.css
 │   │       └── js
 │   │           └── web
-│   │               └── entry-dfc8e14bd821f49adbf9a8fab0353e59.js
+│   │               └── entry-36deacdf9bbb99e5a225cfc450a054da.js
 │   ├── assets
 │   │   └── assets
 │   │       ├── fonts
 │   │       │   └── SpaceMono-Regular.49a79d66bdea2debf1832bf4d7aca127.ttf
 │   │       └── images
 │   │           ├── auth_image.b2f7b23ee1aa47860d3b866e46ba3cd0.png
+│   │           ├── blue_bg_1.8013a3ec89505c8f62c9d33bc84d9c97.png
 │   │           ├── empty.8175d4f5f606b77be962eeefe62689e9.png
+│   │           ├── green_bg.c6d6a5f6228da6f59ddd03544f0b954c.png
 │   │           ├── login_mobile.03322d16ba8e28c93077b62f4d59a2a2.png
 │   │           ├── login_web.ca80768f4ad7164ca178ef24713872e1.png
-│   │           └── logo1.e84adcdd366f45642321ba6d574e9fde.png
-│   ├── favicon.ico
+│   │           ├── logo1.e84adcdd366f45642321ba6d574e9fde.png
+│   │           ├── purple_bg.f7ea43425016bd5bb1e370311a45ab08.png
+│   │           └── red_bg.67aa5aed8111b6ed37d842db7cfbb735.png
 │   ├── index.html
 │   └── metadata.json
 ├── dockerfile
@@ -304,4 +320,4 @@
 │   └── generateAvatarImage.ts
 └── yarn.lock
 
-83 directories, 222 files
+85 directories, 236 files
