@@ -3,7 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 
-import Colors, { generateColorScale } from '@/styleguide/theme/Colors';
+import Colors from '@/styleguide/theme/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useClientOnlyValue } from '@/hooks/useClientOnlyValue';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -30,7 +30,7 @@ const TabLayout: React.FC = () => {
       <GestureHandlerRootView>
         <Drawer
           screenOptions={({ route }) => ({
-            drawerActiveTintColor: generateColorScale(colors.primary).normalBase,
+            drawerActiveTintColor: colors.brand.blue,
             drawerInactiveTintColor: Colors[colorScheme ?? 'light'].text,
             // Disable the static render of the header on web
             // to prevent a hydration error in React Navigation v6.

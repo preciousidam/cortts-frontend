@@ -1,6 +1,5 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -133,9 +132,9 @@ const User: React.FC = () => {
               </View>
 
               <View style={styles.smallGap}>
-                <Typography color={colors.primary}>{capitalize(user?.email)}</Typography>
+                <Typography color={colors.brand.blue}>{capitalize(user?.email)}</Typography>
                 <ColorIndicator color='gray' />
-                <Typography color={colors.textWeak}>{user?.phone}</Typography>
+                <Typography color={colors.text.weak}>{user?.phone}</Typography>
               </View>
             </View>
             <Button title="Edit" onPress={() => onSelect('edit')} rightIcon="Ionicons.pencil" />
@@ -171,7 +170,7 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(24),
       paddingVertical: heightPixel(24),
       ...large,
-      borderColor: generateColorScale(colors.neutral).lightHover,
+      borderColor: colors.neutral.lightHover,
       ...shadow(heightPixel(2), widthPixel(8))
     },
     row: {
@@ -195,7 +194,7 @@ const useStyles = () => {
       alignItems: 'center'
     },
     blue: {
-      color: colors.primary
+      color: colors.brand.blue
     },
     input: {
       flex: 1,
@@ -208,14 +207,14 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(12),
       paddingVertical: heightPixel(16),
       ...m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
+      borderColor: colors.neutral.lightActive,
       ...shadow(heightPixel(1), m.borderRadius),
       rowGap: heightPixel(4),
       flex: 1,
     },
     cardValue: {
       fontSize: fontPixel(20),
-      color: colors.text,
+      color: colors.text.default,
     },
     image: {
       width: widthPixel(88),

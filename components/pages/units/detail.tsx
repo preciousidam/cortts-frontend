@@ -1,6 +1,5 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Bar } from 'react-native-progress';
@@ -182,7 +181,7 @@ const UnitDetail: React.FC = () => {
       accessorKey: 'media_file.file_path',
       meta: { width: widthPixel(250) },
       cell: (props) => {
-        return <Typography style={[bodyText, {color: colors.primary}]} numberOfLines={1} ellipsizeMode='head' onPress={() => downloadFile(`/upload/media/download/${props.cell.row.original?.media_file?.id}`, props.cell.row?.original?.media_file?.file_name ?? 'document')}>{(props.cell.getValue() as string).split('/').pop() ?? 'N/A'}</Typography>;
+        return <Typography style={[bodyText, {color: colors.brand.blue}]} numberOfLines={1} ellipsizeMode='head' onPress={() => downloadFile(`/upload/media/download/${props.cell.row.original?.media_file?.id}`, props.cell.row?.original?.media_file?.file_name ?? 'document')}>{(props.cell.getValue() as string).split('/').pop() ?? 'N/A'}</Typography>;
       }
     },
     {
@@ -289,9 +288,9 @@ const UnitDetail: React.FC = () => {
               <View style={{ rowGap: heightPixel(12) }}>
                 <Typography variant='bold' size='subtitle'>{unit?.name}</Typography>
                 <View style={styles.smallGap}>
-                  <Typography color={colors.textWeak}>{capitalize(unit?.type)}</Typography>
+                  <Typography color={colors.text.weak}>{capitalize(unit?.type)}</Typography>
                   <ColorIndicator color='gray' />
-                  <Typography color={colors.textWeak}><Ionicons name="location-outline" color={colors.warning} size={fontPixel(14)} /> {project?.address}</Typography>
+                  <Typography color={colors.text.weak}><Ionicons name="location-outline" color={colors.warning.normal} size={fontPixel(14)} /> {project?.address}</Typography>
                 </View>
               </View>
               <View>
@@ -303,7 +302,7 @@ const UnitDetail: React.FC = () => {
               <View style={[styles.formArea, ]}>
                 <View style={styles.row}>
                   <View style={styles.gapBetween}>
-                    <Typography size='caption' color={colors.neutral}>Client</Typography>
+                    <Typography size='caption' color={colors.neutral.normal}>Client</Typography>
                     <Typography variant='semiBold'>{unit?.client ? unit?.client?.fullname : "No client assigned"}</Typography>
                   </View>
                   {!unit?.client ? <Button onPress={() => setShowAssignClientForm(true)} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Client</Button> : <View style={styles.smallGap}>
@@ -315,7 +314,7 @@ const UnitDetail: React.FC = () => {
                 <View style={{ rowGap: heightPixel(8) }}>
                   <View style={styles.row}>
                     <View style={styles.gapBetween}>
-                      <Typography size='caption' color={colors.neutral}>Assigned Agents</Typography>
+                      <Typography size='caption' color={colors.neutral.normal}>Assigned Agents</Typography>
                       <Typography variant='semiBold'>{unit?.unit_agents?.[0]?.agent?.fullname ?? "No assigned agent"}</Typography>
                     </View>
                     {!unit?.client ? <Button onPress={() => setShowAssignAgentForm(true)} variant='outlined' size='large' rightIcon="Ionicons.add-outline">Assign Agent</Button> : <View style={styles.smallGap}>
@@ -329,35 +328,35 @@ const UnitDetail: React.FC = () => {
               <View style={[styles.formArea, {paddingBottom: heightPixel(56)}]}>
                 <View style={[styles.row, {justifyContent: 'space-between', alignItems: 'flex-start'}]}>
                   <View style={styles.gapBetween}>
-                    <Typography size='caption' color={colors.neutral}>Unit Price</Typography>
+                    <Typography size='caption' color={colors.neutral.normal}>Unit Price</Typography>
                     <View style={styles.amountDiscount}>
                       <Typography variant='semiBold' size='subtitle' style={styles.amount}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.total ?? 0)}</Typography>
                       <ColoredPill showIndicator={false} title={`-${unit?.discount}%`} color='blue' />
                     </View>
-                    <Typography size='caption' color={colors.neutral} style={{ textDecorationLine: 'line-through' }}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.amount ?? 0)}</Typography>
+                    <Typography size='caption' color={colors.neutral.normal} style={{ textDecorationLine: 'line-through' }}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.amount ?? 0)}</Typography>
                   </View>
                   <View style={[styles.alignLeft, styles.gapBetween]}>
-                    <Typography size='caption' color={colors.neutral}>Outstanding Balance</Typography>
-                    <Typography variant='regular' size='body' color={colors.notification} style={styles.outstanding}>-{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.outstanding ?? 0)}</Typography>
+                    <Typography size='caption' color={colors.neutral.normal}>Outstanding Balance</Typography>
+                    <Typography variant='regular' size='body' color={colors.error.normal} style={styles.outstanding}>-{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.outstanding ?? 0)}</Typography>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <View style={styles.gapBetween}>
-                    <Typography size='caption' color={colors.neutral}>Installment Amount</Typography>
+                    <Typography size='caption' color={colors.neutral.normal}>Installment Amount</Typography>
                     <Typography variant='medium' size='body'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.payment_summary?.installment_amount ?? 0)} / {duration(unit?.payment_duration  ?? PaymentDuration.MONTHLY)} x {unit?.installment ?? 0}</Typography>
                   </View>
                   <View style={[styles.alignLeft, styles.gapBetween]}>
-                    <Typography size='caption' color={colors.neutral}>Initial Payment</Typography>
+                    <Typography size='caption' color={colors.neutral.normal}>Initial Payment</Typography>
                     <Typography variant='medium' size='body'>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(unit?.expected_initial_payment ?? 0)}</Typography>
                   </View>
                 </View>
                 <Divider />
                 <View style={{ rowGap: heightPixel(12) }}>
                   <View style={styles.row}>
-                    <Typography color={colors.neutral}>Payment Progress</Typography>
-                    <Typography color={colors.neutral}>{unit?.payment_summary?.percentage_paid}% completed</Typography>
+                    <Typography color={colors.neutral.normal}>Payment Progress</Typography>
+                    <Typography color={colors.neutral.normal}>{unit?.payment_summary?.percentage_paid}% completed</Typography>
                   </View>
-                  <Bar progress={(unit?.payment_summary?.percentage_paid ?? 0) / 100} width={widthPixel(isMobile ? 326 : 500)} color={colors.primary} borderWidth={0} unfilledColor='#F4F4F4' />
+                  <Bar progress={(unit?.payment_summary?.percentage_paid ?? 0) / 100} width={widthPixel(isMobile ? 326 : 500)} color={colors.brand.blue} borderWidth={0} unfilledColor='#F4F4F4' />
                 </View>
               </View>
             </View>
@@ -505,7 +504,7 @@ const MobilePayment: React.FC<{ row: Payment }> = ({ row }) => {
     <Pressable style={styles.mobileView}>
       <Typography variant='bold'>{row.reason_for_payment ?? 'Payment'}</Typography>
       <View style={{ rowGap: heightPixel(4) }}>
-        <Typography color={colors.textWeaker}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(row.amount)}</Typography>
+        <Typography color={colors.text.weaker}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(row.amount)}</Typography>
         <ColoredPill title={capitalize(row.status ?? '').replace(/_/g, ' ')} color={row.status == 'paid' ? 'green' : row.status == 'not_paid' ? 'yellow' : 'red'} />
       </View>
     </Pressable>
@@ -520,7 +519,7 @@ const MobileDocument: React.FC<{ row: Document }> = ({ row }) => {
     <Pressable style={styles.mobileView}>
       <Typography variant='bold'>{row.name ?? 'Document'}</Typography>
       <View style={{ rowGap: heightPixel(8) }}>
-        {/* <Typography color={colors.textWeaker}>{row.}</Typography> */}
+        {/* <Typography color={colors.text.weaker}>{row.}</Typography> */}
         <ColoredPill title={capitalize(row.kind ?? '').replace(/_/g, ' ')} color={row.kind == DocumentKind.TEMPLATE ? 'yellow' : 'green'} />
       </View>
     </Pressable>
@@ -546,7 +545,7 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(24),
       paddingVertical: heightPixel(24),
       ...large,
-      borderColor: generateColorScale(colors.neutral).lightHover,
+      borderColor:  colors.neutral.lightHover,
       ...shadow(heightPixel(2), widthPixel(8))
     },
     row: {
@@ -570,7 +569,7 @@ const useStyles = () => {
       alignItems: 'center',
     },
     blue: {
-      color: colors.primary
+      color: colors.brand.blue
     },
     input: {
       flex: 1,
@@ -583,14 +582,14 @@ const useStyles = () => {
       paddingHorizontal: widthPixel(12),
       paddingVertical: heightPixel(16),
       ...m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
+      borderColor: colors.neutral.lightActive,
       ...shadow(heightPixel(1), m.borderRadius),
       rowGap: heightPixel(4),
       flex: 1,
     },
     cardValue: {
       fontSize: fontPixel(20),
-      color: colors.text,
+      color: colors.text.default,
     },
     largeImage: {
       width: isMobile ? width : widthPixel(529),

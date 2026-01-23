@@ -38,14 +38,14 @@ export const Breadcrumb: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.goBack}>
         <Button iconOnly icon="Ionicons.arrow-back" size='small' variant='secondary' onPress={back} />
-        <Typography variant='medium' style={{color: colors.textWeak}} onPress={back}>
+        <Typography variant='medium' style={{color: colors.text.weak}} onPress={back}>
           Go Back
         </Typography>
       </View>
       {paths.map((segment, index) => (
         <View style={styles.item} key={index}>
           <Pressable onPress={() => handlePress(index)}>
-            <Typography variant='medium' style={[styles.text, index === paths.length - 1 ? { color: colors.primary } : {}]}>
+            <Typography variant='medium' style={[styles.text, index === paths.length - 1 ? { color: colors.brand.blue } : {}]}>
               {segment.replace(/-/g, ' ').replace('[project_id]', project?.name || 'Project').replace('[unit_id]', unit?.name || 'Unit')}
             </Typography>
           </Pressable>

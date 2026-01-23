@@ -4,7 +4,6 @@ import { Typography } from "../typography";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { useRoundness } from "@/styleguide/theme/Border";
-import { generateColorScale } from "@/styleguide/theme/Colors";
 import { capitalize } from "lodash";
 
 type Props = {
@@ -35,20 +34,20 @@ const useStyles = (variantColor: Props['color']) => {
   const { widthPixel, heightPixel, fontPixel } = useResponsive();
   const { colors } = useTheme();
   const { circle } = useRoundness();
-  let color = colors.textWeak;
+  let color = colors.text.weak;
   let backgroundColor = "#E8E8E8";
 
   if (variantColor == 'blue'){
-    color = generateColorScale(colors.primary).normalHover;
+    color = colors.primaryBlue.normalHover;
     backgroundColor = '#E6F2FA';
   } else if (variantColor == 'red') {
-    color = generateColorScale(colors.notification).normalHover;
+    color = colors.error.normalHover;
     backgroundColor = '#FCE6E6';
   } else if (variantColor == 'green') {
-    color = generateColorScale(colors.success).normalHover;
+    color = colors.successful.normalHover;
     backgroundColor = '#DCFCE7';
   } else if (variantColor == 'yellow') {
-    color = generateColorScale(colors.warning).normalHover;
+    color = colors.warning.normalHover;
     backgroundColor = '#FEF9C3';
   }
 

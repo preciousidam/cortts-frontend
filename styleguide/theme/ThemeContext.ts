@@ -1,4 +1,4 @@
-import { corttsLightColors } from "@/styleguide/theme/Colors";
+import { colors, ColorType, corttsLightColors } from "@/styleguide/theme/Colors";
 import { Fonts } from "@/styleguide/theme/Fonts";
 import { createContext, useContext } from "react";
 import { ColorSchemeName, ViewStyle } from "react-native";
@@ -11,18 +11,18 @@ export type ThemeType = {
   fonts: typeof Fonts;
   isDarkMode: boolean;
   isLightMode: boolean;
-  colors: typeof corttsLightColors;
+  colors: typeof corttsLightColors & ColorType;
   shadow: (elevation: number, radius?: number) => ViewStyle;
 };
 
 
 const ThemeContext = createContext<ThemeType>({
   theme: "light",
-  setTheme: () => {},
   fonts: Fonts,
   isDarkMode: false,
+  setTheme: () => {},
   isLightMode: true,
-  colors: corttsLightColors,
+  colors: {...corttsLightColors, ...colors},
   shadow: () => ({})
 });
 

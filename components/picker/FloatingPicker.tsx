@@ -38,18 +38,18 @@ export function FloatingPicker<T>({
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={[styles.modalContainer, { backgroundColor: colors.background }]}>
-          <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+          <Text style={[styles.title, { color: colors.text.default }]}>{title}</Text>
           {searchable && (
             <TextInput
               value={search}
               onChangeText={setSearch}
               placeholder="Search..."
-              placeholderTextColor={colors.textWeaker}
+              placeholderTextColor={colors.text.weaker}
               style={[
                 styles.searchInput,
                 {
                   borderColor: colors.border,
-                  color: colors.text,
+                  color: colors.text.default,
                   fontSize: fontPixel(14),
                 },
               ]}
@@ -66,7 +66,7 @@ export function FloatingPicker<T>({
                   onClose();
                 }}
               >
-                <Text style={[styles.itemText, { color: colors.text }]}>
+                <Text style={[styles.itemText, { color: colors.text.default }]}>
                   {labelExtractor(item)}
                 </Text>
               </TouchableOpacity>

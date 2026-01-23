@@ -54,7 +54,7 @@ export const Chart: React.FC<ChartProps> = ({ data, xKey, yKeys, variant = 'line
         <VictoryBar
           labelComponent={<VictoryTooltip />}
           data={data.map(d => ({ x: d[xKey], y: d[yKeys[0]], label: d[yKeys[0]] }))}
-          style={{data: { fill: colors.primary }}}
+          style={{data: { fill: colors.brand.blue }}}
         />
       </VictoryChart>
     </View>

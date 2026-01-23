@@ -14,7 +14,6 @@ import {
   PressableProps,
 } from 'react-native';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import * as Icon from '@expo/vector-icons';
 
 export type Variant = 'primary' | 'secondary' | 'outlined' | 'tertiary';
@@ -27,18 +26,18 @@ const useVariantStyle = (variant: Variant) => {
   switch (variant) {
     case 'primary':
       return {
-        backgroundColor: colors.primary,
-        borderColor: colors.primary
+        backgroundColor: colors.brand.blue,
+        borderColor: colors.brand.blue
       } as ViewStyle;
     case 'outlined':
       return {
         backgroundColor: 'transparent',
-        borderColor: colors.primary
+        borderColor: colors.brand.blue
       } as ViewStyle;
     case 'secondary':
       return {
         backgroundColor: colors.card,
-        borderColor: generateColorScale(colors.neutral).normalBase
+        borderColor: colors.neutral.normal
       } as ViewStyle;
     case 'tertiary':
       return {
@@ -54,7 +53,7 @@ const useVariantHoverStyle = (variant: Variant) => {
   const { colors } = useTheme();
   switch (variant) {
     case 'primary':
-      return { backgroundColor: generateColorScale(colors.primary).normalHover };
+      return { backgroundColor: colors.primaryBlue.normalHover };
     case 'outlined':
       return { backgroundColor: '#f4f6f8' };
     case 'secondary':
@@ -72,13 +71,13 @@ const useStyleText = (variant: Variant, disabled?: boolean | null) => {
     case 'primary':
       return { color: disabled ? '#B2B7C2' : '#fff' };
     case 'outlined':
-      return { color: disabled  ? "#B2B7C2" : colors.primary };
+      return { color: disabled  ? "#B2B7C2" : colors.brand.blue };
     case 'secondary':
-      return { color: disabled ? '#B2B7C2' : colors.textWeak };
+      return { color: disabled ? '#B2B7C2' : colors.text.weak };
     case 'tertiary':
-      return { color: disabled ? '#B2B7C2' : colors.text };
+      return { color: disabled ? '#B2B7C2' : colors.text.default };
     default:
-      return { color: colors.text };
+      return { color: colors.text.default };
   }
 };
 

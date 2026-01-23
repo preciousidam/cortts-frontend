@@ -20,7 +20,7 @@ export const OTPBaseInput: React.FC<BaseTextInputProps> = (props) => {
       {...props}
       numberOfDigits={6}
       type='numeric'
-      focusColor={colors.primary}
+      focusColor={colors.brand.blue}
       textInputProps={{
         accessibilityLabel: "One-Time Password",
         textContentType: "oneTimeCode",
@@ -29,8 +29,8 @@ export const OTPBaseInput: React.FC<BaseTextInputProps> = (props) => {
       }}
       textProps={{ style: [styles.otptext, Boolean(props.error) && styles.error] }}
       theme={{
-        pinCodeContainerStyle: Boolean(props.error) ? {borderColor: colors.notification} : {},
-        focusedPinCodeContainerStyle: Boolean(props.error) ? {borderColor: colors.notification} : {},
+        pinCodeContainerStyle: Boolean(props.error) ? {borderColor: colors.error.normal} : {},
+        focusedPinCodeContainerStyle: Boolean(props.error) ? {borderColor: colors.error.normal} : {},
       }}
     />
   );
@@ -69,11 +69,11 @@ const useStyles = () => {
   const styles = StyleSheet.create({
     otptext: {
       ...Fonts.semiBold,
-      color: colors.text,
+      color: colors.text.default,
       fontSize: fontPixel(32),
     },
     error: {
-      color: colors.notification
+      color: colors.error.normal
     }
   });
 

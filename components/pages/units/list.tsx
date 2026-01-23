@@ -162,8 +162,8 @@ export const MobileRow: React.FC<{ row: Unit; onPress: () => void }> = ({ row, o
       <View style={styles.view}>
         <Typography variant='bold'>{row.name}</Typography>
         <View style={styles.sb}>
-          <Typography color={colors.textWeaker}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(row.amount)}</Typography>
-          <Typography  color={colors.textWeaker}>&#x2022;</Typography>
+          <Typography color={colors.text.weaker}>{Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(row.amount)}</Typography>
+          <Typography  color={colors.text.weaker}>&#x2022;</Typography>
           <ColoredPill title={capitalize(row.development_status)} color={row.development_status === 'in_progress' ? 'yellow' : row.development_status === 'completed' ? 'green' : 'gray'} />
         </View>
       </View>

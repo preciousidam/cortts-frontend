@@ -4,7 +4,6 @@ import { FormDropdown } from '@/components/input/dropdown/form';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useRoundness } from '@/styleguide/theme/Border';
-import { generateColorScale } from '@/styleguide/theme/Colors';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -212,7 +211,7 @@ const useStyles = () => {
     },
     amount: {
       ...m,
-      borderColor: generateColorScale(colors.neutral).lightActive,
+      borderColor: colors.neutral.lightActive,
       paddingHorizontal: widthPixel(24),
       paddingVertical: heightPixel(24)
     }

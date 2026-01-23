@@ -51,18 +51,3 @@ export interface Detail {
 export interface Ctx {
   expected: string;
 }
-
-export interface AdminDashboard {
-  total_units: number;
-  total_payments: number;
-  total_users: number;
-  total_revenue: number;
-  total_outstanding: number;
-  total_projects: number;
-  monthly_revenue: MonthlyRevenue[];
-}
-
-export interface MonthlyRevenue {
-  month: string;
-  amount: number;
-}

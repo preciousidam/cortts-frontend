@@ -18,6 +18,7 @@ import { capitalize } from 'lodash';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { Route, SceneRendererProps } from 'react-native-tab-view';
+import { PageContent } from '../pageContent';
 
 
 const Projects: React.FC = () => {
@@ -135,21 +136,23 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <ScrollView stickyHeaderIndices={[1]} contentContainerStyle={{ flex: 1 }}>
-      <View style={styles.container}>
-        {!isMobile && <ListHeader
-          title="Projects"
-          description="Residential housing developments containing multiple units."
-          primaryAction={{ title: 'Create New Project', onPress: createNewProject }}
-          secondaryAction={{ title: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }}
-        />}
-        <CustomTab
-          initialIndex={getInitialTabIndex()}
-          routes={[{ key: 'all', title: 'All' }, { key: 'ongoing', title: 'Ongoing' }, { key: 'completed', title: 'Completed' }, { key: 'archived', title: 'Archived' }]}
-          renderScene={renderPage}
-          onIndexChange={onIndexChange}
-        />
-      </View>
+    <ScrollView stickyHeaderIndices={[1]} contentContainerStyle={{ flex: 1, }}>
+      <PageContent>
+        <View style={styles.container}>
+          {!isMobile && <ListHeader
+            title="Projects"
+            description="Residential housing developments containing multiple units."
+            primaryAction={{ title: 'Create New Project', onPress: createNewProject }}
+            secondaryAction={{ title: 'Import Projects', onPress: () => console.log('Import Projects Pressed') }}
+          />}
+          <CustomTab
+            initialIndex={getInitialTabIndex()}
+            routes={[{ key: 'all', title: 'All' }, { key: 'ongoing', title: 'Ongoing' }, { key: 'completed', title: 'Completed' }, { key: 'archived', title: 'Archived' }]}
+            renderScene={renderPage}
+            onIndexChange={onIndexChange}
+          />
+        </View>
+      </PageContent>
     </ScrollView>
   );
 };
@@ -157,6 +160,7 @@ const Projects: React.FC = () => {
 const MobileRow: React.FC<{ row: Project; onPress: () => void }> = ({ row, onPress }) => {
   const styles = useStyles();
   const { colors } = useTheme();
+  const { heightPixel, widthPixel } = useResponsive();
   const placeHolder = "eUIW_,0gxURjobyGxBM|W.ae20$eNaWpn%WCX9xZf7oJOEoNt7s.ay"
 
   return (
@@ -165,11 +169,12 @@ const MobileRow: React.FC<{ row: Project; onPress: () => void }> = ({ row, onPre
       <View style={styles.view}>
         <Typography variant='bold'>{row.name}</Typography>
         <View style={styles.sb}>
-          <Typography color={colors.textWeaker}>{capitalize(row.purpose)}</Typography>
-          <Typography  color={colors.textWeaker}>&#x2022;</Typography>
-          <ColoredPill title={capitalize(row.status)} color={row.status === 'ongoing' ? 'yellow' : row.status === 'completed' ? 'green' : 'gray'} />
+          <Typography color={colors.text.weaker}>{capitalize(row.purpose)}</Typography>
+          <Typography  color={colors.text.weaker}>&#x2022;</Typography>
+          <Typography  color={colors.text.weaker}>{row.address}</Typography>
         </View>
       </View>
+      <ColoredPill title={capitalize(row.status)} color={row.status === 'ongoing' ? 'yellow' : row.status === 'completed' ? 'green' : 'gray'} style={{position: 'absolute', top: heightPixel(8), right: widthPixel(8)}} />
     </Pressable>
   )
 }
@@ -188,7 +193,7 @@ const useStyles = () => {
     },
     image: {
       width: '100%',
-      height: heightPixel(194),
+      height: heightPixel(150),
       borderTopLeftRadius: m.borderRadius,
       borderTopRightRadius: m.borderRadius,
       overflow: 'hidden',

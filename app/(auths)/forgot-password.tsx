@@ -95,9 +95,9 @@ const ForgotPassword: React.FC = () => {
         />
         <View style={styles.spaceBetween}>
           <Typography size='body' style={{ marginTop: heightPixel(12) }}>
-            Code expires in <Typography style={{color: colors.primary}} variant='regular'>{formatTime(timeLeft)}</Typography>
+            Code expires in <Typography style={{color: colors.brand.blue}} variant='regular'>{formatTime(timeLeft)}</Typography>
           </Typography>
-          <Typography size='body' variant='bold' style={{ alignSelf: 'flex-end', color: colors.primary }}>Resend Code</Typography>
+          <Typography size='body' variant='bold' style={{ alignSelf: 'flex-end', color: colors.brand.blue }}>Resend Code</Typography>
         </View>
       </View>
       <View style={styles.buttonArea}>
@@ -124,7 +124,7 @@ const ForgotPassword: React.FC = () => {
 
   const renderDone = () => (
     <View style={[styles.form, styles.roundedView]}>
-      <Typography size='subtitle' variant='bold' style={[styles.welcome, { color: colors.primary }, isMobile ? { fontSize: fontPixel(28) } : { fontSize: fontPixel(35) }]}>Password Updated!</Typography>
+      <Typography size='subtitle' variant='bold' style={[styles.welcome, { color: colors.brand.blue }, isMobile ? { fontSize: fontPixel(28) } : { fontSize: fontPixel(35) }]}>Password Updated!</Typography>
       <Typography size='body' style={{ textAlign: 'center' }}>You have successfully reset your password! Kindly click the button below to login into your account.</Typography>
       <Button size='large' title='Back to Login' onPress={() => push({ pathname: '/(auths)/login', params: { email } })} isLoading={isLoading} disabled={isLoading} style={{ marginTop: widthPixel(20), width: '100%' }} />
     </View>
@@ -141,7 +141,7 @@ const ForgotPassword: React.FC = () => {
       default:
         return renderVerificationForm();
     }
-  }, [step, isMobile, getValues, colors.primary, isLoading]);
+  }, [step, isMobile, getValues, colors.brand.blue, isLoading]);
 
   if (!email && !step) {
     return <Redirect href='/(auths)/login' />
@@ -246,7 +246,7 @@ const useStyles = () => {
     },
     otptext: {
       ...Fonts.semiBold,
-      color: colors.text,
+      color: colors.text.default,
       fontSize: fontPixel(32),
     },
     roundedView: {

@@ -132,7 +132,7 @@ export interface UnitAgent {
 export interface Payment {
   amount: number
   due_date: string
-  status: string
+  status: PaymentStatus
   unit_id: string
   unit: { name: string; id: string; }
   id: string
@@ -201,4 +201,48 @@ export interface SignedDocument {
   agent?: User;
   created_at: string
   updated_at: string
+}
+
+export const enum UnitStatus {
+  AVAILABLE = 'available',
+  SOLD = 'sold',
+  RESERVED = 'under_offer',
+  DELETED = 'deleted',
+}
+
+export const enum PaymentStatus {
+  PAID = "paid",
+  NOT_PAID = "not_paid",
+  OVERDUE = "overdue",
+}
+
+export interface AdminDashboard {
+  total_units: number;
+  total_payments: number;
+  total_users: number;
+  total_revenue: number;
+  total_outstanding: number;
+  total_projects: number;
+  monthly_revenue: MonthlyRevenue[];
+  units: Array<{
+    id: string;
+    name: string;
+    projectName: string;
+    status: UnitStatus;
+    price: number;
+    image: string | null;
+  }>;
+  recent_payments: Array<{
+    id: string;
+    amount: number;
+    payment_date: string;
+    status: PaymentStatus.PAID;
+    reason_for_payment: string | null;
+    title?: string | null;
+  }>;
+}
+
+export interface MonthlyRevenue {
+  month: string;
+  amount: number;
 }
