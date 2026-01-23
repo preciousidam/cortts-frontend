@@ -157,7 +157,7 @@ const AdminDashboard = () => {
             <ImageBackground 
               style={{ flex: 1, borderRadius: widthPixel(18) }} 
               imageStyle={{ borderRadius: widthPixel(18) }} 
-              source={require('@/assets/images/blue_bg_1.png')} 
+              source={require('@/assets/images/red_bg.png')} 
               contentFit="cover"
             >
               <View style={{ padding: widthPixel(14), rowGap: heightPixel(8) }}>
@@ -175,7 +175,7 @@ const AdminDashboard = () => {
             <ImageBackground 
               style={{ flex: 1, borderRadius: widthPixel(18) }} 
               imageStyle={{ borderRadius: widthPixel(18) }} 
-              source={require('@/assets/images/green_bg.png')} 
+              source={require('@/assets/images/purple_bg.png')} 
               contentFit="fill"
             >
               <View style={{ padding: widthPixel(14), rowGap: heightPixel(8) }}>
