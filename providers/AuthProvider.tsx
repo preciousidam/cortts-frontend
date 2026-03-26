@@ -255,7 +255,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     >
       <View style={{ flex: 1 }}>
         {children}
-        {Platform.OS === 'web' && !isMobile && <Button onPress={() => push('/storybook')} iconOnly icon={<Ionicons name="menu" size={24} color="#fff" />} style={{ position: 'absolute', right: 32, bottom: 32 }} />}
+        {__DEV__ && process.env.EXPO_PUBLIC_STORYBOOK === 'true' && (
+          <Button
+            onPress={() => push('/storybook')}
+            iconOnly
+            icon={<Ionicons name="menu" size={24} color="#fff" />}
+            style={{ position: 'absolute', right: 32, bottom: 32 }}
+          />
+        )}
       </View>
     </AuthContext.Provider>
   );

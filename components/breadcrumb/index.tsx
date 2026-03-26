@@ -1,11 +1,10 @@
 
 
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useSegments, useRouter, ExternalPathString, useLocalSearchParams } from 'expo-router';
 import { Typography } from '@/components/typography';
 import { useResponsive } from '@/hooks/useResponsive';
-import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Button } from '../button';
 import { useGetProjectQuery } from '@/store/projects/queries';
 import { useGetUnitQuery } from '@/store/units/queries';
@@ -15,11 +14,9 @@ const removeGroupsFromPath = (paths: string[]) => {
 };
 
 export const Breadcrumb: React.FC = () => {
-  const styles = useStyles();
   const segments = useSegments();
   const { replace, back } = useRouter();
-  const {colors} = useTheme();
-  const { isMobile } = useResponsive();
+  const { isMobile, widthPixel } = useResponsive();
   const { project_id, unit_id } = useLocalSearchParams();
   const { project } = useGetProjectQuery(project_id as string, !!project_id);
   const { unit } = useGetUnitQuery(unit_id as string, !!unit_id);
@@ -35,56 +32,28 @@ export const Breadcrumb: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.goBack}>
+    <View className="flex-row flex-wrap items-center" style={{ gap: widthPixel(4), marginBottom: widthPixel(12) }}>
+      <View className="flex-row items-center justify-start" style={{ columnGap: widthPixel(12), paddingRight: widthPixel(12) }}>
         <Button iconOnly icon="Ionicons.arrow-back" size='small' variant='secondary' onPress={back} />
-        <Typography variant='medium' style={{color: colors.text.weak}} onPress={back}>
+        <Typography variant='medium' className="text-text-weak dark:text-dark-textWeak" onPress={back}>
           Go Back
         </Typography>
       </View>
       {paths.map((segment, index) => (
-        <View style={styles.item} key={index}>
+        <View className="flex-row items-center" key={index}>
           <Pressable onPress={() => handlePress(index)}>
-            <Typography variant='medium' style={[styles.text, index === paths.length - 1 ? { color: colors.brand.blue } : {}]}>
+            <Typography
+              variant='medium'
+              className={`capitalize ${index === paths.length - 1 ? 'text-brand-blue' : 'text-text-default dark:text-dark-text'}`}
+            >
               {segment.replace(/-/g, ' ').replace('[project_id]', project?.name || 'Project').replace('[unit_id]', unit?.name || 'Unit')}
             </Typography>
           </Pressable>
-          {index < paths.length - 1 && <Typography style={styles.separator}>/</Typography>}
+          {index < paths.length - 1 && (
+            <Typography className="text-neutral-normalHover" style={{ marginHorizontal: widthPixel(4) }}>/</Typography>
+          )}
         </View>
       ))}
     </View>
   );
 };
-
-const useStyles = () => {
-  const { widthPixel } = useResponsive();
-
-  return StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-      gap: widthPixel(4),
-      marginBottom: widthPixel(12),
-    },
-    item: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    text: {
-      textTransform: 'capitalize',
-      fontWeight: '500',
-    },
-    separator: {
-      marginHorizontal: widthPixel(4),
-      color: '#999',
-    },
-    goBack: {
-      flexDirection: 'row',
-      columnGap: widthPixel(12),
-      paddingRight: widthPixel(12),
-      alignItems: 'center',
-      justifyContent: 'flex-start'
-    }
-  });
-}

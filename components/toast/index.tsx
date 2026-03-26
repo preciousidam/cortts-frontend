@@ -9,7 +9,7 @@ export const toastConfig = () => {
     success: (props: ToastProps) => (
       <SuccessToast
         {...props}
-        style={{ borderLeftColor: colors.successful.normal }}
+        style={[styles.toastShell, { borderLeftColor: colors.successful.normal }]}
         contentContainerStyle={styles.toastContainer}
         text1Style={[styles.toastText1, { color: colors.successful.darkHover }]}
         text2Style={[styles.toastText2, { color: colors.successful.normal }]}
@@ -18,7 +18,7 @@ export const toastConfig = () => {
     error: (props: ToastProps) => (
       <ErrorToast
         {...props}
-        style={{ borderLeftColor: colors.error.normal }}
+        style={[styles.toastShell, { borderLeftColor: colors.error.normal }]}
         contentContainerStyle={styles.toastContainer}
         text1Style={[styles.toastText1, { color: colors.error.darkHover }]}
         text2Style={[styles.toastText2, { color: colors.error.normal }]}
@@ -27,7 +27,7 @@ export const toastConfig = () => {
     info: (props: ToastProps) => (
       <InfoToast
         {...props}
-        style={{ borderLeftColor: colors.brand.blue }}
+        style={[styles.toastShell, { borderLeftColor: colors.brand.blue }]}
         contentContainerStyle={styles.toastContainer}
         text1Style={[styles.toastText1, { color: colors.primaryBlue.darkHover }]}
         text2Style={[styles.toastText2, { color: colors.brand.blue }]}
@@ -36,7 +36,7 @@ export const toastConfig = () => {
     warning: (props: ToastProps) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: colors.warning.normal }}
+        style={[styles.toastShell, { borderLeftColor: colors.warning.normal }]}
         contentContainerStyle={styles.toastContainer}
         text1Style={[styles.toastText1, { color: colors.warning.darkHover }]}
         text2Style={[styles.toastText2, { color: colors.warning.normal }]}
@@ -45,6 +45,7 @@ export const toastConfig = () => {
     default: (props: ToastProps) => (
       <BaseToast
         {...props}
+        style={styles.toastShell}
         contentContainerStyle={styles.toastContainer}
         text1Style={styles.toastText1}
         text2Style={styles.toastText2}
@@ -55,24 +56,27 @@ export const toastConfig = () => {
 
 export const useStyles = () => {
   const { colors, fonts } = useTheme();
-  const { scale, fontPixel, verticalScale } = useResponsive();
+  const { scale, fontPixel } = useResponsive();
   return {
+    toastShell: {
+      backgroundColor: colors.white,
+      shadowColor: '#1b1c1a',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 16,
+      elevation: 2,
+    },
     toastContainer: {
       paddingHorizontal: scale(20),
-      borderRadius: 8,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
+      borderRadius: 12,
     },
     toastText1: {
       fontSize: fontPixel(16),
-      ...fonts.bold
+      ...fonts.bold,
     },
     toastText2: {
       fontSize: fontPixel(16),
-      ...fonts.regular
+      ...fonts.regular,
     },
   };
 }

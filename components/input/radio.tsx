@@ -1,10 +1,9 @@
-import { useRoundness } from '@/styleguide/theme/Border';
 import { useResponsive } from '@/hooks/useResponsive';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { Controller, Control, ValidationRule, RegisterOptions } from 'react-hook-form';
-import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Typography } from '../typography';
 
 type RadioProps = {
@@ -24,20 +23,24 @@ const Radio: React.FC<RadioProps> = ({
   labelStyle = {},
   style,
 }) => {
-  const styles = useStyles();
-  const { colors } = useTheme();
   const { scale } = useResponsive();
+  const { colors } = useTheme();
 
   return (
     <Pressable
-      style={[styles.container, style]}
+      className="flex-row items-center"
+      style={[{ columnGap: scale(8) }, style]}
       onPress={() => !disabled && onChange(!selected)}
       disabled={disabled}
       accessibilityRole="radio"
       accessibilityState={{ selected, disabled }}
     >
-      <Ionicons name={selected ? "radio-button-on" : "radio-button-off"} color={selected ? colors.brand.blue : colors.neutral.lightActive} size={scale(20)} />
-      {label ? <Typography style={[styles.label, disabled ? styles.labelDisabled : {}, labelStyle]}>{label}</Typography> : null}
+      <Ionicons
+        name={selected ? "radio-button-on" : "radio-button-off"}
+        color={selected ? colors.primary : colors.border}
+        size={scale(20)}
+      />
+      {label ? <Typography className="text-text-default dark:text-dark-text" style={labelStyle}>{label}</Typography> : null}
     </Pressable>
   );
 };
@@ -50,6 +53,7 @@ export type BaseRadioProps<T> = {
   disabled?: boolean;
   labelStyle?: TextStyle;
   style?: ViewStyle;
+  className?: string;
   layout?: 'horizontal' | 'vertical';
   required?: string | boolean | ValidationRule<boolean>;
   listStyle?: ViewStyle;
@@ -63,12 +67,12 @@ export const BaseRadioButton = <T, >({
   disabled = false,
   labelStyle = {},
   style,
+  className,
   layout = 'horizontal',
   required = false,
   listStyle = {}
 }: BaseRadioProps<T>) => {
   const styles = useStyles();
-  const { colors } = useTheme();
 
   const handleSelect = (value: T) => {
     if (disabled) return;
@@ -76,12 +80,19 @@ export const BaseRadioButton = <T, >({
   };
 
   return (
-    <View style={[styles.buttonGroup, style]}>
-      {label && <View style={styles.sb}>
-        {Boolean(required) && <Text style={styles.required}>*</Text>}
-        <Typography variant='semiBold' size="caption" style={[styles.label, { color: colors.text.default }, labelStyle]}>{label}</Typography>
-      </View>}
-      <View style={[layout === 'vertical' ? styles.vertical : styles.horizontal, listStyle]}>
+    <View className={className} style={[styles.buttonGroup, style]}>
+      {label && (
+        <View className="flex-row" style={{ columnGap: styles.sb.columnGap }}>
+          {Boolean(required) && (
+            <Text className="text-error-normal" style={{ fontSize: styles.required.fontSize }}>*</Text>
+          )}
+          <Typography variant='semiBold' size="caption" style={labelStyle}>{label}</Typography>
+        </View>
+      )}
+      <View
+        className={layout === 'vertical' ? 'flex-col items-start' : 'flex-row items-center'}
+        style={[layout === 'vertical' ? styles.vertical : styles.horizontal, listStyle]}
+      >
         {options.map((option) => (
           <Radio
             key={option.value as string}
@@ -106,6 +117,7 @@ type FormRadioProps<T> = {
   selected?: T;
   onSelect?: (value: T) => void;
   style?: ViewStyle;
+  className?: string;
   rules?: Omit<RegisterOptions<any, string>, "disabled" | "valueAsNumber" | "valueAsDate" | "setValueAs"> | undefined;
 };
 
@@ -117,6 +129,7 @@ export const FormRadioButton = <T,>({
   labelStyle,
   rules,
   style,
+  className,
   options,
   selected,
   onSelect,
@@ -131,6 +144,7 @@ export const FormRadioButton = <T,>({
       disabled={disabled}
       labelStyle={labelStyle}
       style={style}
+      className={className}
     />;
   }
   return (
@@ -145,68 +159,30 @@ export const FormRadioButton = <T,>({
           disabled={disabled}
           labelStyle={labelStyle}
           style={style}
+          className={className}
           selected={value}
           options={options}
-          required={rules?.required} // Adjust as needed
+          required={rules?.required}
         />
       )}
     />
   );
 };
 
-const BOX_SIZE = 18;
-
 const useStyles = () => {
-  const { colors, fonts } = useTheme();
   const { scale, fontPixel, verticalScale } = useResponsive();
-  const ROUNDNESS = useRoundness();
 
   return StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      columnGap: scale(8),
-    },
-    checkbox: {
-      width: scale(BOX_SIZE),
-      height: scale(BOX_SIZE),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#fff',
-      ...ROUNDNESS.s,
-      borderColor: colors.brand.blue + 'a2',
-      borderWidth: scale(1),
-    },
-    checked: {
-      backgroundColor: colors.brand.blue,
-      borderColor: colors.brand.blue,
-    },
-    disabled: {
-      borderColor: '#ccc',
-      backgroundColor: '#f2f2f2',
-    },
-    label: {
-      
-    },
-    labelDisabled: {
-     
-    },
     horizontal: {
-      flexDirection: 'row',
-      alignItems: 'center',
       columnGap: scale(24),
     },
     vertical: {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
       rowGap: verticalScale(24),
     },
     sb: {
       columnGap: scale(4),
-      flexDirection: 'row',
     },
     required: {
-      color: colors.error.normal,
       fontSize: fontPixel(12),
     },
     buttonGroup: {

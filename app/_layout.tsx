@@ -4,6 +4,11 @@ import {
   Manrope_600SemiBold,
   Manrope_700Bold
 } from '@expo-google-fonts/manrope';
+import {
+  NotoSerifJP_400Regular,
+  NotoSerifJP_500Medium,
+  NotoSerifJP_700Bold,
+} from '@expo-google-fonts/noto-serif-jp';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import '../global.css';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -46,6 +51,9 @@ export default function RootLayout() {
     Manrope_500Medium,
     Manrope_600SemiBold,
     Manrope_700Bold,
+    NotoSerifJP_400Regular,
+    NotoSerifJP_500Medium,
+    NotoSerifJP_700Bold,
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,

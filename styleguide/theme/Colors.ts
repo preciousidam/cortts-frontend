@@ -100,90 +100,84 @@ export const generateColorScale = (hex: string) => {
 
 
 export const corttsLightColors = {
-  primary: '#007ACC',         // links, active icons
-  background: '#FAFAFA',      // screen background
-  card: '#FFFFFF',            // header, drawer, bottom tabs
-  // text: '#292929',            // body text
-  border: '#E5E5E5',          // card/drawer/tab borders
-  notification: '#DF0000',  // red for error messages
-  // neutral: '#ABABAB',      // neutral text color
-  // textWeaker: '#B8B8B8',   // weaker text color
-  // textWeakest: '#E8E8E8', // weakest text color
-  // textWeak: '#4D4D4D', // weak text color
-  success: '#22C55E', // green for success messages
-  // warning:  '#FFC115', // yellow for warning messages
-  secondary: '#00C1A2'
+  primary: '#0f1d2d',         // Ink Navy — links, active icons
+  background: '#fbf9f6',      // warm bone — screen background
+  card: '#ffffff',            // header, drawer, bottom tabs
+  border: '#c4c6cd',          // outline_variant — Ghost Border
+  notification: '#D00000',    // error red
+  success: '#22C55E',         // green for success messages
+  secondary: '#8b7355',       // Muted Gold/Bronze
+  tertiary: '#2d4b3f',        // Forest Green
 };
 
 export const corttsDarkColors = {
-  primary: '#00C1A2',         // teal for CTA & active highlights
-  background: '#1A1A1A',      // full screen dark background
-  card: '#2A2A2A',            // headers, drawers, modals
-  text: '#FFFFFF',            // main text color
-  border: '#4F4F4F',          // divider lines, input borders
-  notification: '#DF0000',  // red for error messages
-  neutral: '#ABABAB',      // neutral text color
-  textWeaker: '#8C8C8C',   // weaker text color
-  textWeakest: '#3D3D3D', // weakest text color
-  textWeak: '#CFCFCF', // weak text color
-  success: '#22C55E',  // green for success messages
-  warning:  '#FFC115',  // yellow for warning messages
-  secondary: '#007ACC'
+  primary: '#4a7aa8',         // lightened Ink Navy for dark mode CTAs
+  background: '#0d1117',      // deep dark background
+  card: '#1a2232',            // headers, drawers, modals
+  text: '#f5f3f0',            // warm off-white — main text
+  border: '#2d3a4a',          // dark border
+  notification: '#D00000',    // error red
+  textWeaker: '#72757e',      // tertiary labels
+  textWeakest: '#44474c',     // disabled / subtle
+  textWeak: '#c4c6cd',        // secondary labels
+  success: '#22C55E',         // green for success messages
+  warning: '#FFB015',         // yellow for warning messages
+  secondary: '#c4a97d',       // lightened Bronze for dark mode
+  tertiary: '#3d6b5a',
 };
 
 export const colors = {
   white: "#FFFFFF",
 
-  // top swatches
   brand: {
-    blue: "#1F73BD",
-    green: "#1FB99B",
+    blue: "#0f1d2d",   // Ink Navy (primary)
+    green: "#8b7355",  // Muted Gold/Bronze (secondary)
   },
 
   text: {
-    default: "#252525",
-    weakest: "#E4E4E4",
-    weaker: "#AFAFAF",
-    weak: "#5A5A5A",
+    default: "#1b1c1a",   // deep warm black
+    weakest: "#c4c6cd",   // outline_variant
+    weaker: "#72757e",    // tertiary labels
+    weak: "#44474c",      // on_surface_variant
   },
 
   primaryBlue: {
-    light: "#F2F2F2",
-    lightHover: "#ECECEC",
-    lightActive: "#D9D9D9",
-    normal: "#1F73BD",
-    normalHover: "#1A619F",
-    normalActive: "#17558B",
-    dark: "#154A78",
-    darkHover: "#133E66",
-    darkActive: "#113555",
-    darker: "#0E2C47",
+    light: "#e8ecf0",
+    lightHover: "#dae1e8",
+    lightActive: "#c5d0da",
+    normal: "#0f1d2d",
+    normalHover: "#0c1826",
+    normalActive: "#091420",
+    dark: "#081119",
+    darkHover: "#050d12",
+    darkActive: "#03080b",
+    darker: "#020508",
   },
 
   secondaryGreen: {
-    light: "#E5F9F6",
-    lightHover: "#DBF6F1",
-    lightActive: "#BEEFE6",
-    normal: "#1FB99B",
-    normalHover: "#1A9F85",
-    normalActive: "#178B74",
-    dark: "#157B65",
-    darkHover: "#126856",
-    darkActive: "#105949",
-    darker: "#0D4A3D",
+    light: "#f5ede2",
+    lightHover: "#ede2d4",
+    lightActive: "#d9c8ae",
+    normal: "#8b7355",
+    normalHover: "#7d6849",
+    normalActive: "#6e5c3f",
+    dark: "#5f4f35",
+    darkHover: "#4d3f2a",
+    darkActive: "#3c3020",
+    darker: "#2d2318",
   },
 
   neutral: {
-    light: "#F7F7F7",
-    lightHover: "#F2F2F2",
-    lightActive: "#E5E5E5",
-    normal: "#ABABAB",
-    normalHover: "#9A9A9A",
-    normalActive: "#898989",
-    dark: "#808080",
-    darkHover: "#676767",
-    darkActive: "#4D4D4D",
-    darker: "#3C3C3C",
+    light: "#f5f3f0",
+    lightHover: "#ede9e4",
+    lightActive: "#e2ddd8",
+    normal: "#8a8782",
+    normalHover: "#797470",
+    normalActive: "#68655f",
+    dark: "#57544f",
+    darkHover: "#44413d",
+    darkActive: "#322f2c",
+    darker: "#201e1b",
   },
 
   error: {
@@ -250,8 +244,8 @@ export type ColorScales = {
 };
 
 export const lightTextColors = {
-    "default": "#FFFFFF",
-    "weak": "#E0E0E0",
-    "weaker": "#A0A0A0",
-    "weakest": "#6E6E6E"
-}
+  default: "#f5f3f0",
+  weak: "#c4c6cd",
+  weaker: "#72757e",
+  weakest: "#44474c",
+};

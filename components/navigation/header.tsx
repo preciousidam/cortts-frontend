@@ -1,5 +1,4 @@
 import { useResponsive } from "@/hooks/useResponsive";
-import { useTheme } from "@/styleguide/theme/ThemeContext";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -19,12 +18,15 @@ export const CustomHeader: React.FC<DrawerHeaderProps> = (props) => {
   const { fullname, email } = useProfileQueries();
 
   return (
-    <View style={styles.container}>
+    <View
+      className="w-full flex-row items-center justify-between bg-surfaceContainerLow dark:bg-dark-card"
+      style={styles.container}
+    >
       {isMobile && <HeaderButton onPress={props.navigation.toggleDrawer}>
         <MaterialCommunityIcons name='text' color={'#676767'} size={fontPixel(28)} />
       </HeaderButton>}
       {!isMobile && <BaseTextInput inputProps={{placeholder: "Search"}} leftIcon="Ionicons.search" iconColor="#808080" style={styles.input} />}
-      <View style={styles.sbs}>
+      <View className="flex-row items-center" style={styles.sbs}>
         <Button iconOnly variant="tertiary" size='medium' icon="Ionicons.help-circle-outline" color={'#676767'} />
         <Button iconOnly variant="tertiary" size="medium" icon="Ionicons.notifications-outline" color={'#676767'} />
         <Button iconOnly variant="tertiary" size="medium" icon={<Image source={generateAvatarImage({name: fullname ?? '', size: widthPixel(32)})} style={styles.image} />} color={'#676767'} />
@@ -35,30 +37,24 @@ export const CustomHeader: React.FC<DrawerHeaderProps> = (props) => {
 
 
 const useStyles = () => {
-  const {colors} = useTheme();
   const { widthPixel, heightPixel, isMobile } = useResponsive();
-  const { top, bottom } = useSafeAreaInsets();
+  const { top } = useSafeAreaInsets();
   return StyleSheet.create({
     container: {
-      width: '100%',
-      backgroundColor: colors.card,
-      justifyContent: 'space-between',
       paddingVertical: heightPixel(12),
       paddingHorizontal: widthPixel(isMobile ? 16 : 32),
-      alignItems: 'center',
-      flexDirection: 'row',
       minHeight: heightPixel(68),
-      borderBottomColor: colors.neutral.lightActive,
-      borderBottomWidth: heightPixel(1),
-      paddingTop: top+heightPixel(12),
+      paddingTop: top + heightPixel(12),
+      shadowColor: '#1b1c1a',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.05,
+      shadowRadius: 16,
+      elevation: 2,
     },
     input: {
       width: widthPixel(545),
     },
     sbs: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
       columnGap: widthPixel(12),
     },
     image: {

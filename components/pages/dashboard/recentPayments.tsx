@@ -134,7 +134,7 @@ export const RecentPayments: React.FC<{
         payments.slice(0, 4).map((p, idx) => (
           <Pressable
             key={p.id + idx}
-            style={styles.row}
+            style={({ hovered }) => [styles.row, hovered && { backgroundColor: colors.primaryBlue.lightHover }]}
             onPress={() => onOpenPayment?.(p.id)}
           >
             <View style={styles.left}>

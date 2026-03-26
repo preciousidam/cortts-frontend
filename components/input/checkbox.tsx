@@ -1,7 +1,7 @@
 import { useRoundness } from '@/styleguide/theme/Border';
 import { useResponsive } from '@/hooks/useResponsive';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { Controller, Control } from 'react-hook-form';
@@ -14,6 +14,7 @@ type BaseCheckboxProps = {
   disabled?: boolean;
   labelStyle?: TextStyle;
   style?: ViewStyle;
+  className?: string;
 };
 
 export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
@@ -23,23 +24,35 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
   disabled,
   labelStyle = {},
   style,
+  className,
 }) => {
   const styles = useStyles();
-  const { colors } = useTheme();
   const { scale } = useResponsive();
+  const { colors } = useTheme();
 
   return (
     <Pressable
-      style={[styles.container, style]}
+      className={`flex-row items-center${className ? ` ${className}` : ''}`}
+      style={[{ columnGap: scale(8) }, style]}
       onPress={() => !disabled && onChange(!checked)}
       disabled={disabled}
       accessibilityRole="checkbox"
       accessibilityState={{ checked, disabled }}
     >
-      <View style={[styles.checkbox, checked && styles.checked, disabled && styles.disabled]}>
-        {checked && <Ionicons name="checkmark" color={colors.card} size={scale(14)} />}
+      <View
+        className={`items-center justify-center ${disabled ? 'bg-surfaceContainerLow border-border/20' : checked ? 'bg-primary border-primary' : 'bg-surfaceContainerLowest border-secondary/25'}`}
+        style={[styles.checkbox, !checked && !disabled ? { borderColor: 'rgba(139,115,85,0.25)' } : undefined]}
+      >
+        {checked && <Ionicons name="checkmark" color="#fff" size={scale(14)} />}
       </View>
-      {label ? <Typography style={[styles.label, disabled ? styles.labelDisabled : {}, labelStyle]}>{label}</Typography> : null}
+      {label ? (
+        <Typography
+          className={disabled ? 'text-text-weaker dark:text-dark-textWeaker' : 'text-text-default dark:text-dark-text'}
+          style={[styles.label, disabled ? styles.labelDisabled : { color: colors.text.default }, labelStyle]}
+        >
+          {label}
+        </Typography>
+      ) : null}
     </Pressable>
   );
 };
@@ -51,6 +64,7 @@ type FormCheckboxProps = {
   disabled?: boolean;
   labelStyle?: TextStyle;
   style?: ViewStyle;
+  className?: string;
 };
 
 export const FormCheckbox: React.FC<FormCheckboxProps> = ({
@@ -60,6 +74,7 @@ export const FormCheckbox: React.FC<FormCheckboxProps> = ({
   disabled,
   labelStyle,
   style,
+  className,
 }) => {
   return (
     <Controller
@@ -73,6 +88,7 @@ export const FormCheckbox: React.FC<FormCheckboxProps> = ({
           disabled={disabled}
           labelStyle={labelStyle}
           style={style}
+          className={className}
         />
       )}
     />
@@ -82,42 +98,21 @@ export const FormCheckbox: React.FC<FormCheckboxProps> = ({
 const BOX_SIZE = 18;
 
 const useStyles = () => {
-  const { colors, fonts } = useTheme();
   const { scale, fontPixel } = useResponsive();
   const ROUNDNESS = useRoundness();
 
   return StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      columnGap: scale(8),
-    },
     checkbox: {
       width: scale(BOX_SIZE),
       height: scale(BOX_SIZE),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#fff',
       ...ROUNDNESS.s,
-      borderColor: colors.brand.blue + 'a2',
       borderWidth: scale(1),
-    },
-    checked: {
-      backgroundColor: colors.brand.blue,
-      borderColor: colors.brand.blue,
-    },
-    disabled: {
-      borderColor: '#ccc',
-      backgroundColor: '#f2f2f2',
     },
     label: {
       fontSize: 16,
-      color: colors.text.default,
     },
     labelDisabled: {
       fontSize: fontPixel(14),
-      ...fonts.medium,
-      color: colors.text.default,
     },
   });
 };

@@ -1,11 +1,9 @@
 import { View } from "react-native";
 
-export const Divider = () => {
+export const Divider = ({ className }: { className?: string }) => {
   return (
-    <View style={{
-      height: 1,
-      width: '100%',
-      backgroundColor: '#E5E5E5',
-    }} />
+    <View
+      className={`h-3 w-full rounded-full bg-surfaceContainerLow dark:bg-dark-card${className ? ` ${className}` : ''}`}
+    />
   );
 };
