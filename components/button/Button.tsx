@@ -1,6 +1,6 @@
-import { useRoundness } from '@/styleguide/theme/Border';
 import { useResponsive } from '@/hooks/useResponsive';
 import { cn } from '@/components/util';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
 import React, { ReactNode, forwardRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -46,23 +46,23 @@ export type Size = 'large' | 'medium' | 'small';
 
 // New theme token classes
 const variantContainerClass: Record<Variant, string> = {
-  primary:  'bg-primary border-primary',
-  outlined: 'bg-transparent border-primary/25',
-  secondary: 'bg-transparent border-secondary/25',
+  primary:  'bg-primaryBlue-normal border-primaryBlue-normal dark:bg-primaryBlue-light dark:border-primaryBlue-light',
+  outlined: 'bg-transparent border-detail-divider dark:border-dark-border',
+  secondary: 'bg-surfaceContainerLow border-detail-divider dark:bg-dark-card dark:border-dark-border',
   tertiary: 'bg-transparent border-transparent',
 };
 
 const variantHoverClass: Record<Variant, string> = {
-  primary:  'bg-primaryBlue-normalHover',
-  outlined: 'bg-surfaceContainerLow dark:bg-dark-card',
-  secondary: 'bg-secondary-container/50',
-  tertiary: 'bg-surfaceContainerLow dark:bg-dark-card',
+  primary:  'bg-primaryBlue-normalHover dark:bg-primaryBlue-lightHover',
+  outlined: 'bg-detail-interactive dark:bg-detail-interactiveDark',
+  secondary: 'bg-neutral-lightActive dark:bg-detail-dividerDark',
+  tertiary: 'bg-detail-interactive dark:bg-detail-interactiveDark',
 };
 
 const variantTextClass: Record<Variant, string> = {
-  primary:  'text-white',
-  outlined: 'text-primary',
-  secondary: 'text-secondary',
+  primary:  'text-white dark:text-primaryBlue-normal',
+  outlined: 'text-text-weak dark:text-dark-textWeak',
+  secondary: 'text-text-weak dark:text-dark-textWeak',
   tertiary:  'text-text-default dark:text-dark-text',
 };
 
@@ -104,11 +104,16 @@ export const Button = forwardRef<any, IButtonProp>(
     const [isHovered, setIsHovered] = useState(false);
     const styles = useStyle();
     const { fontPixel } = useResponsive();
-    const shouldUseGradient = variant === 'primary' ? gradient ?? true : Boolean(gradient);
+    const { isDarkMode, colors } = useTheme();
+    const shouldUseGradient = Boolean(gradient);
+    const gradientColors = isDarkMode
+      ? [colors.primaryBlue.light, colors.primaryBlue.lightActive]
+      : [colors.text.default, colors.primaryBlue.normal];
+    const gradientLabelClass = isDarkMode ? 'text-primaryBlue-normal' : 'text-white';
 
     const disabledStyle: ViewStyle = {
-      backgroundColor: '#e2ddd8',
-      borderColor: '#c4c6cd',
+      backgroundColor: '#e6e8e9',
+      borderColor: '#e6e8e9',
     };
 
     const renderLeftIcon = () => {
@@ -147,7 +152,7 @@ export const Button = forwardRef<any, IButtonProp>(
         <Text
           className={cn('text-center font-medium', variantTextClass[variant], extraClass)}
           style={[
-            { fontSize: fontPixel(14) },
+            { fontSize: fontPixel(14), lineHeight: fontPixel(20) },
             rest.disabled ? { color: '#B2B7C2' } : undefined,
             titleStyle,
             rest.color ? { color: rest.color } : undefined,
@@ -197,7 +202,7 @@ export const Button = forwardRef<any, IButtonProp>(
     if (shouldUseGradient) {
       return (
         <Pressable
-          className={cn('rounded-xl overflow-hidden', className)}
+          className={cn('overflow-hidden', className)}
           style={[
             styles.button,
             styles[size],
@@ -211,17 +216,17 @@ export const Button = forwardRef<any, IButtonProp>(
           onHoverOut={() => setIsHovered(false)}
         >
           <LinearGradient
-            colors={['#000104', '#0f1d2d']}
+            colors={gradientColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
+            style={[StyleSheet.absoluteFillObject, { borderRadius: styles.button.borderRadius }]}
           />
           {isLoading ? (
-            <ActivityIndicator color="#ffffff" size="small" />
+            <ActivityIndicator color={isDarkMode ? colors.primaryBlue.normal : '#ffffff'} size="small" />
           ) : (
-            <View className="flex-row items-center justify-center" style={{ columnGap: 8 }}>
+            <View className="flex-1 flex-row items-center justify-center" style={{ columnGap: 8 }}>
               {renderLeftIcon()}
-              {renderLabel('text-white')}
+              {renderLabel(gradientLabelClass)}
               {renderRightIcon()}
             </View>
           )}
@@ -265,17 +270,16 @@ export const Button = forwardRef<any, IButtonProp>(
 
 const useStyle = () => {
   const { widthPixel, heightPixel } = useResponsive();
-  const ROUNDNESS = useRoundness();
   return StyleSheet.create({
     button: {
-      ...ROUNDNESS.m,
+      borderRadius: widthPixel(12),
       borderWidth: widthPixel(1),
       minWidth: widthPixel(77),
       columnGap: widthPixel(8),
       paddingHorizontal: widthPixel(16),
     },
     iconOnlyButton: {
-      borderRadius: widthPixel(8),
+      borderRadius: widthPixel(12),
       borderWidth: widthPixel(1),
     },
     large:  { height: heightPixel(56) },

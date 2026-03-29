@@ -17,8 +17,8 @@ type Props = {
 type ColorClasses = { pill: string; text: string; indicator: string };
 
 const colorClassMap: Record<Props['color'], ColorClasses> = {
-  gray:   { pill: 'bg-secondary-fixed',      text: 'text-secondary-onFixed',                     indicator: 'bg-secondary' },
-  blue:   { pill: 'bg-primaryBlue-light',    text: 'text-primaryBlue-normalHover',               indicator: 'bg-primaryBlue-normalHover' },
+  gray:   { pill: 'bg-pending-light',        text: 'text-pending-normal',                        indicator: 'bg-pending-normal' },
+  blue:   { pill: 'bg-secondary-fixed',      text: 'text-secondary-onFixed',                     indicator: 'bg-secondary-DEFAULT' },
   red:    { pill: 'bg-error-light',          text: 'text-error-normalHover',                     indicator: 'bg-error-normalHover' },
   green:  { pill: 'bg-successful-light',     text: 'text-successful-normalHover',                indicator: 'bg-successful-normalHover' },
   yellow: { pill: 'bg-warning-light',        text: 'text-warning-normalHover',                   indicator: 'bg-warning-normalHover' },

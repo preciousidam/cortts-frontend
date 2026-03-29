@@ -28,7 +28,7 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
 }) => {
   const styles = useStyles();
   const { scale } = useResponsive();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   return (
     <Pressable
@@ -40,10 +40,10 @@ export const BaseCheckbox: React.FC<BaseCheckboxProps> = ({
       accessibilityState={{ checked, disabled }}
     >
       <View
-        className={`items-center justify-center ${disabled ? 'bg-surfaceContainerLow border-border/20' : checked ? 'bg-primary border-primary' : 'bg-surfaceContainerLowest border-secondary/25'}`}
-        style={[styles.checkbox, !checked && !disabled ? { borderColor: 'rgba(139,115,85,0.25)' } : undefined]}
+        className={`items-center justify-center ${disabled ? 'bg-surfaceContainerLow border-detail-divider dark:bg-dark-card dark:border-dark-border' : checked ? 'bg-primaryBlue-normal border-primaryBlue-normal dark:bg-primaryBlue-light dark:border-primaryBlue-light' : 'bg-surfaceContainerLowest border-detail-divider dark:bg-dark-card dark:border-dark-border'}`}
+        style={styles.checkbox}
       >
-        {checked && <Ionicons name="checkmark" color="#fff" size={scale(14)} />}
+        {checked && <Ionicons name="checkmark" color={isDarkMode ? colors.primary : '#fff'} size={scale(14)} />}
       </View>
       {label ? (
         <Typography

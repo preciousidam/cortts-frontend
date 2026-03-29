@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Text, TextInput, View, TextInputProps, StyleSheet, ViewStyle, TextStyle, Pressable } from 'react-native';
 import { Controller, Control, RegisterOptions, ValidationRule } from 'react-hook-form';
 import { useResponsive } from '@/hooks/useResponsive';
-import { useRoundness } from '@/styleguide/theme/Border';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
 import * as Icon from '@expo/vector-icons';
 import CountryFlag from 'react-native-country-flag';
 import { Typography } from '../typography';
+import { useRoundness } from '@/styleguide/theme/Border';
 
 type Currency = 'NGN' | 'USD';
 
@@ -46,7 +46,6 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const { fontPixel, scale, verticalScale } = useResponsive();
   const styles = useStyle();
-  const ROUNDNESS = useRoundness();
   // useTheme only for values NativeWind cannot express (JS props: placeholderTextColor, icon color)
   const { isDarkMode, colors } = useTheme();
 
@@ -56,8 +55,8 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
   const outlineColor = error
     ? colors.error.normal
     : isDarkMode
-      ? 'rgba(196,198,205,0.3)'
-      : 'rgba(196,198,205,0.3)';
+      ? colors.border
+      : colors.border;
 
   const renderLeftIcon = () => {
     if (!leftIcon) return null;
@@ -99,7 +98,7 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
           )}
           <Typography
             variant="semiBold"
-            className={isFocused ? 'text-primary dark:text-secondary' : 'text-onSurfaceVariant dark:text-dark-textWeak'}
+            className={isFocused ? 'text-primaryBlue-normal dark:text-primaryBlue-light' : 'text-onSurfaceVariant dark:text-dark-textWeak'}
             style={[{ fontSize: fontPixel(12) }, labelStyle]}
           >
             {label}
@@ -107,18 +106,19 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
         </View>
       )}
 
-      {/* Input wrapper — filled surface, border only on error */}
+      {/* Input wrapper — filled surface with subtle border in both themes */}
       <View
-        className="flex-row items-center bg-surfaceContainerHighest dark:bg-dark-card"
+        className="flex-row items-center border"
         style={[
-          ROUNDNESS.m,
-          showOutline ? { borderColor: outlineColor } : undefined,
+          { borderRadius: scale(6) },
+          { backgroundColor: isDarkMode ? colors.card : '#f5f3f0', borderColor: outlineColor },
+          showOutline ? { borderColor: error ? colors.error.normal : isDarkMode ? '#dae1e8' : '#0f1d2d' } : undefined,
         ]}
       >
         {leftIcon && (
           <View
-            className="justify-center items-center bg-surfaceContainerHigh dark:bg-dark-card"
-            style={styles.leftIconView}
+            className="justify-center items-center"
+            style={[styles.leftIconView, { backgroundColor: isDarkMode ? colors.card : '#edeeea' }]}
           >
             {renderLeftIcon()}
           </View>
@@ -128,13 +128,14 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
           onChangeText={onChangeText}
           value={value}
           {...inputProps}
-          className={`font-regular flex-1 text-text-default dark:text-dark-text${className ? ` ${className}` : ''}`}
+          className={`font-regular flex-1${className ? ` ${className}` : ''}`}
           style={[
             styles.input,
             {
               paddingHorizontal: scale(16),
               minHeight: verticalScale(48),
               fontSize: fontPixel(14),
+              color: isDarkMode ? colors.text.default : '#1b1c1a',
             },
             inputProps.style,
           ]}
@@ -152,8 +153,8 @@ export const BaseTextInput: React.FC<BaseTextInputProps> = ({
 
         {rightIcon && (
           <View
-            className="justify-center items-center bg-surfaceContainerHigh dark:bg-dark-card"
-            style={styles.rightIconView}
+            className="justify-center items-center"
+            style={[styles.rightIconView, { backgroundColor: isDarkMode ? colors.card : '#edeeea' }]}
           >
             {renderRightIcon()}
           </View>
