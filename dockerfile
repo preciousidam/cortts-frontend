@@ -3,9 +3,9 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # Install deps
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
 ENV HUSKY=0
-RUN corepack enable && yarn install --frozen-lockfile
+RUN corepack enable && corepack prepare yarn@4.6.0 --activate && yarn install --immutable
 
 # Copy source
 COPY . .
