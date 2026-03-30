@@ -2,7 +2,7 @@ import Svg, { SvgProps, Path } from "react-native-svg";
 type ExtendedSvgProps = SvgProps & { size?: number };
 export const ProjectSvg = (props: ExtendedSvgProps) => (
   <Svg
-    xmlns="http://www.w3.org/2000/svg"
+
     width={props.width ?? props.size ?? 21}
     height={props.height ?? props.size ?? 21}
     fill='none'
@@ -38,7 +38,7 @@ export default ProjectSvg
 
 export const UsersSVG = (props: ExtendedSvgProps) => (
   <Svg
-    xmlns="http://www.w3.org/2000/svg"
+
     width={props.width ?? props.size ?? 20}
     height={props?.height ?? props.size ?? 21}
     fill="none"
@@ -141,7 +141,7 @@ export const UsersSVG = (props: ExtendedSvgProps) => (
 
 export const PaymentSVG = (props: ExtendedSvgProps) => (
   <Svg
-    xmlns="http://www.w3.org/2000/svg"
+
     width={20}
     height={21}
     fill="none"
@@ -264,7 +264,7 @@ export const PaymentSVG = (props: ExtendedSvgProps) => (
 
 export const UnitSVG = (props: ExtendedSvgProps) => (
   <Svg
-    xmlns="http://www.w3.org/2000/svg"
+
     width={props.width ?? props.size ?? 20}
     height={props.height ?? props.size ?? 21}
     fill="none"

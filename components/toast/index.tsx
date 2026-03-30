@@ -56,19 +56,19 @@ export const toastConfig = () => {
 
 export const useStyles = () => {
   const { colors, fonts } = useTheme();
-  const { scale, fontPixel } = useResponsive();
+  const { scale, fontPixel, widthPixel, heightPixel } = useResponsive();
   return {
     toastShell: {
       backgroundColor: colors.white,
       shadowColor: '#1b1c1a',
-      shadowOffset: { width: 0, height: 4 },
+      shadowOffset: { width: 0, height: heightPixel(4) },
       shadowOpacity: 0.05,
-      shadowRadius: 16,
+      shadowRadius: widthPixel(16),
       elevation: 2,
     },
     toastContainer: {
       paddingHorizontal: scale(20),
-      borderRadius: 12,
+      borderRadius: widthPixel(12),
     },
     toastText1: {
       fontSize: fontPixel(16),

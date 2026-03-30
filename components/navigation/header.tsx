@@ -46,9 +46,9 @@ const useStyles = () => {
       minHeight: heightPixel(68),
       paddingTop: top + heightPixel(12),
       shadowColor: '#1b1c1a',
-      shadowOffset: { width: 0, height: 4 },
+      shadowOffset: { width: 0, height: heightPixel(4) },
       shadowOpacity: 0.05,
-      shadowRadius: 16,
+      shadowRadius: widthPixel(16),
       elevation: 2,
     },
     input: {

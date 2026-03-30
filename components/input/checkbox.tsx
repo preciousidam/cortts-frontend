@@ -109,7 +109,7 @@ const useStyles = () => {
       borderWidth: scale(1),
     },
     label: {
-      fontSize: 16,
+      fontSize: fontPixel(16),
     },
     labelDisabled: {
       fontSize: fontPixel(14),

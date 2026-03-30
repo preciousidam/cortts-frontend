@@ -241,13 +241,13 @@ export const useUnitLogic = () => {
 
   return {
     onSubmit: handleSubmit(createUnit),
-    control,
+    control: control as any,
     isLoading: isPending || isUploading || isUploadingTemplate || isCreatingTemplate || isUpdating || isCreatingSigned,
     watch,
     installment_amount,
     total_amount,
     handleImageUpload,
-    templateControl,
+    templateControl: templateControl as any,
     setTemplateValue,
     onCreateTemplate: handleTemplateSubmit(uploadTemplate),
     setShowDocumentUpload,
@@ -377,7 +377,7 @@ export const useUpdateUnitLogic = () => {
 
   return {
     onSubmit: handleSubmit(updateUnit),
-    control,
+    control: control as any,
     isLoading: isPending || isUploading,
     watch,
     installment_amount,

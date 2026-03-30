@@ -142,7 +142,7 @@ const User: React.FC = () => {
         </View>
         <Table<Unit>
           columns={columns}
-          data={user?.units ?? []}
+          data={user?.unit ? [user.unit] : []}
           filter={{ field: 'type', options: purpose }}
           loading={isLoading}
           onRowSelected={unit => push(`/Units/${unit.id}`)}

@@ -50,7 +50,7 @@ export const Typography: React.FC<AppTextProps> = ({
   className: classNameProp,
   ...props
 }) => {
-  const { fontPixel, isMobile } = useResponsive();
+  const { fontPixel, widthPixel, isMobile } = useResponsive();
 
   const sizeStyles: Record<Size, TextStyle> = {
     displayLg:  { fontSize: fontPixel(56), lineHeight: fontPixel(64) },
@@ -90,7 +90,7 @@ export const Typography: React.FC<AppTextProps> = ({
         {
           lineHeight: fallbackLineHeight,
           ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
-          ...(Platform.OS === 'ios' && isSerif ? { paddingTop: 2 } : null),
+          ...(Platform.OS === 'ios' && isSerif ? { paddingTop: widthPixel(2) } : null),
         },
         color ? { color } : undefined,
         style,

@@ -95,12 +95,12 @@ export const useDropdownStyles = () => {
       flexDirection: 'row',
       alignItems: 'center',
       gap: scale(12),
-      marginBottom: 16,
+      marginBottom: verticalScale(16),
       width: '100%',
       paddingHorizontal: scale(16)
     },
     searchInput: {
-      borderWidth: 1,
+      borderWidth: scale(1),
       borderRadius: scale(8),
       paddingHorizontal: scale(10),
       paddingVertical: verticalScale(6),
@@ -125,7 +125,7 @@ export const useDropdownStyles = () => {
     optionText: {
     },
     leftIconView: {
-      paddingHorizontal: 8,
+      paddingHorizontal: scale(8),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.neutral.lightActive,
@@ -137,7 +137,7 @@ export const useDropdownStyles = () => {
       zIndex: -1
     },
     rightIconView: {
-      paddingHorizontal: 8,
+      paddingHorizontal: scale(8),
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: colors.neutral.lightActive,

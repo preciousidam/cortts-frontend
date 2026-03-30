@@ -103,7 +103,7 @@ export const Button = forwardRef<any, IButtonProp>(
   ) => {
     const [isHovered, setIsHovered] = useState(false);
     const styles = useStyle();
-    const { fontPixel } = useResponsive();
+    const { fontPixel, widthPixel } = useResponsive();
     const { isDarkMode, colors } = useTheme();
     const shouldUseGradient = Boolean(gradient);
     const gradientColors = isDarkMode
@@ -224,7 +224,7 @@ export const Button = forwardRef<any, IButtonProp>(
           {isLoading ? (
             <ActivityIndicator color={isDarkMode ? colors.primaryBlue.normal : '#ffffff'} size="small" />
           ) : (
-            <View className="flex-1 flex-row items-center justify-center" style={{ columnGap: 8 }}>
+            <View className="flex-1 flex-row items-center justify-center" style={{ columnGap: widthPixel(8) }}>
               {renderLeftIcon()}
               {renderLabel(gradientLabelClass)}
               {renderRightIcon()}
@@ -290,8 +290,9 @@ const useStyle = () => {
 
 // --- Button Variant Showcase (for development/testing/demo use only) ---
 export const ButtonVariantsShowcase = () => {
+  const { widthPixel } = useResponsive();
   return (
-    <View style={{ gap: 12 }}>
+    <View style={{ gap: widthPixel(12) }}>
       <Button variant="primary">Primary Gradient</Button>
       <Button variant="primary" gradient={false}>Primary Solid</Button>
       <Button variant="secondary">Secondary</Button>

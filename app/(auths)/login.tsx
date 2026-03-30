@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
@@ -52,10 +52,10 @@ type IForm = LoginReq & { remember: boolean };
 
 const Login: React.FC = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
-  const { breakpoint, widthPixel, heightPixel, fontPixel, scale, verticalScale } = useResponsive();
-  const { login, isLoading, logout } = useAuth();
+  const { breakpoint, widthPixel, scale, verticalScale } = useResponsive();
+  const { login, isLoading } = useAuth();
   const { top, bottom } = useSafeAreaInsets();
-  const { isDarkMode, colors } = useTheme();
+  const { colors } = useTheme();
 
   const { control, handleSubmit } = useForm<IForm>({
     defaultValues: { username: email ?? '', password: '', remember: false },
@@ -64,6 +64,7 @@ const Login: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const anyControl = control as any;
   const isMobile = isLt(breakpoint, 'md');
+  const inputLabelStyle = { textTransform: 'uppercase' as const, letterSpacing: 1.2 };
 
   const onSubmit = (data: IForm) => {
     const formdata = new FormData();
@@ -87,6 +88,7 @@ const Login: React.FC = () => {
         variant="medium"
         size="bodyLg"
         className={`text-onSurfaceVariant dark:text-dark-textWeak ${isMobile ? 'text-center' : ''}`}
+        style={{ letterSpacing: 1.5 }}
       >
         Real Estate Heritage
       </Typography>
@@ -123,7 +125,7 @@ const Login: React.FC = () => {
             name="username"
             control={anyControl}
             label="Email Address"
-            labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+            labelStyle={inputLabelStyle}
             inputProps={{
               keyboardType: 'email-address',
               autoCapitalize: 'none',
@@ -132,35 +134,23 @@ const Login: React.FC = () => {
             rules={{ required: 'Email is required' }}
           />
 
-          {/* Password with inline "Forgot Access?" in label row */}
-          <View style={{ rowGap: verticalScale(8) }}>
-            <View
-              className="flex-row items-center justify-between"
-              style={{ paddingHorizontal: scale(4) }}
-            >
-              <Typography
-                variant="bold"
-                size="labelMd"
-                className="text-onSurfaceVariant dark:text-dark-textWeak"
-                style={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
-              >
-                Password
-              </Typography>
+          <PasswordFormInput
+            name="password"
+            control={anyControl}
+            label="Password"
+            labelStyle={inputLabelStyle}
+            labelRight={
               <LinkTypography
                 href="./forgot-password"
                 variant="bold"
                 size="labelMd"
                 className="text-secondary"
               >
-                Forgot Access?
+                Forgot password?
               </LinkTypography>
-            </View>
-            <PasswordFormInput
-              name="password"
-              control={anyControl}
-              rules={{ required: 'Password is required' }}
-            />
-          </View>
+            }
+            rules={{ required: 'Password is required' }}
+          />
         </View>
 
         {/* CTA Section */}
@@ -203,24 +193,17 @@ const Login: React.FC = () => {
           </View>
 
           {/* Google SSO */}
-          <Pressable
-            className="flex-row items-center justify-center rounded-xl"
+          <Button
+            variant="outlined"
+            size="large"
+            title="Google Account"
+            icon={<AntDesign name="google" size={20} color="#4285F4" />}
+            color={colors.text.default}
             style={{
-              height: heightPixel(56),
-              borderWidth: 1,
+              width: '100%',
               borderColor: colors.border,
-              columnGap: scale(12),
             }}
-          >
-            <AntDesign name="google" size={fontPixel(20)} color="#4285F4" />
-            <Typography
-              variant="semiBold"
-              size="bodyLg"
-              className="text-onSurface dark:text-dark-text"
-            >
-              Google Account
-            </Typography>
-          </Pressable>
+          />
         </View>
       </View>
 
@@ -242,7 +225,7 @@ const Login: React.FC = () => {
           size="bodyMd"
           className="text-secondary"
         >
-          Inquire for access
+          Sign-Up
         </LinkTypography>
       </View>
     </View>

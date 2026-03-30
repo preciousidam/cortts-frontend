@@ -26,6 +26,8 @@ This repository uses the following conventions for Codex-driven edits:
 - Use `NativeWind` as the primary styling layer.
 - Use `styleguide` only for shared theme tokens, theme contract, and runtime values that cannot be expressed cleanly in `className`.
 - Use `useResponsive` only where runtime sizing is necessary.
+- If not using `NativeWind` for sizing/spacing, use `useResponsive` helpers such as `scale`, `verticalScale`, `heightPixel`, or `widthPixel` instead of standalone numeric values.
+- Example: avoid `width: 20`; prefer `width: scale(20)` or `width: widthPixel(20)`.
 
 ## Theme Usage
 

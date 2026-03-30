@@ -95,26 +95,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   });
 
-  const { mutateForgotPassword, data, variables } = useForgotPasswordMutation<ForgotPasswordReq, void>({
+  const { mutateForgotPassword, data, variables, isPending: isForgotPending } = useForgotPasswordMutation<ForgotPasswordReq, void>({
     onSuccess(data, variables, context) {
-      Toast.show({text1: "Success", text2: "Password reset link sent to your email.", type: 'success' });
+      Toast.show({text1: "Success", text2: "Check your email for the password reset code.", type: 'success' });
       replace({pathname: '/(auths)/forgot-password', params: { step: 'verification', email: variables?.email }});
     },
     onError(error, variables, context) {
       const err = error as AxiosError;
       console.log(err?.status, 'error');
       if (err?.status === 404) {
-        // alert("Email not found. Please register.");
-        Toast.show({text1: "Email not found", text2: "Please register to continue.", type: 'error' });
-        replace({ pathname: '/(auths)/register', params: { email: variables?.email } });
+        Toast.show({text1: "Success", text2: "If an account exists for that email, a password reset code has been sent.", type: 'success' });
+        replace({ pathname: '/(auths)/forgot-password', params: { step: 'verification', email: variables?.email } });
         return;
       } else {
-        Toast.show({text1: "Error", text2: "Failed to send password reset link. Please try again.", type: 'error' });
+        Toast.show({text1: "Error", text2: "Failed to send password reset code. Please try again.", type: 'error' });
       }
     }
   });
 
-  const { mutateResetPassword } = useResetPasswordMutation<ResetPasswordReq, void>({
+  const { mutateResetPassword, isPending: isResetPending } = useResetPasswordMutation<ResetPasswordReq, void>({
     onSuccess(data, variables, context) {
       // alert("Password reset successful. You can now login.");
       Toast.show({text1: "Success", text2: "Password reset successful. You can now login.", type: 'success' });
@@ -122,8 +121,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     },
     onError(error, variables, context) {
       const err = error as AxiosError;
-      console.log(err?.status, 'error');
-      alert("Failed to reset password. Please try again.");
+      const status = err?.status;
+      if (status === 400) {
+        Toast.show({ text1: 'Invalid or expired code', text2: 'Please request a new verification code.', type: 'error' });
+      } else {
+        Toast.show({ text1: 'Error', text2: 'Failed to reset password. Please try again.', type: 'error' });
+      }
     }
   });
 
@@ -247,8 +250,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         role: token?.role,
         isAuthenticated: !!token?.access_token,
         isError: isError || isRegError || isVerError,
-        isLoading: isPending || isFetching || isRegPending || isVerPending,
-        isPending: isPending || isRegPending || isVerPending,
+        isLoading: isPending || isFetching || isRegPending || isVerPending || isForgotPending || isResetPending,
+        isPending: isPending || isRegPending || isVerPending || isForgotPending || isResetPending,
         register,
         isFetching
       }}

@@ -4,6 +4,7 @@ WORKDIR /app
 
 # Install deps
 COPY package.json yarn.lock ./
+ENV HUSKY=0
 RUN corepack enable && yarn install --frozen-lockfile
 
 # Copy source
@@ -16,7 +17,7 @@ ARG EXPO_PUBLIC_API_URL
 ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
 
 # Export static web bundle to /app/dist
-# RUN npx expo export --platform web
+RUN yarn export:web
 
 # -------- Runtime: Nginx to serve static files --------
 FROM nginx:alpine

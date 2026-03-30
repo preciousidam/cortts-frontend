@@ -52,6 +52,9 @@ const Register: React.FC = () => {
 
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const isMobile = isLt(breakpoint, 'md');
+  const isCompactDesktop = breakpoint === 'md' || breakpoint === 'lg';
+  const desktopPanelPadding = scale(isCompactDesktop ? 40 : 80);
+  const desktopFormPaddingX = scale(isCompactDesktop ? 40 : 72);
 
   const { control, handleSubmit } = useForm<IForm>({
     defaultValues: { fullName: '', email: '', phone: '', address: '', password: '', confirmPassword: '' },
@@ -81,6 +84,8 @@ const Register: React.FC = () => {
   };
 
   // ─── Brand anchor ──────────────────────────────────────────────────────────
+  const sharedLabelStyle = { textTransform: 'uppercase' as const, letterSpacing: 1.2 };
+
   const renderBrandAnchor = () => (
     <View style={{ rowGap: verticalScale(4) }}>
       <Typography
@@ -93,9 +98,9 @@ const Register: React.FC = () => {
       </Typography>
       <Typography
         variant="medium"
-        size="bodyLg"
+        size="body"
         className={`text-onSurfaceVariant dark:text-dark-textWeak${isMobile ? ' text-center' : ''}`}
-        style={{ textTransform: 'uppercase', letterSpacing: 1.5 }}
+        style={{ textTransform: 'uppercase', letterSpacing: 1.4 }}
       >
         Global Portfolio Registry
       </Typography>
@@ -122,8 +127,9 @@ const Register: React.FC = () => {
           name="fullName"
           control={anyControl}
           label="Full Name"
-          labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+          labelStyle={sharedLabelStyle}
           inputProps={{ placeholder: 'Evelyn Thorne' }}
+          style={{ width: '100%' }}
           rules={{ required: 'Full name is required' }}
         />
 
@@ -134,28 +140,31 @@ const Register: React.FC = () => {
               name="email"
               control={anyControl}
               label="Email Address"
-              labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+              labelStyle={sharedLabelStyle}
               inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'evelyn@heritage.com' }}
+              style={{ width: '100%' }}
               rules={{ required: 'Email is required' }}
             />
             <PhoneFormInput
               name="phone"
               control={anyControl}
               label="Phone Number"
-              labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+              labelStyle={sharedLabelStyle}
               rules={{ required: 'Phone number is required' }}
               inputProps={{ placeholder: '+1 (555) 000-0000', keyboardType: 'phone-pad' }}
+              style={{ width: '100%' }}
             />
           </>
         ) : (
-          <View style={{ flexDirection: 'row', columnGap: scale(12) }}>
+          <View style={{ flexDirection: 'row', columnGap: scale(16) }}>
             <View style={{ flex: 1 }}>
               <FormTextInput
                 name="email"
                 control={anyControl}
                 label="Email Address"
-                labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
-                inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'evelyn@heritage.com', className: 'flex-1' }}
+                labelStyle={sharedLabelStyle}
+                inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'evelyn@heritage.com', }}
+                style={{ width: '100%' }}
                 rules={{ required: 'Email is required' }}
               />
             </View>
@@ -164,9 +173,10 @@ const Register: React.FC = () => {
                 name="phone"
                 control={anyControl}
                 label="Phone Number"
-                labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+                labelStyle={sharedLabelStyle}
                 rules={{ required: 'Phone number is required' }}
-                inputProps={{ placeholder: '+1 (555) 000-0000', keyboardType: 'phone-pad' }}
+                inputProps={{ placeholder: '(555) 000-0000', keyboardType: 'phone-pad' }}
+                style={{ width: '100%' }}
               />
             </View>
           </View>
@@ -177,8 +187,9 @@ const Register: React.FC = () => {
           name="address"
           control={anyControl}
           label="Mailing Address"
-          labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+          labelStyle={sharedLabelStyle}
           inputProps={{ placeholder: '123 Heritage Way, London' }}
+          style={{ width: '100%' }}
         />
 
         {/* Password + Confirm — row on web, stacked on mobile */}
@@ -188,25 +199,28 @@ const Register: React.FC = () => {
               name="password"
               control={anyControl}
               label="Password"
-              labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+              labelStyle={sharedLabelStyle}
+              style={{ width: '100%' }}
               rules={{ required: 'Password is required', minLength: { value: 8, message: 'Min 8 characters' } }}
             />
             <PasswordFormInput
               name="confirmPassword"
               control={anyControl}
               label="Confirm Password"
-              labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+              labelStyle={sharedLabelStyle}
+              style={{ width: '100%' }}
               rules={{ required: 'Please confirm your password' }}
             />
           </>
         ) : (
-          <View style={{ flexDirection: 'row', columnGap: scale(12) }}>
+          <View style={{ flexDirection: 'row', columnGap: scale(16) }}>
             <View style={{ flex: 1 }}>
               <PasswordFormInput
                 name="password"
                 control={anyControl}
                 label="Password"
-                labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+                labelStyle={sharedLabelStyle}
+                style={{ width: '100%' }}
                 rules={{ required: 'Password is required', minLength: { value: 8, message: 'Min 8 characters' } }}
               />
             </View>
@@ -215,7 +229,8 @@ const Register: React.FC = () => {
                 name="confirmPassword"
                 control={anyControl}
                 label="Confirm Password"
-                labelStyle={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+                labelStyle={sharedLabelStyle}
+                style={{ width: '100%' }}
                 rules={{ required: 'Please confirm your password' }}
               />
             </View>
@@ -285,7 +300,7 @@ const Register: React.FC = () => {
 
   // ─── Footer ────────────────────────────────────────────────────────────────
   const renderFooter = () => (
-    <View className="items-center" style={{ paddingTop: verticalScale(48), rowGap: verticalScale(8), opacity: 0.4 }}>
+    <View className="items-center pt-12" style={{ rowGap: verticalScale(8), opacity: 0.4 }}>
       <Typography
         variant="regular"
         size="labelSm"
@@ -319,10 +334,8 @@ const Register: React.FC = () => {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <View
-            className="flex-1 items-center"
+            className="flex-1 items-center px-6 pt-12"
             style={{
-              paddingHorizontal: scale(24),
-              paddingTop: verticalScale(48),
               paddingBottom: bottom + verticalScale(24),
             }}
           >
@@ -344,8 +357,15 @@ const Register: React.FC = () => {
 
       {/* Left — Editorial brand panel (always dark, theme-independent) */}
       <View
-        className="flex-1 overflow-hidden"
-        style={{ backgroundColor: '#0f1d2d', justifyContent: 'flex-end', padding: scale(64) }}
+        className="overflow-hidden"
+        style={{
+          flexBasis: '50%',
+          flexGrow: 0,
+          flexShrink: 0,
+          backgroundColor: '#0f1d2d',
+          justifyContent: 'flex-end',
+          padding: desktopPanelPadding,
+        }}
       >
         {/* Estate photo at 60% opacity */}
         <View style={[StyleSheet.absoluteFillObject, { opacity: 0.6 }]}>
@@ -421,17 +441,18 @@ const Register: React.FC = () => {
 
       {/* Right — Scrollable form panel */}
       <ScrollView
-        className="flex-1 bg-surface dark:bg-dark-background"
+        className="bg-surface dark:bg-dark-background"
+        style={{ flexBasis: '50%', flexGrow: 0, flexShrink: 0 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}
         keyboardShouldPersistTaps="handled"
       >
         <View
+          className="py-12"
           style={{
             width: '100%',
-            maxWidth: 440,
-            paddingHorizontal: scale(64),
-            paddingVertical: verticalScale(64),
+            maxWidth: widthPixel(isCompactDesktop ? 560 : 640),
+            paddingHorizontal: desktopFormPaddingX,
             rowGap: verticalScale(40),
           }}
         >

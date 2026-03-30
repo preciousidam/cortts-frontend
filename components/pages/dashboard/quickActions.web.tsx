@@ -58,7 +58,7 @@ export const QuickActions: React.FC<{ actions: Action[] }> = ({ actions }) => {
       fontSize: fontPixel(13),
       color: colors.text.default,
     },
-  });
+  } as any);
 
   return (
     <View style={styles.grid}>

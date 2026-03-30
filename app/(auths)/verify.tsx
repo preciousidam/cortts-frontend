@@ -1,195 +1,463 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { useTheme } from '@react-navigation/native';
-import { useRoundness } from '@/styleguide/theme/Border';
-import { useAuth } from '@/contexts/AuthContext';
-import { useResponsive } from '@/hooks/useResponsive';
-import { isGte, isLt } from '@/styleguide/breakpoints';
-import { Typography } from '@/components/typography';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/button';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Image, ImageBackground, useImage } from 'expo-image';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Fonts } from '@/styleguide/theme/Fonts';
-import { OTPFormInput } from '@/components/input';
-import { VerifyReq } from '@/types';
+import { isLt } from '@/styleguide/breakpoints';
+import { useResponsive } from '@/hooks/useResponsive';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
+import { Button } from '@/components/button';
+import { Typography } from '@/components/typography';
+import Toast from 'react-native-toast-message';
+import {
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-const web_bg = require('../../assets/images/login_web.png');
-const mobile_bg = require('../../assets/images/login_mobile.png');
+let LinearGradient: React.ComponentType<any>;
+if (Platform.OS !== 'web') {
+  LinearGradient = require('expo-linear-gradient').LinearGradient;
+} else {
+  LinearGradient = ({ colors, locations, start, end, style, children }: any) => {
+    const dx = (end?.x ?? 1) - (start?.x ?? 0);
+    const dy = (end?.y ?? 1) - (start?.y ?? 0);
+    const angle = Math.round(Math.atan2(dx, -dy) * (180 / Math.PI));
+    const stops = (colors as string[])
+      .map((color, index) =>
+        locations?.[index] !== undefined ? `${color} ${Math.round(locations[index] * 100)}%` : color,
+      )
+      .join(', ');
 
-
+    return (
+      <View
+        style={[
+          style,
+          // @ts-ignore web-only CSS property
+          { background: `linear-gradient(${angle}deg, ${stops})` },
+        ]}
+      >
+        {children}
+      </View>
+    );
+  };
+}
 
 const Verify: React.FC = () => {
-  const { email } = useLocalSearchParams<{email: string}>();
-  const { isPortrait, breakpoint, widthPixel, heightPixel } = useResponsive();
-  const styles = useStyles();
-  const {verify, isLoading, isError} = useAuth();
-  const { back } = useRouter();
+  const { email } = useLocalSearchParams<{ email?: string }>();
+  const { top, bottom } = useSafeAreaInsets();
   const { colors } = useTheme();
-  const logo = useImage(require('../../assets/images/logo1.png'), {
-    maxWidth: widthPixel(150),
-    maxHeight: heightPixel(50),
-  });
-
-  const background = useImage(require('../../assets/images/auth_image.png'), {
-    maxWidth: widthPixel(623),
-    maxHeight: heightPixel(50),
-  });
-  const { control, handleSubmit } = useForm<VerifyReq>({defaultValues: { code: '', email } });
-
+  const { breakpoint, scale, verticalScale, widthPixel, fontPixel } = useResponsive();
+  const { back } = useRouter();
   const isMobile = isLt(breakpoint, 'md');
 
-  const onSubmit = (data: VerifyReq) => {
-    verify(data);
+  const onResendEmail = () => {
+    Toast.show({
+      type: 'info',
+      text1: 'Verification email',
+      text2: email
+        ? `A resend action is not connected yet for ${email}.`
+        : 'A resend action is not connected yet.',
+    });
   };
 
-  const onError = (errors: any) => {
-    console.log(errors, 'errors');
-  };
+  const renderEnvelope = (iconSize: number, boxSize: number) => (
+    <View
+      style={{
+        width: widthPixel(boxSize),
+        height: widthPixel(boxSize),
+        borderRadius: widthPixel(12),
+        backgroundColor: '#efeeeb',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Ionicons name="mail-outline" size={fontPixel(iconSize)} color={colors.secondary} />
+    </View>
+  );
 
-  const [timeLeft, setTimeLeft] = React.useState(300); // 5 minutes in seconds
+  const renderPrimaryAction = () => (
+    <Button
+      title="RESEND EMAIL"
+      variant="primary"
+      size="large"
+      onPress={onResendEmail}
+      style={[
+        {
+          width: '100%',
+          backgroundColor: colors.secondary,
+          borderColor: colors.secondary,
+          borderRadius: widthPixel(0),
+          shadowColor: '#000104',
+          shadowOpacity: 0.12,
+          shadowRadius: widthPixel(16),
+          shadowOffset: { width: 0, height: verticalScale(8) },
+          elevation: 3,
+        },
+      ]}
+      titleStyle={{
+        fontSize: fontPixel(14),
+        lineHeight: fontPixel(20),
+        letterSpacing: 1.4,
+        fontWeight: '700',
+      }}
+    />
+  );
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+  const renderBackLink = () => (
+    <Pressable
+      onPress={back}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: scale(8),
+      }}
+    >
+      <Ionicons name="arrow-back" size={fontPixel(14)} color={colors.secondary} />
+      <Typography
+        variant="regular"
+        size="body"
+        style={{ color: colors.secondary }}
+      >
+        Back to Sign In
+      </Typography>
+    </Pressable>
+  );
 
-    return () => clearInterval(timer); // Cleanup on unmount
-  }, []);
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
-  const renderForm = () => (
-    <View style={styles.form}>
-      <View style={{ alignItems: 'flex-start', width: isMobile ? '100%' : widthPixel(422)}}>
-        <Button style={{alignSelf: 'flex-start', paddingLeft: 0}} onPress={back} title='Back to create account' icon="Ionicons.chevron-back" variant='tertiary' size='small' />
-      </View>
-      <View style={{ alignItems: 'flex-start', width: isMobile ? '100%' : widthPixel(422)}}>
-        <Typography size='subtitle' variant='bold' style={styles.welcome}>Verify your account</Typography>
-        <Typography size='body'>Enter the 6-digit code sent to <Typography size='body' variant='bold'>{email}</Typography> to verify your account.</Typography>
-      </View>
-      <View style={styles.inputArea}>
-        <OTPFormInput
-          control={control}
-          name='code'
-        />
-        <View style={styles.spaceBetween}>
-          <Typography size='body' style={{ marginTop: heightPixel(12) }}>
-            Code expires in <Typography style={{color: colors.brand.blue}} variant='regular'>{formatTime(timeLeft)}</Typography>
-          </Typography>
-          <Typography size='body' variant='bold' style={{ alignSelf: 'flex-end', color: colors.brand.blue }}>Resend Code</Typography>
-        </View>
-      </View>
-      <View style={styles.buttonArea}>
-        <Button size='large' title='Verify Account' onPress={handleSubmit(onSubmit, onError)} isLoading={isLoading} disabled={isLoading}></Button>
+  const renderFooter = (align: 'center' | 'left') => (
+    <View
+      style={{
+        width: '100%',
+        paddingTop: verticalScale(isMobile ? 56 : 96),
+        alignItems: align === 'center' ? 'center' : 'flex-start',
+      }}
+    >
+      <View
+        style={{
+          width: '100%',
+          borderTopWidth: 1,
+          borderTopColor: '#e4e2df',
+          paddingTop: verticalScale(33),
+          alignItems: align === 'center' ? 'center' : 'flex-start',
+        }}
+      >
+        <Typography
+          variant="regular"
+          size="labelSm"
+          style={{
+            color: 'rgba(68, 71, 76, 0.6)',
+            letterSpacing: 0.3,
+            textTransform: 'uppercase',
+            textAlign: align,
+          }}
+        >
+          © 2024 EstatePremium Realty Group
+        </Typography>
       </View>
     </View>
   );
 
+  if (isMobile) {
+    return (
+      <ScrollView
+        className="flex-1 bg-surface"
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: colors.background,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          style={{
+            minHeight: '100%',
+            paddingTop: top,
+            backgroundColor: colors.primaryBlue.normal,
+          }}
+        >
+          <View style={{ height: verticalScale(280), overflow: 'hidden' }}>
+            <Image
+              source={require('../../assets/images/login_web.png')}
+              style={StyleSheet.absoluteFillObject}
+              contentFit="cover"
+            />
+            <View
+              style={[
+                StyleSheet.absoluteFillObject,
+                {
+                  backgroundColor: '#0f1d2d',
+                  opacity: 0.45,
+                },
+              ]}
+            />
+            <LinearGradient
+              colors={['rgba(15,29,45,0.15)', 'rgba(15,29,45,0.35)', 'rgba(15,29,45,0.92)']}
+              locations={[0, 0.45, 1]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'flex-end',
+                paddingHorizontal: scale(24),
+                paddingBottom: verticalScale(28),
+                rowGap: verticalScale(12),
+              }}
+            >
+              <Typography
+                variant="semiBold"
+                size="labelLg"
+                style={{
+                  color: colors.secondary,
+                  letterSpacing: 2.8,
+                  textTransform: 'uppercase',
+                }}
+              >
+                Cortts Real Estate
+              </Typography>
+              <Typography
+                variant="serifRegular"
+                size="headlineLg"
+                style={{ color: '#ffffff', maxWidth: widthPixel(280) }}
+              >
+                A more secure estate
+              </Typography>
+              <Typography
+                variant="regular"
+                size="bodyLg"
+                style={{ color: '#788599', maxWidth: widthPixel(320) }}
+              >
+                Exclusivity starts with security. We ensure your data remains as private as your future residence.
+              </Typography>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: colors.background,
+              borderTopLeftRadius: widthPixel(28),
+              borderTopRightRadius: widthPixel(28),
+              marginTop: -widthPixel(18),
+              paddingHorizontal: scale(24),
+              paddingTop: verticalScale(32),
+              paddingBottom: bottom + verticalScale(32),
+            }}
+          >
+            <View style={{ width: '100%', rowGap: verticalScale(24), alignItems: 'center' }}>
+              <Typography
+                variant="serifBold"
+                size="headlineSm"
+                className="text-onSurface"
+                style={{ letterSpacing: -0.6 }}
+              >
+                EstatePremium
+              </Typography>
+
+              {renderEnvelope(26, 78)}
+
+              <View style={{ rowGap: verticalScale(12), alignItems: 'center' }}>
+                <Typography
+                  variant="serifRegular"
+                  size="headlineLg"
+                  className="text-onSurface text-center"
+                >
+                  Verify your email
+                </Typography>
+                <Typography
+                  variant="regular"
+                  size="bodyLg"
+                  className="text-onSurfaceVariant text-center"
+                  style={{ maxWidth: widthPixel(320), lineHeight: fontPixel(26) }}
+                >
+                  {`We've sent a verification link to your inbox. Please check your email and click the link to confirm your account and access your curated portfolio.`}
+                </Typography>
+              </View>
+
+              <View style={{ width: '100%', rowGap: verticalScale(24) }}>
+                {renderPrimaryAction()}
+                <View style={{ alignItems: 'center' }}>{renderBackLink()}</View>
+              </View>
+
+              {renderFooter('center')}
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      {Platform.OS != 'web' && <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} contentContainerStyle={{ flex: 1 }}>
-        {renderForm()}
-      </KeyboardAvoidingView>}
-      {Platform.OS === 'web' && renderForm()}
-      {!isMobile && <ImageBackground source={background} style={styles.imageBg} contentFit='fill'>
-        <Image source={logo} style={styles.logo_web} contentFit='cover' />
-        <View>
-          <Typography variant='bold' size='subtitle' style={styles.white_text}>Track your units. Upload your documents. Stay in control.</Typography>
-          <Typography style={styles.white_text}>Built to keep your housing process clear, connected, and under control.</Typography>
+    <View className="flex-1 flex-row">
+      <View
+        style={{
+          flex: 1,
+          minHeight: '100%',
+          backgroundColor: colors.primaryBlue.normal,
+          overflow: 'hidden',
+        }}
+      >
+        <Image
+          source={require('../../assets/images/login_web.png')}
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              transform: [{ scale: 1.06 }],
+            },
+          ]}
+          contentFit="cover"
+        />
+        <View
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              backgroundColor: '#07121f',
+              opacity: 0.6,
+            },
+          ]}
+        />
+        <View
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              backgroundColor: '#0f1d2d',
+              opacity: 0.22,
+            },
+          ]}
+        />
+        <LinearGradient
+          colors={['rgba(15,29,45,0)', 'rgba(15,29,45,0)', 'rgba(15,29,45,0.82)']}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+
+        <View
+          style={{
+            position: 'absolute',
+            left: scale(48),
+            right: scale(48),
+            bottom: verticalScale(48),
+            rowGap: verticalScale(20),
+            maxWidth: widthPixel(448),
+          }}
+        >
+          <Typography
+            variant="semiBold"
+            size="labelLg"
+            style={{
+              color: colors.secondary,
+              textTransform: 'uppercase',
+              letterSpacing: 2.8,
+            }}
+          >
+            Cortts Real Estate
+          </Typography>
+          <Typography
+            variant="serifRegular"
+            size="h1"
+            style={{
+              color: '#ffffff',
+              fontSize: fontPixel(60),
+              lineHeight: fontPixel(60),
+              maxWidth: widthPixel(412),
+            }}
+          >
+            {'A more secure\nestate'}
+          </Typography>
+          <Typography
+            variant="regular"
+            size="bodyLg"
+            style={{
+              color: '#788599',
+              maxWidth: widthPixel(384),
+            }}
+          >
+            Exclusivity starts with security. We ensure your data remains as private as your future residence.
+          </Typography>
         </View>
-        <View style={styles.sbs}>
-          <Typography style={styles.white_text}>Legal</Typography>
-          <Typography style={styles.white_text}>Privacy Policy</Typography>
-          <Typography style={styles.white_text}>Cookie Preferences</Typography>
+      </View>
+
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingHorizontal: scale(64),
+          paddingVertical: verticalScale(64),
+        }}
+      >
+        <View style={{ width: '100%', maxWidth: widthPixel(448), alignItems: 'center' }}>
+          <View style={{ paddingBottom: verticalScale(48) }}>
+            <Typography
+              variant="serifBold"
+              size="headlineSm"
+              className="text-onSurface"
+              style={{ letterSpacing: -0.6 }}
+            >
+              EstatePremium
+            </Typography>
+          </View>
+
+          <View style={{ paddingBottom: verticalScale(32) }}>
+            {renderEnvelope(30, 78)}
+          </View>
+
+          <View style={{ paddingBottom: verticalScale(16) }}>
+            <Typography
+              variant="serifRegular"
+              size="headlineLg"
+              className="text-onSurface text-center"
+              style={{ fontSize: fontPixel(36), lineHeight: fontPixel(40) }}
+            >
+              Verify your email
+            </Typography>
+          </View>
+
+          <View style={{ paddingBottom: verticalScale(40) }}>
+            <Typography
+              variant="regular"
+              size="bodyLg"
+              className="text-onSurfaceVariant text-center"
+              style={{
+                maxWidth: widthPixel(446),
+                lineHeight: fontPixel(26),
+              }}
+            >
+              {`We've sent a verification link to your inbox. Please check your email and click the link to confirm your account and access your curated portfolio.`}
+            </Typography>
+          </View>
+
+          <View style={{ width: '100%', paddingBottom: verticalScale(32) }}>
+            {renderPrimaryAction()}
+          </View>
+
+          <View style={{ alignItems: 'center' }}>
+            {renderBackLink()}
+          </View>
+
+          {renderFooter('center')}
+
+          {!!email && (
+            <View style={{ paddingTop: verticalScale(16) }}>
+              <Typography
+                variant="regular"
+                size="bodySm"
+                className="text-onSurfaceVariant text-center"
+              >
+                Sent to {email}
+              </Typography>
+            </View>
+          )}
         </View>
-      </ImageBackground>}
+      </View>
     </View>
   );
 };
 
-
-
-
-
-const useStyles = () => {
-  const { scale, verticalScale, fontPixel, breakpoint } = useResponsive();
-  const { colors, fonts, dark } = useTheme();
-  const isLarge = isGte(breakpoint, 'md');
-  const ROUNDNESS = useRoundness();
-  const { top, bottom } = useSafeAreaInsets();
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-      flexDirection: 'row',
-      justifyContent: isLarge ? 'space-between' : 'center',
-      alignItems: isLarge ? 'center' : 'flex-start',
-      paddingHorizontal: scale(isLarge ? 14 : 24),
-      rowGap: verticalScale(40),
-      paddingVertical: isLarge ? verticalScale(14) : verticalScale(40) + top,
-    },
-    welcome: {
-      fontSize: fontPixel(35),
-    },
-    form: {
-      rowGap: verticalScale(40),
-      width: isLarge ? '55.88%' : '100%',
-      justifyContent: 'center',
-      alignItems: isLarge ? 'center' : 'flex-start',
-    },
-    inputArea: {
-      rowGap: verticalScale(12),
-      width: isLarge ? scale(422) : '100%',
-    },
-    buttonArea: {
-      width: isLarge ? scale(422) : '100%',
-    },
-    logo: {
-      width: scale(150),
-      height: verticalScale(50),
-    },
-    logo_web: {
-      width: scale(100),
-      height: verticalScale(52),
-      aspectRatio: 100 / 52,
-    },
-    imageBg: {
-      width: scale(623),
-      alignSelf: 'flex-end',
-      height: '100%',
-      justifyContent: 'space-between',
-      paddingVertical: verticalScale(40),
-      paddingHorizontal: scale(40),
-    },
-    white_text: {
-      color: '#ffffff',
-    },
-    sbs: {
-      columnGap: scale(28),
-      flexDirection: 'row',
-    },
-    spaceBetween: {
-      justifyContent: 'space-between',
-      width: '100%',
-      flexDirection: 'row',
-    },
-    otptext: {
-      ...Fonts.semiBold,
-      color: colors.text.default,
-      fontSize: fontPixel(32),
-    }
-  });
-
-  return styles;
-}
-
 export default Verify;
-
-

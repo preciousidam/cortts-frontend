@@ -69,7 +69,7 @@ const Users: React.FC = () => {
           return <Typography style={bodyText}>{format(new Date(props.cell.getValue() as string), 'MMM dd, yyyy')}</Typography>;
         }
       }),
-    ], [widthPixel])
+    ], [widthPixel]) as any
 
     const createNewUser = () => {
     push('./new', { relativeToDirectory: true });

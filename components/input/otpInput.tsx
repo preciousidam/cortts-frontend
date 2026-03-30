@@ -1,6 +1,6 @@
 import { useResponsive } from '@/hooks/useResponsive';
 import { Fonts } from '@/styleguide/theme/Fonts';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from '@/styleguide/theme/ThemeContext';
 import React from 'react';
 import { Control, Controller, RegisterOptions } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
@@ -64,7 +64,7 @@ export const OTPFormInput: React.FC<FormTextInputProps> = ({control, name, rules
 
 const useStyles = () => {
   const { scale, verticalScale, fontPixel, breakpoint } = useResponsive();
-  const { colors, fonts, dark } = useTheme();
+  const { colors, fonts } = useTheme();
 
   const styles = StyleSheet.create({
     otptext: {

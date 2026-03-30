@@ -58,7 +58,7 @@ export const Payments: React.FC = () => {
       />,
       meta: { width: widthPixel(100), align: 'flex-end' }
     }),
-  ], [widthPixel, payments])
+  ], [widthPixel, payments]) as any
 
   return (
     <View style={{ flex: 1, paddingHorizontal: widthPixel(32), paddingVertical: heightPixel(32) }}>
