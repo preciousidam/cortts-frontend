@@ -129,6 +129,6 @@
     "*.{js,css,md}": "prettier --write"
   },
   "engines": {
-    "node": "20.20.0"
+    "node": "20.20.2"
   }
 }
