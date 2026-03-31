@@ -12,11 +12,31 @@ The goal is to evoke a sense of "quiet luxury." By layering soft, warm surfaces 
 ## 2. Colors & Tonal Architecture
 The palette is rooted in organic, warm neutrals with deep, authoritative accents. It avoids the harshness of pure black or the sterility of pure white.
 
+### Theme Principle
+This system is designed to support both **light mode** and **dark mode** using the same semantic roles. Light and dark should not behave like separate brands; they should feel like two expressions of the same estate identity.
+
+- Light mode should feel like warm paper, stone, and editorial ink.
+- Dark mode should feel like midnight navy, slate, and softened pale accents.
+- Components must map to semantic roles such as `background`, `surface`, `card`, `border`, `text`, `text-weak`, `primary`, `secondary`, and `tertiary` instead of hardcoded per-screen colors.
+- Token definitions in implementation should stay aligned across both Tailwind/NaturalWind tokens and runtime theme values.
+
 ### The Palette (Material Design Mapping)
 - **Core Background:** `#fbf9f6` (Surface) – A warm, off-white bone that reduces eye strain and feels premium.
 - **Primary Accent:** `#000104` (Primary) – A deep, "Ink Navy" used for high-contrast branding and navigation.
 - **Secondary Accent:** `#715b3e` (Secondary) – A "Muted Gold/Bronze" used to denote luxury and status.
 - **Tertiary Accent:** `#000101` (Tertiary) – A "Forest Obsidian" for subtle interactive elements.
+
+### Light / Dark Role Mapping
+- **Paper / Main Background (Light):** `#fbf9f6`
+- **Stone / Tonal Surface (Light):** `#f5f3f0`
+- **Pebble / Subtle Detail (Light):** `#e6e8e9`
+- **Steel / Muted Text (Light):** `#71777f`
+- **Charcoal / Secondary Text (Light):** `#44474c`
+- **Midnight / Main Background (Dark):** `#0f1d2d`
+- **Slate / Tonal Surface (Dark):** `#1b2a3a`
+- **Divider / Structural Edge (Dark):** `#2c3e50`
+- **Primary Text (Dark):** `#fbf9f6`
+- **Muted Text (Dark):** `#c4c6cd`
 
 ### The "No-Line" Rule
 **Borders are prohibited for sectioning.** To define a new content area, you must use a background color shift. For example:
@@ -67,9 +87,16 @@ If accessibility requires a container edge (e.g., in high-glare environments), u
 - **Secondary:** Transparent background with a `secondary` (#715b3e) text color and a `Ghost Border`.
 - **States:** On hover, shift the background to `secondary_container` for a warm, "glow" effect.
 
+Implementation note:
+- In shared code, button treatments must stay theme-aware.
+- If the product uses a solid primary button in a component set, dark mode should still map that button to the dark-theme primary role rather than introducing unrelated colors.
+
 ### Input Fields
 - **Styling:** No bottom border. Instead, use a `surface_container_highest` fill with `md` (0.375rem) rounded corners.
 - **Focus State:** Background remains the same, but the label (floating) shifts to `primary` and a `1px` Ghost Border becomes visible at 30% opacity.
+
+Implementation note:
+- Inputs should derive border, fill, label, placeholder, and icon treatments from shared semantic tokens so light and dark remain visually matched.
 
 ### Property Cards & Lists
 - **Prohibition:** **No dividers.**

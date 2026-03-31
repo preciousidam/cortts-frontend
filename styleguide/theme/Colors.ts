@@ -100,30 +100,30 @@ export const generateColorScale = (hex: string) => {
 
 
 export const corttsLightColors = {
-  primary: '#0f1d2d',         // Ink Navy — links, active icons
-  background: '#fbf9f6',      // warm bone — screen background
+  primary: '#715b3e',         // Primary Action (Light Mode)
+  background: '#fbf9f6',      // Paper (Main Background)
   card: '#ffffff',            // header, drawer, bottom tabs
-  border: '#c4c6cd',          // outline_variant — Ghost Border
+  border: '#e6e8e9',          // Subtle Borders/Dividers (Light)
   notification: '#D00000',    // error red
   success: '#22C55E',         // green for success messages
-  secondary: '#8b7355',       // Muted Gold/Bronze
+  secondary: '#715b3e',       // Muted Gold/Bronze — Design.md §2
   tertiary: '#2d4b3f',        // Forest Green
 };
 
 export const corttsDarkColors = {
-  primary: '#4a7aa8',         // lightened Ink Navy for dark mode CTAs
-  background: '#0d1117',      // deep dark background
-  card: '#1a2232',            // headers, drawers, modals
-  text: '#f5f3f0',            // warm off-white — main text
-  border: '#2d3a4a',          // dark border
+  primary: '#0f1d2d',         // Brand Primary remains Ink Navy
+  background: '#0f1d2d',      // Midnight (Dark Background)
+  card: '#1b2a3a',            // Slate (Dark Surface)
+  text: '#fbf9f6',            // Primary Text (Dark Mode)
+  border: '#2c3e50',          // Subtle Borders/Dividers (Dark)
   notification: '#D00000',    // error red
-  textWeaker: '#72757e',      // tertiary labels
-  textWeakest: '#44474c',     // disabled / subtle
-  textWeak: '#c4c6cd',        // secondary labels
-  success: '#22C55E',         // green for success messages
-  warning: '#FFB015',         // yellow for warning messages
-  secondary: '#c4a97d',       // lightened Bronze for dark mode
-  tertiary: '#3d6b5a',
+  textWeaker: '#a6aaaf',      // tertiary labels
+  textWeakest: '#7a7d82',     // disabled / subtle
+  textWeak: '#c4c6cd',        // Muted Text (Dark)
+  success: '#06A58A',         // Success / investment progress
+  warning: '#FCDEBA',         // Highlight / gold
+  secondary: '#e2c6a3',       // lightened Bronze for dark mode
+  tertiary: '#bdd9cb',        // softened mint green from dark spec
 };
 
 export const colors = {
@@ -131,14 +131,14 @@ export const colors = {
 
   brand: {
     blue: "#0f1d2d",   // Ink Navy (primary)
-    green: "#8b7355",  // Muted Gold/Bronze (secondary)
+    green: "#715b3e",  // Muted Gold/Bronze (secondary)
   },
 
   text: {
-    default: "#1b1c1a",   // deep warm black
+    default: "#000104",   // Primary Text (Light Mode)
     weakest: "#c4c6cd",   // outline_variant
-    weaker: "#72757e",    // tertiary labels
-    weak: "#44474c",      // on_surface_variant
+    weaker: "#71777f",    // Steel (Muted Text)
+    weak: "#44474c",      // Charcoal (Secondary Text)
   },
 
   primaryBlue: {
@@ -169,28 +169,37 @@ export const colors = {
 
   neutral: {
     light: "#f5f3f0",
-    lightHover: "#ede9e4",
-    lightActive: "#e2ddd8",
-    normal: "#8a8782",
-    normalHover: "#797470",
-    normalActive: "#68655f",
-    dark: "#57544f",
-    darkHover: "#44413d",
-    darkActive: "#322f2c",
-    darker: "#201e1b",
+    lightHover: "#edeeea",
+    lightActive: "#e6e8e9",
+    normal: "#71777f",
+    normalHover: "#666b73",
+    normalActive: "#5b6068",
+    dark: "#44474c",
+    darkHover: "#393d42",
+    darkActive: "#2e3237",
+    darker: "#23272b",
+  },
+
+  detail: {
+    divider: "#e6e8e9",
+    dividerDark: "#2c3e50",
+    interactive: "#715b3e10",
+    interactiveDark: "#fcdeba10",
+    progress: "#71777f",
+    overlay: "rgba(15, 29, 45, 0.4)",
   },
 
   error: {
-    light: "#FCE6E6",
-    lightHover: "#FAD9D9",
-    lightActive: "#F5B0B0",
-    normal: "#D00000",
-    normalHover: "#C90000",
-    normalActive: "#B20000",
-    dark: "#A70000",
-    darkHover: "#860000",
-    darkActive: "#640000",
-    darker: "#4E0000",
+    light: "#f2dddd",
+    lightHover: "#eccfcf",
+    lightActive: "#ddb0b0",
+    normal: "#8e2d2d",
+    normalHover: "#7f2828",
+    normalActive: "#702323",
+    dark: "#611e1e",
+    darkHover: "#521919",
+    darkActive: "#431414",
+    darker: "#340f0f",
   },
 
   warning: {
@@ -207,16 +216,29 @@ export const colors = {
   },
 
   successful: {
-    light: "#E9F9EF",
-    lightHover: "#DEF6E7",
-    lightActive: "#BAEDCD",
-    normal: "#22C55E",
-    normalHover: "#1FB155",
-    normalActive: "#1B9E4B",
-    dark: "#1A9447",
-    darkHover: "#147638",
-    darkActive: "#0F592A",
-    darker: "#0C4521",
+    light: "#d8f2ed",
+    lightHover: "#c6ebe4",
+    lightActive: "#a9ddd2",
+    normal: "#06a58a",
+    normalHover: "#05957c",
+    normalActive: "#04856f",
+    dark: "#037562",
+    darkHover: "#036555",
+    darkActive: "#025548",
+    darker: "#01453b",
+  },
+
+  pending: {
+    light: "#eceef1",
+    lightHover: "#dde1e6",
+    lightActive: "#c9ced6",
+    normal: "#71777f",
+    normalHover: "#666b73",
+    normalActive: "#5b6068",
+    dark: "#50545b",
+    darkHover: "#454950",
+    darkActive: "#3a3e45",
+    darker: "#30343a",
   },
 };
 
@@ -241,11 +263,12 @@ export type ColorScales = {
   error: ColorScale;
   warning: ColorScale;
   successful: ColorScale;
+  pending: ColorScale;
 };
 
-export const lightTextColors = {
-  default: "#f5f3f0",
+export const darkTextColors = {
+  default: "#fbf9f6",
   weak: "#c4c6cd",
-  weaker: "#72757e",
-  weakest: "#44474c",
+  weaker: "#a6aaaf",
+  weakest: "#7a7d82",
 };

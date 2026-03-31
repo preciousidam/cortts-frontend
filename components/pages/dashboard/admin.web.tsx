@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const router = useRouter();
   const { width } = useWindowDimensions();
 
-  const styles = StyleSheet.create({
+    const styles = StyleSheet.create({
     screen: {
       flex: 1,
       backgroundColor: colors.background ?? "#F4F6FA",
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
       fontSize: fontPixel(13),
       color: colors.text.default ?? "#6B7280",
     },
-  });
+  } as any);
 
   /**
    * - services/dashboard.ts / store/dashboard/queries.ts

@@ -1,66 +1,66 @@
-import React from 'react';
-import { Platform, StyleSheet, View, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
-import { isLt } from '@/styleguide/breakpoints';
 import { useTheme } from '@/styleguide/theme/ThemeContext';
+import { isLt } from '@/styleguide/breakpoints';
 import { LinkTypography, Typography } from '@/components/typography';
 import { FormTextInput, PasswordFormInput, PhoneFormInput } from '@/components/input';
-import { useForm } from 'react-hook-form';
 import { Button } from '@/components/button';
+import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { KeyboardAwareScrollView, KeyboardToolbar } from 'react-native-keyboard-controller';
+import { Ionicons } from '@expo/vector-icons';
 
-// Native uses expo-linear-gradient; web uses a CSS background gradient via View.
+// Platform-aware linear gradient — same polyfill as login
 let LinearGradient: React.ComponentType<any>;
 if (Platform.OS !== 'web') {
   LinearGradient = require('expo-linear-gradient').LinearGradient;
 } else {
-  LinearGradient = ({ colors, start, end, style, children }: any) => (
-    <View
-      style={[
-        style,
-        {
-          // @ts-ignore — web-only CSS property
-          background: `linear-gradient(${gradientAngle(start, end)}, ${colors.join(', ')})`,
-        },
-      ]}
-    >
-      {children}
-    </View>
-  );
-}
-
-function gradientAngle(
-  start: { x: number; y: number } = { x: 0, y: 0 },
-  end: { x: number; y: number } = { x: 1, y: 1 },
-): string {
-  const angle = Math.round(Math.atan2(end.x - start.x, end.y - start.y) * (180 / Math.PI));
-  return `${angle}deg`;
+  LinearGradient = ({ colors, locations, start, end, style, children }: any) => {
+    const dx = (end?.x ?? 1) - (start?.x ?? 0);
+    const dy = (end?.y ?? 1) - (start?.y ?? 0);
+    const angle = Math.round(Math.atan2(dx, -dy) * (180 / Math.PI));
+    const stops = (colors as string[])
+      .map((c, i) =>
+        locations?.[i] !== undefined ? `${c} ${Math.round(locations[i] * 100)}%` : c,
+      )
+      .join(', ');
+    return (
+      <View style={[style, { background: `linear-gradient(${angle}deg, ${stops})` } as any]}>
+        {children}
+      </View>
+    );
+  };
 }
 
 type IForm = {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
+  address: string;
   password: string;
   confirmPassword: string;
 };
 
 const Register: React.FC = () => {
-  const { breakpoint, widthPixel, heightPixel, fontPixel, scale, verticalScale } = useResponsive();
-  const styles = useStyles();
+  const { breakpoint, widthPixel, fontPixel, scale, verticalScale } = useResponsive();
   const { register, isLoading } = useAuth();
-  const { top } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   const { colors } = useTheme();
 
-  const { control, handleSubmit } = useForm<IForm>({
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', phone: '', confirmPassword: '' },
-  });
-
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const isMobile = isLt(breakpoint, 'md');
+  const isCompactDesktop = breakpoint === 'md' || breakpoint === 'lg';
+  const desktopPanelPadding = scale(isCompactDesktop ? 40 : 80);
+  const desktopFormPaddingX = scale(isCompactDesktop ? 40 : 72);
+
+  const { control, handleSubmit } = useForm<IForm>({
+    defaultValues: { fullName: '', email: '', phone: '', address: '', password: '', confirmPassword: '' },
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const anyControl = control as any;
 
   const onSubmit = (data: IForm) => {
     if (data.password !== data.confirmPassword) {
@@ -71,303 +71,398 @@ const Register: React.FC = () => {
       alert('Password must be at least 8 characters');
       return;
     }
+    if (!agreeToTerms) {
+      alert('Please agree to the Terms of Service and Privacy Policy');
+      return;
+    }
     register({
-      fullname: `${data.firstName} ${data.lastName}`,
+      fullname: data.fullName,
       email: data.email,
       phone: data.phone,
       password: data.password,
     });
   };
 
-  const renderForm = () => (
-    <View style={styles.formCard}>
-      {/* Header */}
-      <View className="items-center">
-        <Typography size="headlineSm" variant="serifBold" style={{ fontSize: fontPixel(24) }}>
+  // ─── Brand anchor ──────────────────────────────────────────────────────────
+  const sharedLabelStyle = { textTransform: 'uppercase' as const, letterSpacing: 1.2 };
+
+  const renderBrandAnchor = () => (
+    <View style={{ rowGap: verticalScale(4) }}>
+      <Typography
+        variant="serifBold"
+        size="headlineMd"
+        className={`text-onSurface dark:text-dark-text${isMobile ? ' text-center' : ''}`}
+        style={{ letterSpacing: -0.75 }}
+      >
+        Cortts
+      </Typography>
+      <Typography
+        variant="medium"
+        size="body"
+        className={`text-onSurfaceVariant dark:text-dark-textWeak${isMobile ? ' text-center' : ''}`}
+        style={{ textTransform: 'uppercase', letterSpacing: 1.4 }}
+      >
+        Global Portfolio Registry
+      </Typography>
+    </View>
+  );
+
+  // ─── Shared form content ───────────────────────────────────────────────────
+  const renderFormContent = () => (
+    <View style={{ rowGap: verticalScale(32) }}>
+      {/* Heading */}
+      <View style={{ rowGap: verticalScale(4) }}>
+        <Typography variant="serifRegular" size="headlineSm" className="text-onSurface dark:text-dark-text">
           Create Account
         </Typography>
-        <Typography size="bodyMd" className="text-text-weak dark:text-dark-textWeak text-center mt-1">
-          Get started with your free account
+        <Typography variant="regular" size="bodyMd" className="text-onSurfaceVariant dark:text-dark-textWeak">
+          Enter your details to begin your journey.
         </Typography>
       </View>
 
-      {/* Inputs */}
-      <View style={{ rowGap: verticalScale(16) }}>
-        {/* First + Last name row */}
-        <View style={{ flexDirection: 'row', columnGap: scale(12) }}>
-          <View style={{ flex: 1 }}>
-            <FormTextInput
-              name="firstName"
-              control={control}
-              label="First Name"
-              inputProps={{ placeholder: 'John' }}
-              rules={{ required: 'First name is required' }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <FormTextInput
-              name="lastName"
-              control={control}
-              label="Last Name"
-              inputProps={{ placeholder: 'Doe' }}
-              rules={{ required: 'Last name is required' }}
-            />
-          </View>
-        </View>
+      {/* Fields */}
+      <View style={{ rowGap: verticalScale(20) }}>
+        {/* Full Name */}
         <FormTextInput
-          name="email"
-          control={control}
-          label="Email"
-          inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'john.doe@example.com' }}
-          rules={{ required: 'Email is required' }}
+          name="fullName"
+          control={anyControl}
+          label="Full Name"
+          labelStyle={sharedLabelStyle}
+          inputProps={{ placeholder: 'Evelyn Thorne' }}
+          style={{ width: '100%' }}
+          rules={{ required: 'Full name is required' }}
         />
-        <PhoneFormInput
-          name="phone"
-          control={control}
-          label="Phone Number"
-          rules={{ required: 'Phone number is required' }}
-          inputProps={{ placeholder: '+1 (555) 000-0000', keyboardType: 'phone-pad' }}
+
+        {/* Email + Phone — row on web, stacked on mobile */}
+        {isMobile ? (
+          <>
+            <FormTextInput
+              name="email"
+              control={anyControl}
+              label="Email Address"
+              labelStyle={sharedLabelStyle}
+              inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'evelyn@heritage.com' }}
+              style={{ width: '100%' }}
+              rules={{ required: 'Email is required' }}
+            />
+            <PhoneFormInput
+              name="phone"
+              control={anyControl}
+              label="Phone Number"
+              labelStyle={sharedLabelStyle}
+              rules={{ required: 'Phone number is required' }}
+              inputProps={{ placeholder: '+1 (555) 000-0000', keyboardType: 'phone-pad' }}
+              style={{ width: '100%' }}
+            />
+          </>
+        ) : (
+          <View style={{ flexDirection: 'row', columnGap: scale(16) }}>
+            <View style={{ flex: 1 }}>
+              <FormTextInput
+                name="email"
+                control={anyControl}
+                label="Email Address"
+                labelStyle={sharedLabelStyle}
+                inputProps={{ keyboardType: 'email-address', autoCapitalize: 'none', placeholder: 'evelyn@heritage.com', }}
+                style={{ width: '100%' }}
+                rules={{ required: 'Email is required' }}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <PhoneFormInput
+                name="phone"
+                control={anyControl}
+                label="Phone Number"
+                labelStyle={sharedLabelStyle}
+                rules={{ required: 'Phone number is required' }}
+                inputProps={{ placeholder: '(555) 000-0000', keyboardType: 'phone-pad' }}
+                style={{ width: '100%' }}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* Mailing Address */}
+        <FormTextInput
+          name="address"
+          control={anyControl}
+          label="Mailing Address"
+          labelStyle={sharedLabelStyle}
+          inputProps={{ placeholder: '123 Heritage Way, London' }}
+          style={{ width: '100%' }}
         />
-        <PasswordFormInput
-          name="password"
-          control={control}
-          label="Password"
-          inputProps={{ placeholder: 'Minimum 8 characters' }}
-          rules={{ required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters' } }}
-        />
-        <PasswordFormInput
-          name="confirmPassword"
-          control={control}
-          label="Confirm Password"
-          inputProps={{ placeholder: 'Re-enter your password' }}
-          rules={{ required: 'Please confirm your password' }}
-        />
-        <Typography size="caption" className="text-text-weak dark:text-dark-textWeak">
-          By creating an account, you agree to our{' '}
-          <LinkTypography style={{ textDecorationLine: 'underline' }} href="https://cortts.com/terms" variant="regular" size="caption">
-            Terms of Service
-          </LinkTypography>{' '}
-          and{' '}
-          <LinkTypography style={{ textDecorationLine: 'underline' }} href="https://cortts.com/privacy" variant="regular" size="caption">
-            Privacy Policy
-          </LinkTypography>.
-        </Typography>
+
+        {/* Password + Confirm — row on web, stacked on mobile */}
+        {isMobile ? (
+          <>
+            <PasswordFormInput
+              name="password"
+              control={anyControl}
+              label="Password"
+              labelStyle={sharedLabelStyle}
+              style={{ width: '100%' }}
+              rules={{ required: 'Password is required', minLength: { value: 8, message: 'Min 8 characters' } }}
+            />
+            <PasswordFormInput
+              name="confirmPassword"
+              control={anyControl}
+              label="Confirm Password"
+              labelStyle={sharedLabelStyle}
+              style={{ width: '100%' }}
+              rules={{ required: 'Please confirm your password' }}
+            />
+          </>
+        ) : (
+          <View style={{ flexDirection: 'row', columnGap: scale(16) }}>
+            <View style={{ flex: 1 }}>
+              <PasswordFormInput
+                name="password"
+                control={anyControl}
+                label="Password"
+                labelStyle={sharedLabelStyle}
+                style={{ width: '100%' }}
+                rules={{ required: 'Password is required', minLength: { value: 8, message: 'Min 8 characters' } }}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <PasswordFormInput
+                name="confirmPassword"
+                control={anyControl}
+                label="Confirm Password"
+                labelStyle={sharedLabelStyle}
+                style={{ width: '100%' }}
+                rules={{ required: 'Please confirm your password' }}
+              />
+            </View>
+          </View>
+        )}
+
+        {/* Terms checkbox */}
+        <Pressable
+          className="flex-row items-start"
+          style={{ columnGap: scale(10) }}
+          onPress={() => setAgreeToTerms(v => !v)}
+        >
+          <View
+            style={{
+              width: widthPixel(18),
+              height: widthPixel(18),
+              borderRadius: widthPixel(4),
+              borderWidth: 1.5,
+              borderColor: agreeToTerms ? colors.secondary : colors.border,
+              backgroundColor: agreeToTerms ? colors.secondary : 'transparent',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: verticalScale(2),
+            }}
+          >
+            {agreeToTerms && <Ionicons name="checkmark" size={fontPixel(12)} color="#fff" />}
+          </View>
+          <Typography variant="regular" size="bodyMd" className="text-onSurfaceVariant dark:text-dark-textWeak flex-1">
+            I agree to Estate Heritage's{' '}
+            <LinkTypography href="https://cortts.com/terms" variant="regular" size="bodyMd" className="text-secondary">
+              Terms of Service
+            </LinkTypography>
+            {' '}and{' '}
+            <LinkTypography href="https://cortts.com/privacy" variant="regular" size="bodyMd" className="text-secondary">
+              Privacy Policy
+            </LinkTypography>
+            .
+          </Typography>
+        </Pressable>
       </View>
 
-      {/* Submit */}
+      {/* CTA */}
       <Button
         gradient
         size="large"
         title={isLoading ? 'Creating Account...' : 'Create Account'}
-        className="w-full"
         onPress={handleSubmit(onSubmit)}
         isLoading={isLoading}
         disabled={isLoading}
+        style={{ width: '100%' }}
       />
 
-      {/* Sign in */}
-      <View
-        className="items-center pt-4"
-        style={{ borderTopWidth: 1, borderTopColor: 'rgba(196,198,205,0.3)' }}
-      >
-        <Typography size="bodyMd" className="text-text-weak dark:text-dark-textWeak">
-          Already have an account?{' '}
-          <LinkTypography href="./login" variant="bold">Log in</LinkTypography>
-        </Typography>
+      {/* Divider + sign-in link */}
+      <View style={{ rowGap: verticalScale(20) }}>
+        <View style={{ height: 1, backgroundColor: colors.border }} />
+        <View className="flex-row items-center justify-center flex-wrap" style={{ columnGap: scale(4) }}>
+          <Typography variant="regular" size="bodyMd" className="text-onSurfaceVariant dark:text-dark-textWeak">
+            Already have an account?{' '}
+          </Typography>
+          <LinkTypography href="./login" variant="bold" size="bodyMd" className="text-secondary">
+            Sign In
+          </LinkTypography>
+        </View>
       </View>
     </View>
   );
 
-  /* ── Mobile: full-screen gradient with form card inside ── */
+  // ─── Footer ────────────────────────────────────────────────────────────────
+  const renderFooter = () => (
+    <View className="items-center pt-12" style={{ rowGap: verticalScale(8), opacity: 0.4 }}>
+      <Typography
+        variant="regular"
+        size="labelSm"
+        className="text-onSurface dark:text-dark-text text-center"
+        style={{ textTransform: 'uppercase', letterSpacing: 3 }}
+      >
+        © Estate Heritage 2024
+      </Typography>
+      <View className="flex-row" style={{ columnGap: scale(16) }}>
+        {['Privacy', 'Terms', 'Support'].map(item => (
+          <Typography
+            key={item}
+            variant="regular"
+            size="labelSm"
+            className="text-onSurface dark:text-dark-text"
+            style={{ textTransform: 'uppercase', letterSpacing: 1.5 }}
+          >
+            {item}
+          </Typography>
+        ))}
+      </View>
+    </View>
+  );
+
+  // ─── Mobile layout ─────────────────────────────────────────────────────────
   if (isMobile) {
     return (
-      <View className="flex-1 h-full">
-        <LinearGradient
-          colors={['#0f1d2d', '#8b7355']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[{ paddingTop: top + heightPixel(16), flex: 1 }]}
+      <View className="flex-1 bg-surface dark:bg-dark-background" style={{ paddingTop: top }}>
+        <KeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
         >
-          {/* Logo */}
-          <View className="flex-row items-center px-6" style={{ columnGap: scale(8) }}>
-            <View className="w-10 h-10 rounded-xl bg-white items-center justify-center">
-              <Typography className="text-primary font-bold text-xl">C</Typography>
+          <View
+            className="flex-1 items-center px-6 pt-12"
+            style={{
+              paddingBottom: bottom + verticalScale(24),
+            }}
+          >
+            <View style={{ width: '100%', maxWidth: 440, rowGap: verticalScale(40) }}>
+              {renderBrandAnchor()}
+              {renderFormContent()}
+              {renderFooter()}
             </View>
-            <Typography variant="bold" style={{ color: '#fff', fontSize: fontPixel(20) }}>
-              cortts.
-            </Typography>
           </View>
-          {/* Form inside gradient */}
-          <KeyboardAwareScrollView>
-            <View className="items-center justify-center px-6 my-10">
-              {renderForm()}
-            </View>
-          </KeyboardAwareScrollView>
-          <KeyboardToolbar />
-        </LinearGradient>
+        </KeyboardAwareScrollView>
+        <KeyboardToolbar />
       </View>
     );
   }
 
-  /* ── Desktop/Tablet: left gradient panel + right scrollable form ── */
+  // ─── Web / Tablet layout ───────────────────────────────────────────────────
   return (
-    <View className="flex-1 flex-row bg-background dark:bg-dark-background">
+    <View className="flex-1 flex-row">
 
-      {/* Left — gradient panel */}
-      <LinearGradient
-        colors={['#0f1d2d', '#1a3050', '#8b7355']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.leftPanel}
+      {/* Left — Editorial brand panel (always dark, theme-independent) */}
+      <View
+        className="overflow-hidden"
+        style={{
+          flexBasis: '50%',
+          flexGrow: 0,
+          flexShrink: 0,
+          backgroundColor: '#0f1d2d',
+          justifyContent: 'flex-end',
+          padding: desktopPanelPadding,
+        }}
       >
-        {/* Decorative blobs */}
-        <View style={[styles.blob, { top: heightPixel(80), left: widthPixel(80), width: widthPixel(200), height: widthPixel(200) }]} />
-        <View style={[styles.blob, { bottom: heightPixel(80), right: widthPixel(80), width: widthPixel(300), height: widthPixel(300) }]} />
-        <View style={[styles.rotatedSquare, { top: heightPixel(160), right: widthPixel(120), width: widthPixel(100), height: widthPixel(100) }]} />
-
-        {/* Logo */}
-        <View className="absolute flex-row items-center" style={{ top: heightPixel(32), left: widthPixel(32), columnGap: scale(8) }}>
-          <View className="rounded-xl bg-white items-center justify-center" style={{ width: widthPixel(40), height: widthPixel(40) }}>
-            <Typography className="text-primary font-bold" style={{ fontSize: fontPixel(20) }}>C</Typography>
-          </View>
-          <Typography variant="bold" style={{ color: '#fff', fontSize: fontPixel(20) }}>cortts.</Typography>
+        {/* Estate photo at 60% opacity */}
+        <View style={[StyleSheet.absoluteFillObject, { opacity: 0.6 }]}>
+          <Image
+            source={require('../../assets/images/login_web.png')}
+            style={StyleSheet.absoluteFillObject}
+            contentFit="cover"
+          />
         </View>
 
-        {/* Illustration — UserPlus central circle + floating icon cards */}
-        <View className="absolute inset-0 items-center justify-center" style={{ paddingBottom: heightPixel(200) }}>
-          {/* Connecting rings */}
-          <View style={[styles.ring, { width: widthPixel(220), height: widthPixel(220) }]} />
-          <View style={[styles.ring, { width: widthPixel(280), height: widthPixel(280), position: 'absolute' }]} />
+        {/* Bottom-fade gradient */}
+        <LinearGradient
+          colors={['rgba(15,29,45,0)', colors.detail.overlay, '#0f1d2d']}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={[StyleSheet.absoluteFillObject, { opacity: 0.8 }]}
+        />
 
-          {/* Central icon */}
-          <View style={styles.centralIcon}>
-            <Ionicons name="person-add" size={fontPixel(56)} color={colors.primary} />
-          </View>
-
-          {/* Floating card — top-left */}
-          <View style={[styles.floatingCard, { top: heightPixel(-20), left: widthPixel(20) }]}>
-            <Ionicons name="business" size={fontPixel(28)} color="#fff" />
-          </View>
-          {/* Floating card — top-right */}
-          <View style={[styles.floatingCard, { top: heightPixel(10), right: widthPixel(20) }]}>
-            <Ionicons name="people" size={fontPixel(28)} color="#fff" />
-          </View>
-          {/* Floating card — bottom */}
-          <View style={[styles.floatingCard, { bottom: heightPixel(-30) }]}>
-            <Ionicons name="checkmark-circle" size={fontPixel(28)} color="#fff" />
-          </View>
-        </View>
-
-        {/* Marketing copy + feature pills */}
-        <View className="absolute bottom-0 left-0 right-0 items-center" style={{ paddingBottom: heightPixel(60), paddingHorizontal: widthPixel(40) }}>
+        {/* Editorial content — bottom-aligned */}
+        <View style={{ maxWidth: widthPixel(512), rowGap: verticalScale(16) }}>
           <Typography
-            variant="serifBold"
-            className="text-center"
-            style={{ color: '#fff', fontSize: fontPixel(36), lineHeight: fontPixel(44), marginBottom: verticalScale(12) }}
+            variant="regular"
+            size="labelLg"
+            className="text-primary-container"
+            style={{ textTransform: 'uppercase', letterSpacing: 2.8 }}
           >
-            Join the future of real estate management
+            The Digital Concierge
           </Typography>
-          <Typography className="text-center" style={{ color: 'rgba(255,255,255,0.9)', fontSize: fontPixel(16), marginBottom: verticalScale(20) }}>
-            Create your account and start managing properties like a pro.
+
+          <Typography variant="serifRegular" size="h1" className="text-dark-text">
+            {'A legacy of\ndistinction,\nbuilt for you.'}
           </Typography>
-          {/* Feature pills */}
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: scale(8), justifyContent: 'center' }}>
-            {['✓ Free 30-day trial', '✓ No credit card needed', '✓ Cancel anytime'].map((pill) => (
-              <View key={pill} style={styles.pill}>
-                <Typography variant="semiBold" style={{ color: '#fff', fontSize: fontPixel(12) }}>{pill}</Typography>
-              </View>
-            ))}
+
+          <Typography
+            variant="regular"
+            size="bodyLg"
+            className="text-dark-textWeaker"
+            style={{ paddingTop: verticalScale(7) }}
+          >
+            Join an exclusive circle of property owners and investors. Access the world's most prestigious architectural marvels.
+          </Typography>
+
+          {/* Trust indicator */}
+          <View className="flex-row items-center" style={{ paddingTop: verticalScale(24), columnGap: scale(12) }}>
+            <View className="flex-row">
+              {['#c4a97d', '#788599', '#4a7aa8'].map((bg, i) => (
+                <View
+                  key={i}
+                  style={{
+                    width: widthPixel(32),
+                    height: widthPixel(32),
+                    borderRadius: widthPixel(16),
+                    backgroundColor: bg,
+                    borderWidth: 2,
+                    borderColor: '#0f1d2d',
+                    marginLeft: i === 0 ? 0 : -widthPixel(10),
+                  }}
+                />
+              ))}
+            </View>
+            <Typography
+              variant="semiBold"
+              size="labelMd"
+              className="text-dark-textWeak"
+              style={{ textTransform: 'uppercase', letterSpacing: 1.2 }}
+            >
+              Trusted by 5,000+ Elite Homeowners
+            </Typography>
           </View>
         </View>
-      </LinearGradient>
+      </View>
 
-      {/* Right — scrollable form */}
+      {/* Right — Scrollable form panel */}
       <ScrollView
-        contentContainerStyle={[styles.scrollContent, { padding: scale(32) }]}
+        className="bg-surface dark:bg-dark-background"
+        style={{ flexBasis: '50%', flexGrow: 0, flexShrink: 0 }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}
         keyboardShouldPersistTaps="handled"
       >
-        {renderForm()}
+        <View
+          className="py-12"
+          style={{
+            width: '100%',
+            maxWidth: widthPixel(isCompactDesktop ? 560 : 640),
+            paddingHorizontal: desktopFormPaddingX,
+            rowGap: verticalScale(40),
+          }}
+        >
+          {renderBrandAnchor()}
+          {renderFormContent()}
+          {renderFooter()}
+        </View>
       </ScrollView>
     </View>
   );
-};
-
-const useStyles = () => {
-  const { scale, verticalScale, widthPixel } = useResponsive();
-
-  return StyleSheet.create({
-    formCard: {
-      width: '100%',
-      maxWidth: widthPixel(440),
-      backgroundColor: '#ffffff',
-      borderRadius: widthPixel(16),
-      padding: scale(24),
-      rowGap: verticalScale(20),
-      shadowColor: '#1b1c1a',
-      shadowOffset: { width: 0, height: widthPixel(4) },
-      shadowOpacity: 0.05,
-      shadowRadius: widthPixel(32),
-      elevation: 4,
-    },
-    scrollContent: {
-      flexGrow: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: verticalScale(24),
-    },
-    leftPanel: {
-      flex: 1,
-      overflow: 'hidden',
-    },
-    blob: {
-      position: 'absolute',
-      backgroundColor: 'rgba(255,255,255,0.1)',
-      borderRadius: 9999,
-    },
-    rotatedSquare: {
-      position: 'absolute',
-      backgroundColor: 'rgba(255,255,255,0.2)',
-      borderRadius: widthPixel(16),
-      transform: [{ rotate: '45deg' }],
-    },
-    centralIcon: {
-      width: widthPixel(140),
-      height: widthPixel(140),
-      borderRadius: widthPixel(70),
-      backgroundColor: 'rgba(255,255,255,0.9)',
-      alignItems: 'center',
-      justifyContent: 'center',
-      shadowColor: '#1b1c1a',
-      shadowOffset: { width: 0, height: widthPixel(8) },
-      shadowOpacity: 0.08,
-      shadowRadius: widthPixel(24),
-      elevation: 6,
-    },
-    ring: {
-      position: 'absolute',
-      borderWidth: 2,
-      borderColor: 'rgba(255,255,255,0.3)',
-      borderRadius: 9999,
-    },
-    floatingCard: {
-      position: 'absolute',
-      padding: scale(14),
-      backgroundColor: 'rgba(255,255,255,0.2)',
-      borderRadius: widthPixel(16),
-      shadowColor: '#1b1c1a',
-      shadowOffset: { width: 0, height: widthPixel(4) },
-      shadowOpacity: 0.08,
-      shadowRadius: widthPixel(16),
-      elevation: 3,
-    },
-    pill: {
-      paddingHorizontal: scale(14),
-      paddingVertical: verticalScale(8),
-      backgroundColor: 'rgba(255,255,255,0.2)',
-      borderRadius: 9999,
-    },
-  });
 };
 
 export default Register;

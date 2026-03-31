@@ -5,7 +5,7 @@ import { ColorSchemeName, ViewStyle } from "react-native";
 
 type Theme = "light" | "dark";
 type ThemeModeColors = typeof corttsLightColors & Partial<Omit<typeof corttsDarkColors, "text">>;
-type RuntimeColors = typeof colors & ThemeModeColors;
+export type RuntimeColors = typeof colors & ThemeModeColors;
 
 export type ThemeType = {
   theme: ColorSchemeName; // Using ColorSchemeName for better compatibility

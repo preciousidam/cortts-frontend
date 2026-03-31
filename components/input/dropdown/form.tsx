@@ -21,7 +21,7 @@ export const FormDropdown = <T,>(props: FormDropdownProps<T>) => {
   if (!control) {
     console.warn("FormDropdown requires a control prop from react-hook-form");
     return <BaseDropdown
-      {...inputProps}
+      {...(inputProps as any)}
       options={[]}
       label={label}
       style={style}
@@ -37,7 +37,7 @@ export const FormDropdown = <T,>(props: FormDropdownProps<T>) => {
       rules={rules}
       render={({ field: { onChange, onBlur, value, ref }, fieldState }) => (
         <BaseDropdown
-          {...inputProps}
+          {...(inputProps as any)}
           {...multi}
           label={label}
           onSelect={(selected: T | T[]) => onChange(selected)}
@@ -46,7 +46,7 @@ export const FormDropdown = <T,>(props: FormDropdownProps<T>) => {
           style={style}
           labelStyle={labelStyle}
           info={info}
-          required={rules?.required}
+          required={rules?.required as boolean | string | undefined}
         />
       )}
     />

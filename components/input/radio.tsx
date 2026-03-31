@@ -24,7 +24,7 @@ const Radio: React.FC<RadioProps> = ({
   style,
 }) => {
   const { scale } = useResponsive();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
 
   return (
     <Pressable
@@ -37,7 +37,7 @@ const Radio: React.FC<RadioProps> = ({
     >
       <Ionicons
         name={selected ? "radio-button-on" : "radio-button-off"}
-        color={selected ? colors.primary : colors.border}
+        color={selected ? (isDarkMode ? '#dae1e8' : '#0f1d2d') : colors.border}
         size={scale(20)}
       />
       {label ? <Typography className="text-text-default dark:text-dark-text" style={labelStyle}>{label}</Typography> : null}

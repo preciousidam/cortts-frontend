@@ -53,7 +53,7 @@ export const useProjectLogic = () => {
 
   return {
     onSubmit: handleSubmit(createProject),
-    control,
+    control: control as any,
     isLoading: isPending
   };
 }
@@ -111,7 +111,7 @@ export const useUpdateProjectLogic = (id: string) => {
 
   return {
     onSubmit: handleSubmit(updateProject),
-    control,
+    control: control as any,
     isLoading: isPending
   };
 }

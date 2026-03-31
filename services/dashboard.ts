@@ -1,5 +1,5 @@
 import { queryFn } from "@/store/query";
-import { AdminDashboard } from "@/types";
+import { AdminDashboard } from "@/types/models";
 
 
 export const getAdminDashboardData = async () => {

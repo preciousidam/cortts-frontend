@@ -4,7 +4,7 @@ const themeColors = require('./styleguide/theme/colors.config');
 module.exports = {
   content: ['./app/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}', './constants/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
-  darkMode: 'media', // responds to system color scheme on native & web
+  darkMode: 'media',
   theme: {
     extend: {
       colors: themeColors,
